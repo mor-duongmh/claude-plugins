@@ -1,6 +1,6 @@
 {
   "name": "spec",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Mor's spec-driven workflow: OpenSpec skills + superpowers-driven schema. Produces proposal/design/tasks artifacts that plug directly into Superpowers executing-plans and subagent-driven-development.",
   "author": {
     "name": "Mor",
