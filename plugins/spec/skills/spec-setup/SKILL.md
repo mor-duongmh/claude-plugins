@@ -1,5 +1,5 @@
 ---
-name: mor-openspec-setup
+name: spec-setup
 description: Install the Mor superpowers-driven OpenSpec schema into a specific project. Requires the user to either pass the project path as an argument OR run Claude Code from within the target project directory. Use when setting up a project to use OpenSpec with Superpowers-compatible artifacts.
 license: MIT
 ---

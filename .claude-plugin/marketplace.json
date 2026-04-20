@@ -1,21 +1,21 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "mor-duongmh",
-  "description": "Mor's Claude Code plugin marketplace — customized Superpowers and OpenSpec workflows for the Mor team.",
+  "description": "Mor's Claude Code plugin marketplace — customized OpenSpec + Superpowers workflows for the Mor team.",
   "owner": {
     "name": "Mor",
     "email": "duong@mor.company"
   },
   "plugins": [
     {
-      "name": "mor-openspec",
-      "description": "OpenSpec skills + superpowers-driven schema. Artifacts are TDD-ready and consumable by Superpowers executing-plans and subagent-driven-development.",
-      "source": "./plugins/mor-openspec",
+      "name": "spec",
+      "description": "Mor's spec-driven workflow. OpenSpec skills + superpowers-driven schema. Artifacts are TDD-ready and consumable by Superpowers executing-plans and subagent-driven-development.",
+      "source": "./plugins/spec",
       "category": "development",
       "author": {
         "name": "Mor"
       },
-      "homepage": "https://github.com/mor-duongmh/claude-plugins/tree/main/plugins/mor-openspec"
+      "homepage": "https://github.com/mor-duongmh/claude-plugins/tree/main/plugins/spec"
     }
   ]
 }

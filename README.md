@@ -6,7 +6,7 @@ Mor team's Claude Code plugin marketplace. Contains customized workflows for spe
 
 | Plugin | Purpose |
 |--------|---------|
-| [`mor-openspec`](./plugins/mor-openspec) | OpenSpec skills + `superpowers-driven` schema. Produces `proposal.md`, `design.md`, and TDD-ready `tasks.md` that plug directly into Superpowers `executing-plans` / `subagent-driven-development`. |
+| [`spec`](./plugins/spec) | Spec-driven workflow: OpenSpec skills + `superpowers-driven` schema. Produces `proposal.md`, `design.md`, and TDD-ready `tasks.md` that plug directly into Superpowers `executing-plans` / `subagent-driven-development`. |
 
 > Future: `mor-superpowers` with Mor-specific coding standards and review rules.
 
@@ -20,10 +20,10 @@ In Claude Code:
 /plugin add marketplace github:mor-duongmh/claude-plugins
 ```
 
-### 2. Install plugins
+### 2. Install the `spec` plugin
 
 ```
-/plugin install mor-openspec@mor-duongmh
+/plugin install spec@mor-duongmh
 ```
 
 ### 3. Install the schema into your project (one-time per project)
@@ -35,26 +35,43 @@ npm install -g @fission-ai/openspec
 openspec init     # if not already initialized
 ```
 
-Then in Claude Code, invoke the setup skill **from inside the target project** OR pass the project path explicitly:
+Then in Claude Code, invoke the setup command **from inside the target project** OR pass the project path explicitly:
 
 ```
 # Option A: cd into the target project, then run
-/mor-openspec-setup
+/spec:setup
 
 # Option B: pass the absolute path
-/mor-openspec-setup /absolute/path/to/project
+/spec:setup /absolute/path/to/project
 ```
 
-The skill will always confirm the resolved path with you before writing. It copies `schemas/superpowers-driven/` into the project's `openspec/schemas/` and (optionally) sets it as the default schema.
+The setup command always confirms the resolved path with you before writing. It copies `schemas/superpowers-driven/` into the project's `openspec/schemas/` and (optionally) sets it as the default schema.
+
+## Slash commands
+
+All commands are namespaced under `/spec:`.
+
+| Command | Purpose |
+|---------|---------|
+| `/spec:setup [path]` | Install the `superpowers-driven` schema into a project |
+| `/spec:explore` | Thinking-partner mode: explore ideas, investigate before committing to a change |
+| `/spec:propose` | Create a new change with proposal + design + TDD-ready tasks |
+| `/spec:apply [change]` | Walk through the tasks and implement them (OpenSpec-native) |
+| `/spec:archive [change]` | Archive a completed change and sync specs |
 
 ## Workflow
 
 ```
-/opsx:propose         → creates proposal.md, design.md, tasks.md
+/spec:propose         → creates proposal.md, design.md, tasks.md
                         (tasks.md has Superpowers header + TDD steps)
        ↓
-/superpowers:executing-plans         (or)
-/superpowers:subagent-driven-development
+/spec:apply                          (OpenSpec-native implementation)
+    or
+/superpowers:executing-plans         (TDD discipline)
+    or
+/superpowers:subagent-driven-development   (parallel agents)
+       ↓
+/spec:archive         → archive + sync specs when done
 ```
 
 ## What's different from upstream OpenSpec?
