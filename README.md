@@ -1,92 +1,92 @@
 # Mor Claude Plugins
 
-> Mor team's Claude Code plugin marketplace — spec-driven development with TDD, wired to work seamlessly with Superpowers.
+> Bộ plugin Claude Code của team Mor — phát triển theo hướng spec-driven với TDD, tích hợp mượt mà với Superpowers.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-orange.svg)](https://docs.anthropic.com/claude/docs/claude-code)
 
 ---
 
-## Table of contents
+## Mục lục
 
-- [Overview](#overview)
-- [Plugins](#plugins)
-- [Quick start](#quick-start)
+- [Giới thiệu](#giới-thiệu)
+- [Danh sách plugin](#danh-sách-plugin)
+- [Bắt đầu nhanh](#bắt-đầu-nhanh)
 - [Slash commands](#slash-commands)
 - [Workflow](#workflow)
-- [What's inside the `superpowers-driven` schema?](#whats-inside-the-superpowers-driven-schema)
-- [Troubleshooting](#troubleshooting)
+- [Bên trong schema `superpowers-driven`](#bên-trong-schema-superpowers-driven)
+- [Xử lý sự cố](#xử-lý-sự-cố)
 - [Roadmap](#roadmap)
 - [License](#license)
 
 ---
 
-## Overview
+## Giới thiệu
 
-This marketplace ships a single plugin — **`spec`** — that bundles:
+Marketplace này chứa một plugin duy nhất — **`spec`** — bao gồm:
 
-1. **Spec skills** — `propose`, `apply`, `explore`, `archive` for spec-driven change management.
-2. **A custom `superpowers-driven` schema** — generated artifacts plug directly into Superpowers (`writing-plans`, `executing-plans`, `subagent-driven-development`) without any bridging work.
-3. **Namespaced slash commands** under `/spec:` to avoid conflicts with upstream commands.
-4. **Zero external install** — the underlying CLI is invoked via `npx`; the user does not need to run `npm install -g` first.
-5. **Auto-prompt** — when a project has an `openspec/` folder but no schema yet, the plugin politely suggests running `/spec:setup` on the first session. Nothing is copied without confirmation.
-
----
-
-## Plugins
-
-| Plugin | Version | Purpose |
-|--------|---------|---------|
-| [`spec`](./plugins/spec) | `0.3.0` | Spec skills + `superpowers-driven` schema. Artifacts are TDD-ready and consumable by Superpowers. |
-
-> **Roadmap:** A second plugin `mor-superpowers` with Mor-specific coding standards and review rules is planned — see [Roadmap](#roadmap).
+1. **4 spec skills** — `propose`, `apply`, `explore`, `archive` để quản lý thay đổi theo hướng spec-driven.
+2. **Schema `superpowers-driven`** — các artifact sinh ra cắm thẳng vào Superpowers (`writing-plans`, `executing-plans`, `subagent-driven-development`) mà không cần chuyển đổi trung gian.
+3. **Slash commands có namespace** dưới `/spec:` để không xung đột với các commands mặc định.
+4. **Không cần cài đặt ngoài** — CLI được gọi qua `npx`; dev không phải chạy `npm install -g` trước.
+5. **Tự gợi ý cài đặt** — khi mở project có `openspec/` nhưng chưa có schema, plugin sẽ lịch sự hỏi có muốn chạy `/spec:setup` không. Không có file nào bị copy nếu dev chưa xác nhận.
 
 ---
 
-## Quick start
+## Danh sách plugin
 
-### Prerequisites
+| Plugin | Version | Mục đích |
+|--------|---------|----------|
+| [`spec`](./plugins/spec) | `0.3.0` | Spec skills + schema `superpowers-driven`. Artifacts sẵn sàng cho TDD và dùng được ngay với Superpowers. |
 
-- [Claude Code](https://docs.anthropic.com/claude/docs/claude-code) installed
-- Node.js ≥ 18 on `PATH` (needed so `npx` can run the spec CLI on demand)
+> **Roadmap:** Plugin thứ hai `mor-superpowers` — fork các Superpowers skills, tùy chỉnh cho coding standards và review rules của Mor — đang nằm trong kế hoạch. Xem [Roadmap](#roadmap).
 
-No global `npm install` required.
+---
 
-### 1. Add the marketplace (once per machine)
+## Bắt đầu nhanh
 
-In Claude Code:
+### Yêu cầu
+
+- [Claude Code](https://docs.anthropic.com/claude/docs/claude-code) đã cài đặt
+- Node.js ≥ 18 có trong `PATH` (để `npx` chạy được CLI khi cần)
+
+Không cần `npm install -g` gì cả.
+
+### 1. Thêm marketplace (mỗi máy 1 lần)
+
+Trong Claude Code:
 
 ```
 /plugin add marketplace github:mor-duongmh/claude-plugins
 ```
 
-### 2. Install the `spec` plugin (once per machine)
+### 2. Cài plugin `spec` (mỗi máy 1 lần)
 
 ```
 /plugin install spec@mor-duongmh
 ```
 
-That's it. When you open a project the plugin will detect whether the spec workflow is set up:
+Xong. Khi dev mở một project, plugin sẽ tự nhận diện trạng thái:
 
-- **New project (no `openspec/`):** run `/spec:setup` when you want to start using the workflow. The command will offer to initialize OpenSpec and install the schema.
-- **Existing project with `openspec/` but no schema yet:** the plugin auto-prompts on session start, asking whether you want to install the schema. Reply "skip" (or create `openspec/.spec-setup-skip`) to mute the prompt for that project.
-- **Fully set-up project:** nothing happens — just start using `/spec:propose` etc.
+- **Project mới (chưa có `openspec/`):** tự chạy `/spec:setup` khi muốn bắt đầu. Skill sẽ hỏi có muốn chạy `openspec init` không, rồi cài schema.
+- **Project có `openspec/` nhưng chưa có schema:** plugin tự gợi ý ở đầu session — dev trả lời có/không. Muốn tắt vĩnh viễn thì `touch openspec/.spec-setup-skip`.
+- **Project đã setup xong:** im lặng — dùng `/spec:propose` ngay được.
 
-`/spec:setup` always confirms the resolved path before writing; it never copies files silently.
+`/spec:setup` **luôn xác nhận path trước khi ghi file** — không bao giờ copy ngầm.
 
 ---
 
 ## Slash commands
 
-All commands are namespaced under `/spec:`.
+Tất cả commands đều có namespace `/spec:`.
 
-| Command | Arguments | Purpose |
-|---------|-----------|---------|
-| `/spec:setup` | `[path]` (optional absolute path) | Initialize the workflow in a project: offer `openspec init` if needed, install the `superpowers-driven` schema, optionally set it as default |
-| `/spec:explore` | — | Thinking-partner mode — investigate, ask questions, don't implement |
-| `/spec:propose` | `[description]` (optional) | Create a new change with proposal + design + TDD-ready tasks |
-| `/spec:apply` | `[change-name]` (optional) | Walk through pending tasks and implement (native runner) |
-| `/spec:archive` | `[change-name]` (optional) | Archive a completed change and sync delta specs |
+| Command | Tham số | Mục đích |
+|---------|---------|----------|
+| `/spec:setup` | `[path]` (optional absolute path) | Khởi tạo workflow trong project: chạy `openspec init` nếu cần, cài schema `superpowers-driven`, tùy chọn set làm default |
+| `/spec:explore` | — | Chế độ "suy nghĩ": đặt câu hỏi, điều tra, không implement |
+| `/spec:propose` | `[description]` (optional) | Tạo change mới gồm proposal + design + tasks TDD-ready |
+| `/spec:apply` | `[change-name]` (optional) | Duyệt và thực thi các task còn pending (native runner) |
+| `/spec:archive` | `[change-name]` (optional) | Archive change đã xong và sync delta specs |
 
 ---
 
@@ -94,13 +94,13 @@ All commands are namespaced under `/spec:`.
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  /spec:explore          (optional — think before committing) │
+│  /spec:explore          (tùy chọn — suy nghĩ trước khi làm)  │
 └──────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
 │  /spec:propose                                                │
-│    Generates:                                                 │
+│    Sinh ra:                                                   │
 │      • proposal.md   (what & why)                             │
 │      • design.md     (how + Tech Stack)                       │
 │      • tasks.md      (Superpowers header + TDD steps)         │
@@ -117,91 +117,91 @@ All commands are namespaced under `/spec:`.
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
-│  /spec:archive      (once implementation + merge complete)    │
+│  /spec:archive      (sau khi implement + merge xong)          │
 └──────────────────────────────────────────────────────────────┘
 ```
 
-Because `tasks.md` already contains the Superpowers header (Goal, Architecture, Tech Stack) and per-task TDD steps with explicit file paths, you can hand it straight to `/superpowers:executing-plans` with **no manual rewriting**.
+Vì `tasks.md` đã có sẵn Superpowers header (Goal, Architecture, Tech Stack) và các bước TDD với đường dẫn file rõ ràng, dev có thể đưa thẳng cho `/superpowers:executing-plans` **mà không cần viết lại gì**.
 
 ---
 
-## What's inside the `superpowers-driven` schema?
+## Bên trong schema `superpowers-driven`
 
-Forked from the upstream default schema and modified in 3 places:
+Fork từ schema mặc định của upstream, tùy chỉnh ở 3 chỗ:
 
-### 1. `design.md` gains a `## Tech Stack` section
+### 1. `design.md` bổ sung mục `## Tech Stack`
 
-Needed so the downstream `tasks.md` header can reference a real tech stack without the AI guessing.
+Để header của `tasks.md` phía sau có tech stack thật mà tham chiếu, không phải để AI đoán.
 
-### 2. `tasks.md` template starts with the Superpowers header
+### 2. Template `tasks.md` bắt đầu bằng Superpowers header
 
 ```markdown
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development
 > (recommended) or superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** <one sentence>
-**Architecture:** <2-3 sentences>
-**Tech Stack:** <pulled from design.md>
+**Goal:** <một câu>
+**Architecture:** <2-3 câu>
+**Tech Stack:** <lấy từ design.md>
 ```
 
-### 3. Each task group follows TDD structure
+### 3. Mỗi task group theo cấu trúc TDD
 
 ```markdown
-## 1. <group name>
+## 1. <tên nhóm>
 
 **Files:**
 - Create: `path/to/new/file`
 - Modify: `path/to/existing/file`
 - Test:   `path/to/test/file`
 
-- [ ] 1.1 Write failing test for <behavior>
-- [ ] 1.2 Run test — verify it fails
-- [ ] 1.3 Implement <minimal code>
-- [ ] 1.4 Run tests — verify passing
+- [ ] 1.1 Viết failing test cho <hành vi>
+- [ ] 1.2 Chạy test — xác nhận fail
+- [ ] 1.3 Implement <code tối thiểu>
+- [ ] 1.4 Chạy tests — xác nhận pass
 - [ ] 1.5 Commit
 ```
 
-The matching `schema.yaml` instructions enforce these rules so AI-generated artifacts stay consistent across every change.
+Các instructions trong `schema.yaml` ràng buộc quy tắc này để artifact AI sinh ra luôn nhất quán qua mọi change.
 
 ---
 
-## Troubleshooting
+## Xử lý sự cố
 
-### The auto-prompt keeps appearing on a project I don't want to set up
+### Prompt tự gợi ý cứ hiện lại ở project tôi không muốn setup
 
-Create an empty file to mute it:
+Tạo file trống để tắt:
 
 ```bash
 touch openspec/.spec-setup-skip
 ```
 
-### `schema validate superpowers-driven` fails
+### `schema validate superpowers-driven` báo lỗi
 
-The schema may have been partially copied. Delete `openspec/schemas/superpowers-driven/` and re-run `/spec:setup`.
+Có thể schema bị copy thiếu. Xóa `openspec/schemas/superpowers-driven/` rồi chạy lại `/spec:setup`.
 
-### Commands appear as `/mor-openspec:*` instead of `/spec:*`
+### Commands hiện là `/mor-openspec:*` thay vì `/spec:*`
 
-You're on an older cached copy of the plugin. Update and reinstall:
+Đang dùng bản cache cũ của plugin. Update và cài lại:
 
 ```
 /plugin update spec@mor-duongmh
 ```
 
-### Conflicts with `/opsx:*` commands
+### Xung đột với `/opsx:*`
 
-No conflict — `/spec:*` and `/opsx:*` are independent namespaces and can coexist. The `spec` plugin wraps the same underlying skills, so you can use either.
+Không xung đột — `/spec:*` và `/opsx:*` là hai namespace độc lập, song song được. Plugin `spec` wrap cùng skills backend nên dev có thể dùng cái nào cũng được.
 
-### `npx` is slow on first run
+### `npx` chạy chậm lần đầu
 
-The first `/spec:setup` downloads `@fission-ai/openspec` into the local npm cache. Subsequent runs are instant.
+Lần đầu `/spec:setup` sẽ download `@fission-ai/openspec` vào npm cache cục bộ. Các lần sau chạy tức thì.
 
 ---
 
 ## Roadmap
 
-- [ ] `mor-superpowers` plugin — forked Superpowers skills customized for Mor's coding standards, review rules, and commit conventions.
-- [ ] CI validation on every push (`schema validate superpowers-driven`).
-- [ ] Optional telemetry to track schema adoption across Mor projects.
+- [ ] Plugin `mor-superpowers` — fork Superpowers skills, tùy chỉnh theo coding standards, review rules, commit conventions của Mor.
+- [ ] CI validation mỗi lần push (`schema validate superpowers-driven`).
+- [ ] Telemetry tùy chọn để theo dõi độ phủ của schema trong các project của Mor.
 
 ---
 
