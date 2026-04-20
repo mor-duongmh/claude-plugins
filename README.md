@@ -35,13 +35,17 @@ npm install -g @fission-ai/openspec
 openspec init     # if not already initialized
 ```
 
-Then in Claude Code, invoke the setup skill:
+Then in Claude Code, invoke the setup skill **from inside the target project** OR pass the project path explicitly:
 
 ```
+# Option A: cd into the target project, then run
 /mor-openspec-setup
+
+# Option B: pass the absolute path
+/mor-openspec-setup /absolute/path/to/project
 ```
 
-This copies `schemas/superpowers-driven/` into your project's `openspec/schemas/` and (optionally) sets it as the default schema.
+The skill will always confirm the resolved path with you before writing. It copies `schemas/superpowers-driven/` into the project's `openspec/schemas/` and (optionally) sets it as the default schema.
 
 ## Workflow
 
