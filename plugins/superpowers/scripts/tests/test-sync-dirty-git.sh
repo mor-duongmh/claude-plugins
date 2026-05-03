@@ -6,12 +6,19 @@ source "$SCRIPT_DIR/test-helper.sh"
 SYNC="$SCRIPT_DIR/../sync-superpowers.sh"
 PLUGIN_ROOT="$SCRIPT_DIR/../.."
 
+# Backup manifest so we can clear its version (otherwise idempotent skip
+# would short-circuit before the dirty-git check).
+manifest_backup="$(cat "$PLUGIN_ROOT/.vendor-manifest.json")"
+jq '.version = null | .tarball_sha256 = null' "$PLUGIN_ROOT/.vendor-manifest.json" > "$PLUGIN_ROOT/.vendor-manifest.json.tmp"
+mv "$PLUGIN_ROOT/.vendor-manifest.json.tmp" "$PLUGIN_ROOT/.vendor-manifest.json"
+
 # Setup: create a dirty vendored file
 mkdir -p "$PLUGIN_ROOT/skills/dummy"
 echo "uncommitted" > "$PLUGIN_ROOT/skills/dummy/SKILL.md"
 
 cleanup() {
     rm -rf "$PLUGIN_ROOT/skills/dummy"
+    echo "$manifest_backup" > "$PLUGIN_ROOT/.vendor-manifest.json"
 }
 trap cleanup EXIT
 

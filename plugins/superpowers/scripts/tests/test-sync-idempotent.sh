@@ -12,6 +12,9 @@ for d in skills commands agents LICENSE; do
     [[ -e "$PLUGIN_ROOT/$d" ]] && mv "$PLUGIN_ROOT/$d" "$backup/$d"
 done
 manifest_backup="$(cat "$PLUGIN_ROOT/.vendor-manifest.json")"
+# Clear version so the first sync below actually runs (avoid idempotent skip).
+jq '.version = null | .tarball_sha256 = null' "$PLUGIN_ROOT/.vendor-manifest.json" > "$PLUGIN_ROOT/.vendor-manifest.json.tmp"
+mv "$PLUGIN_ROOT/.vendor-manifest.json.tmp" "$PLUGIN_ROOT/.vendor-manifest.json"
 
 cleanup() {
     rm -rf "$PLUGIN_ROOT/skills" "$PLUGIN_ROOT/commands" "$PLUGIN_ROOT/agents" "$PLUGIN_ROOT/LICENSE"
