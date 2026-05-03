@@ -1,0 +1,10 @@
+{
+  "name": "obra/superpowers",
+  "source": "https://github.com/obra/superpowers",
+  "version": null,
+  "tarball_url": null,
+  "tarball_sha256": null,
+  "fetched_at": null,
+  "fetched_by": "scripts/sync-superpowers.sh",
+  "vendored_paths": ["skills/", "commands/", "agents/", "LICENSE"]
+}
