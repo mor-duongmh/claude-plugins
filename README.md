@@ -1,6 +1,6 @@
 # Mor Claude Plugins
 
-> Marketplace plugin Claude Code của Mor — spec-driven, TDD-first, plug thẳng vào Superpowers.
+> Marketplace plugin Claude Code của Mor — spec-driven, TDD-first, vendored Superpowers.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -11,53 +11,65 @@ Yêu cầu: [Claude Code](https://docs.anthropic.com/claude/docs/claude-code) + 
 ```
 /plugin add marketplace github:mor-duongmh/claude-plugins
 /plugin install spec@mor-duongmh
+/plugin install superpowers@mor-duongmh
 ```
 
-Không cần `npm install -g` — CLI chạy qua `npx`.
+> `superpowers@mor-duongmh` là bản vendored fork của [obra/superpowers](https://github.com/obra/superpowers). Cùng plugin name → không cài đồng thời với upstream.
 
-## Plugin `spec`
+## Plugins
 
-Spec-driven workflow trên OpenSpec, tùy chỉnh để `tasks.md` plug thẳng vào `/superpowers:executing-plans` và `/superpowers:subagent-driven-development` mà không cần viết lại.
+| Plugin | Mục đích |
+|--------|----------|
+| [`spec`](./plugins/spec) | Spec-driven workflow trên OpenSpec với schema `superpowers-driven`. Artifacts plug thẳng vào Superpowers. |
+| [`superpowers`](./plugins/superpowers) | Vendored fork của obra/superpowers, sync qua script. Mor customizations qua `overlay/`. |
 
-### Slash commands
+## Slash commands
 
-| Command | Tham số | Mục đích |
-|---------|---------|----------|
-| `/spec:setup` | `[path]` | Cài schema vào project (luôn confirm trước khi ghi) |
-| `/spec:explore` | — | Suy nghĩ trước khi implement |
-| `/spec:propose` | `[description]` | Sinh `proposal.md` + `design.md` + `tasks.md` (TDD-ready) |
-| `/spec:apply` | `[change-name]` | Thực thi tasks pending |
-| `/spec:archive` | `[change-name]` | Đóng change sau khi merge |
+| Command | Plugin | Mục đích |
+|---------|--------|----------|
+| `/spec:setup [path]` | spec | Cài schema vào project |
+| `/spec:explore` | spec | Suy nghĩ trước khi implement |
+| `/spec:propose [desc]` | spec | Sinh proposal + design + tasks (TDD) |
+| `/spec:apply [name]` | spec | Native runner thực thi tasks |
+| `/spec:archive [name]` | spec | Đóng change sau merge |
+| `/superpowers:brainstorm` | superpowers | Brainstorming skill |
+| `/superpowers:write-plan` | superpowers | Writing-plans skill |
+| `/superpowers:execute-plan` | superpowers | Executing-plans skill |
 
-### Workflow
+Workflow điển hình: `/spec:propose` → `tasks.md` ready-for-Superpowers → `/superpowers:execute-plan` (hoặc `subagent-driven-development`).
 
-```
-/spec:propose  →  /spec:apply  hoặc  /superpowers:executing-plans  →  /spec:archive
-```
+## Schema `superpowers-driven` khác default ở 3 chỗ
 
-`tasks.md` sinh ra đã có sẵn Superpowers header (Goal/Architecture/Tech Stack), Files block (Create/Modify/Test paths), và TDD steps — đưa thẳng cho Superpowers, không cần viết lại.
-
-### Schema `superpowers-driven` khác default ở 3 chỗ
-
-1. `design.md` bắt buộc section **`## Tech Stack`** — để `tasks.md` reference, không phải đoán.
+1. `design.md` bắt buộc section **`## Tech Stack`**.
 2. `tasks.md` mở đầu bằng **Superpowers header** + chú thích `REQUIRED SUB-SKILL`.
-3. Mỗi task group có **Files block** + **5 bước TDD bắt buộc** (write test → fail → implement → pass → commit).
+3. Mỗi task group có **Files block** + **5 bước TDD bắt buộc**.
 
 ## Auto-suggestion
 
-Mở project có `openspec/` nhưng chưa cài schema → plugin gợi ý `/spec:setup` ở đầu session. Tắt vĩnh viễn cho project này:
+Project có `openspec/` nhưng chưa cài schema → plugin gợi ý `/spec:setup` ở đầu session. Tắt vĩnh viễn:
 
 ```bash
 touch openspec/.spec-setup-skip
 ```
 
-`/spec:setup` không bao giờ ghi file mà không confirm path.
+## Sync upstream Superpowers
+
+```bash
+cd plugins/superpowers
+./scripts/sync-superpowers.sh                    # use pinned version
+./scripts/sync-superpowers.sh 5.1.0              # bump
+./scripts/sync-superpowers.sh --dry-run 5.1.0    # preview
+./scripts/verify-vendor.sh                       # check sha256 still matches
+```
+
+Customization → đọc [plugins/superpowers/overlay/README.md](plugins/superpowers/overlay/README.md).
 
 ## Troubleshooting
 
-- **Commands hiện `/mor-openspec:*` thay vì `/spec:*`** — đang dùng cache cũ → `/plugin update spec@mor-duongmh`.
+- **Commands hiện `/mor-openspec:*` thay vì `/spec:*`** → `/plugin update spec@mor-duongmh`.
 - **`schema validate` báo lỗi** → xóa `openspec/schemas/superpowers-driven/` và chạy lại `/spec:setup`.
+- **Đã cài upstream `superpowers@obra` trước đó** → `/plugin uninstall superpowers@obra` rồi cài lại Mor's bản.
 
 ## License
 
-[MIT](LICENSE) © Mor
+[MIT](LICENSE) © Mor. See [plugins/superpowers/ATTRIBUTION.md](plugins/superpowers/ATTRIBUTION.md) for upstream attribution.
