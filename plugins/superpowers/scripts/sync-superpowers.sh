@@ -99,6 +99,18 @@ No files were written.
 EOF
 }
 
+check_git_clean() {
+    local plugin_root="$1"
+    local dirty
+    dirty="$(cd "$plugin_root" && git status --porcelain skills/ commands/ agents/ LICENSE 2>/dev/null || true)"
+    if [[ -n "$dirty" ]]; then
+        echo "Refusing to sync: vendored layer has uncommitted changes." >&2
+        echo "Commit, stash, or discard them before running sync." >&2
+        echo "$dirty" >&2
+        exit 1
+    fi
+}
+
 main() {
     parse_args "$@"
     PLUGIN_ROOT="$(plugin_root)"
@@ -112,7 +124,9 @@ main() {
         exit 0
     fi
 
-    echo "(real sync not yet implemented — see Task 5+)"
+    check_git_clean "$PLUGIN_ROOT"
+
+    echo "(real sync not yet implemented — see Task 6+)"
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
