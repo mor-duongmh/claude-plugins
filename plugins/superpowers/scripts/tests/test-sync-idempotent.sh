@@ -8,8 +8,9 @@ PLUGIN_ROOT="$SCRIPT_DIR/../.."
 TEST_VERSION="5.0.7"
 
 backup="$(mktemp -d)"
+# Use cp (not mv) so check_git_clean inside sync sees a clean tree.
 for d in skills commands agents LICENSE; do
-    [[ -e "$PLUGIN_ROOT/$d" ]] && mv "$PLUGIN_ROOT/$d" "$backup/$d"
+    [[ -e "$PLUGIN_ROOT/$d" ]] && cp -R "$PLUGIN_ROOT/$d" "$backup/$d"
 done
 manifest_backup="$(cat "$PLUGIN_ROOT/.vendor-manifest.json")"
 # Clear version so the first sync below actually runs (avoid idempotent skip).
@@ -19,7 +20,7 @@ mv "$PLUGIN_ROOT/.vendor-manifest.json.tmp" "$PLUGIN_ROOT/.vendor-manifest.json"
 cleanup() {
     rm -rf "$PLUGIN_ROOT/skills" "$PLUGIN_ROOT/commands" "$PLUGIN_ROOT/agents" "$PLUGIN_ROOT/LICENSE"
     for d in skills commands agents LICENSE; do
-        [[ -e "$backup/$d" ]] && mv "$backup/$d" "$PLUGIN_ROOT/$d"
+        [[ -e "$backup/$d" ]] && cp -R "$backup/$d" "$PLUGIN_ROOT/$d"
     done
     echo "$manifest_backup" > "$PLUGIN_ROOT/.vendor-manifest.json"
     rm -rf "$backup"
