@@ -8,14 +8,18 @@ START="$SCRIPT_DIR/../start-overlay.sh"
 PLUGIN_ROOT="$SCRIPT_DIR/../.."
 TARGET="skills/brainstorming"
 
-# Backup overlay
+# Move existing overlay aside (mv not cp) so start-overlay can create fresh.
+# Restore on exit. This makes the test robust regardless of which skills are
+# already overlaid in the working tree.
 backup="$(mktemp -d)"
-[[ -e "$PLUGIN_ROOT/overlay/$TARGET" ]] && cp -R "$PLUGIN_ROOT/overlay/$TARGET" "$backup/"
+if [[ -e "$PLUGIN_ROOT/overlay/$TARGET" ]]; then
+    mv "$PLUGIN_ROOT/overlay/$TARGET" "$backup/"
+fi
 cleanup() {
     rm -rf "$PLUGIN_ROOT/overlay/$TARGET"
     if [[ -e "$backup/$(basename "$TARGET")" ]]; then
         mkdir -p "$PLUGIN_ROOT/overlay/$(dirname "$TARGET")"
-        cp -R "$backup/$(basename "$TARGET")" "$PLUGIN_ROOT/overlay/$(dirname "$TARGET")/"
+        mv "$backup/$(basename "$TARGET")" "$PLUGIN_ROOT/overlay/$(dirname "$TARGET")/"
     fi
     rm -rf "$backup"
 }
