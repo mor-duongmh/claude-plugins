@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "mor-duongmh",
-  "description": "Mor's Claude Code plugin marketplace — spec-driven workflows + vendored Superpowers.",
+  "description": "Mor's Claude Code plugin marketplace — spec-driven workflows + vendored Superpowers + deep code review.",
   "owner": {
     "name": "duongmh",
     "email": "duongmh@mor.com.vn"
@@ -25,6 +25,17 @@
         "email": "duongmh@mor.com.vn"
       },
       "homepage": "https://github.com/mor-duongmh/claude-plugins/tree/main/plugins/superpowers"
+    },
+    {
+      "name": "deep-review",
+      "description": "Multi-language deep code review agent: risk · security · design pattern · test coverage · convention. Powered by code-review-graph MCP. Honors project CLAUDE.md as the highest source of truth.",
+      "source": "./plugins/deep-review",
+      "category": "code-review",
+      "author": {
+        "name": "Mor (Hai Duong)",
+        "email": "duongmh@mor.com.vn"
+      },
+      "homepage": "https://github.com/mor-duongmh/claude-plugins/tree/main/plugins/deep-review"
     }
   ]
 }
