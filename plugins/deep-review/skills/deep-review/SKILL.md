@@ -47,19 +47,21 @@ Dispatch all 5 subagents in **a single message with multiple Agent tool calls** 
 | Pattern & Architecture Critic | `agents/pattern-architecture-critic.md` | `code-review-graph: get_architecture_overview_tool, list_communities_tool, get_hub_nodes_tool, find_large_functions_tool, get_surprising_connections_tool` |
 | Test Coverage Auditor | `agents/test-coverage-auditor.md` | `code-review-graph: query_graph_tool (tests_for), get_knowledge_gaps_tool` |
 | Convention Checker | `agents/convention-checker.md` | Read (CLAUDE.md + profile), Grep |
+| Performance Auditor (Phase 2) | `agents/performance-auditor.md` | `code-review-graph: get_hub_nodes_tool` + Grep |
+| Documentation Auditor (Phase 2) | `agents/documentation-auditor.md` | Read, Grep |
 
 **Each subagent returns a YAML-Markdown findings block:**
 
 ```yaml
 findings:
-  - id: <S1|R1|P1|T1|C1>-<n>
+  - id: <S1|R1|P1|T1|C1|Pf1|D1>-<n>
     category: Security|Risk|Pattern|Tests|Convention
     severity: Critical|High|Medium|Low|Info
     file: path/to/file.ts
     line: 42
     title: short description
     detail: longer explanation
-    source: "CLAUDE.md:L<line>" | "profile:typescript" | "universal:SOLID-S" | "graph:impact_radius"
+    source: "CLAUDE.md:L<line>" | "profile:typescript" | "universal:SOLID-S" | "graph:impact_radius" | "OWASP:A03"
     suggested_fix: code or text
     confidence: 0-100
 ```
