@@ -29,7 +29,20 @@ The user invokes via `/deep-review <target>` where `<target>` is one of:
    - **Tier 1**: project `CLAUDE.md` (read full content; if absent, mark "no CLAUDE.md").
    - **Tier 2**: matching `profiles/<lang>.md` files for each detected language (read from `${CLAUDE_PLUGIN_ROOT}/profiles/`).
    - **Tier 3**: universal rules (SOLID/DRY/KISS/YAGNI) — embedded below.
-4. Verify graph availability via `mcp__code-review-graph__list_graph_stats_tool`. If unavailable, run `mcp__code-review-graph__build_or_update_graph_tool` first.
+4. **Graph pre-flight (CRITICAL UX step).** Before dispatching specialists:
+   1. Run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/graph-status.sh` and parse the key=value output.
+   2. Cross-check with `mcp__code-review-graph__list_graph_stats_tool` if the helper indicates `graph_present=true`.
+   3. Decide based on `recommendation`:
+
+      | recommendation | Behavior |
+      |----------------|----------|
+      | `skip` (graph already built) | Proceed to Phase 2 silently. |
+      | `auto-build` (small repo, < 1500 files) | Print: "📊 Repo chưa có graph — đang build (~Ns cho N files)..." then call `mcp__code-review-graph__build_or_update_graph_tool`. Stream progress to chat. |
+      | `prompt-user` (medium, 1500–8000 files) | **Ask the user**: "Repo này chưa có code graph (N files, ước tính ~Ns build). Build ngay để có review chất lượng đầy đủ? **(y/N/skip)**". On `y` → build with progress. On `N` or `skip` → continue in degraded mode. |
+      | `prompt-user-large` (> 8000 files) | **Strong warning**: "⚠️ Repo lớn (N files, ước tính ~M phút build). Chỉ cần build 1 lần — sau đó mỗi diff < 2s. **Build now (y) / Skip & degraded (N)?**". |
+      | `not-applicable` (not a git repo) | Fail fast: "❌ /deep-review requires a git repo." |
+
+   4. If user declines build OR build fails → continue in **degraded mode** (Phase 2 subagents fall back to grep/Read; report header notes the mode).
 
 ## Phase 2 — Dispatch Specialists (PARALLEL)
 

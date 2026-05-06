@@ -16,5 +16,15 @@ Invoke the `deep-review` skill via the Skill tool. Pass through any arguments th
 
 The skill orchestrates 5 parallel subagents and prints a full Markdown report directly to chat. It also saves a copy under `_deep-review-output/` if the directory is writable.
 
+## First-time on a repo (no graph yet)
+
+The skill performs a **pre-flight check** before dispatching specialists:
+
+| Repo size | Behavior |
+|-----------|----------|
+| < 1500 files | Auto-build the graph silently with a one-line progress message (~10–40s). |
+| 1500–8000 files | Ask: "Build now? (y/N/skip)". Skip → degraded mode. |
+| > 8000 files | Strong warning + same prompt. Build is 1-time; incremental updates after are < 2s. |
+
 If `gh` is missing for a PR target, the skill exits with installation instructions.
-If the code-review-graph MCP is unavailable, the skill runs in degraded mode and notes this in the report header.
+If the code-review-graph MCP is unavailable or the user declines build, the skill runs in **degraded mode** (graph-dependent findings fall back to grep with reduced confidence) and notes this in the report header.

@@ -26,6 +26,20 @@ On first session start, the plugin runs `scripts/setup.sh` once to:
 
 The skill orchestrates 5 parallel subagents and prints a structured Markdown report directly to chat.
 
+## First-time on a repo (no graph yet)
+
+The skill auto-detects whether the current repo has a code graph and decides what to do based on size:
+
+| Repo size | Behavior |
+|-----------|----------|
+| < 1500 files | Build silently with a one-line progress (~10–40s) |
+| 1500–8000 files | Prompt: `Build now? (y/N/skip)` |
+| > 8000 files | Strong warning + prompt — build is 1-time, incremental updates < 2s |
+
+If you decline (or build fails), the skill runs in **degraded mode** — graph-dependent findings fall back to `grep`/`Read` with reduced confidence; Security/Convention/Universal checks remain unaffected. The report header always notes the mode.
+
+Use `/deep-review-doctor` any time to see graph status, file count, and estimated build time.
+
 ## Convention priority
 
 1. **Project `CLAUDE.md`** (Tier 1) — always wins.
