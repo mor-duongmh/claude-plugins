@@ -43,7 +43,7 @@ ls ~/.claude/plugins/data/spec/.tools-setup-* 2>/dev/null
 
 ```
    ┌─────────────────────────────────────────────────────────────────┐
-   │  /spec:explore         (optional — think before committing)      │
+   │  /spec:brainstorm      (optional — think before committing)      │
    └────────────────────────────┬────────────────────────────────────┘
                                 ▼
    ┌─────────────────────────────────────────────────────────────────┐
@@ -90,7 +90,7 @@ ls ~/.claude/plugins/data/spec/.tools-setup-* 2>/dev/null
 | Command | Plugin | Mục đích |
 |---------|--------|----------|
 | `/spec:setup [path]` | spec | Cài schema vào project |
-| `/spec:explore` | spec | Suy nghĩ trước khi implement |
+| `/spec:brainstorm` | spec | Suy nghĩ trước khi implement |
 | `/spec:propose [desc]` | spec | Sinh proposal + design + tasks (TDD) **+ review-checklist** |
 | `/spec:review [name]` | spec | (Re)generate developer review checklist (human gate) |
 | `/spec:apply [name]` | spec | Native runner thực thi tasks (blocked nếu checklist chưa OK) |
@@ -156,7 +156,7 @@ Hai tool optional làm tăng chất lượng research và giảm token consumpti
 | **[Context7](https://github.com/upstash/context7)** | Trả về docs/API version-specific cho library, tránh hallucinated calls | **Lazy via npx** — không cần cài trước. Skill gọi `npx -y ctx7 library ... && npx -y ctx7 docs ...` (two-step: resolve ID rồi query docs). Nếu user đã setup MCP (`mcp.context7.com`), plugin tự ưu tiên dùng MCP tools `mcp__context7__resolve-library-id` + `mcp__context7__query-docs`. |
 | **[RTK](https://github.com/rtk-ai/rtk)** | Rewrite + nén output Bash → giảm 60-90% tokens | **Ask once** — session đầu tiên, plugin hỏi user qua AskUserQuestion: cài RTK ngay không? User chọn `Yes`/`Skip`/`Don't ask again`. Không tự cài silent. |
 
-> **🎯 Context7 đã active trong 6 high-ROI Superpowers skills sau khi cài** — `brainstorming`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `systematic-debugging`, `test-driven-development`. Khi gặp library API không chắc chắn, agent sẽ tự gọi Context7 (qua MCP nếu có, fallback `npx`) thay vì đoán. Cộng với 3 Mor skills (`/spec:explore`, `/spec:propose`, `/spec:apply`) → **9 skills tổng có Context7 guidance built-in**.
+> **🎯 Context7 đã active trong 6 high-ROI Superpowers skills sau khi cài** — `brainstorming`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `systematic-debugging`, `test-driven-development`. Khi gặp library API không chắc chắn, agent sẽ tự gọi Context7 (qua MCP nếu có, fallback `npx`) thay vì đoán. Cộng với 3 Mor skills (`/spec:brainstorm`, `/spec:propose`, `/spec:apply`) → **9 skills tổng có Context7 guidance built-in**.
 
 State files trong `~/.claude/plugins/data/spec/`:
 - `.tools-setup-done` — đã setup hoặc skip

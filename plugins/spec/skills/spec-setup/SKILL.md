@@ -116,7 +116,7 @@ All OpenSpec commands are invoked via `npx -y @fission-ai/openspec@latest` — t
 
    You can now:
    - `/spec:propose` — create a new change
-   - `/spec:explore` — think before committing
+   - `/spec:brainstorm` — think before committing
    - `/spec:apply`   — implement tasks
    - `/spec:archive` — finalize when done
 
