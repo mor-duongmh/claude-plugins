@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -35,8 +36,14 @@ from lib.normalized_schema import (  # noqa: E402
 
 log = logging.getLogger(__name__)
 
-# Resolve sibling sub-skill folders
-_SKILLS_ROOT = _THIS_DIR.parents[1]  # .claude/skills/
+# Resolve sibling sub-skill folders.
+# Plugin layout: $CLAUDE_PLUGIN_ROOT/skills/<sub-skill>/scripts/
+# Bundle layout (legacy): <bundle>/.claude/skills/<sub-skill>/scripts/ via parents[1]
+_PLUGIN_ROOT_ENV = os.environ.get("CLAUDE_PLUGIN_ROOT")
+if _PLUGIN_ROOT_ENV:
+    _SKILLS_ROOT = Path(_PLUGIN_ROOT_ENV) / "skills"
+else:
+    _SKILLS_ROOT = _THIS_DIR.parents[1]  # legacy bundle layout
 _SRS_SCRIPTS = _SKILLS_ROOT / "generate-srs" / "scripts"
 _API_SCRIPTS = _SKILLS_ROOT / "generate-api-docs" / "scripts"
 _DB_SCRIPTS = _SKILLS_ROOT / "generate-db-design" / "scripts"

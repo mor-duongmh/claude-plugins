@@ -14,6 +14,18 @@ metadata:
 Sub-skill that owns `docs/database-design.md`. Single-language output (JP / EN / VN).
 Embeds a Mermaid `erDiagram` for tables + relationships.
 
+## Environment (plugin context)
+
+```bash
+CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:?must be set by Claude Code}"
+VENV="${HOME}/.claude/plugins/data/docs-hero/.venv"
+PY="${VENV}/bin/python3"
+DB_SCRIPTS="${CLAUDE_PLUGIN_ROOT}/skills/generate-db-design/scripts"
+ORCH_SCRIPTS="${CLAUDE_PLUGIN_ROOT}/skills/docs-hero-orchestrator/scripts"
+PROJECT_DOCS_DIR="${PWD}/docs"
+PROJECT_META="${PWD}/.docs-hero-meta.json"
+```
+
 ## Modes
 
 | Mode | Purpose |
@@ -26,10 +38,10 @@ Embeds a Mermaid `erDiagram` for tables + relationships.
 ## Init Workflow
 
 ```bash
-python scripts/render_db_design.py \
-  --project-model {path}.json \
-  --language JP|EN|VN \
-  --output docs/database-design.md
+"$PY" "$DB_SCRIPTS/render_db_design.py" \
+  --project-model "$PROJECT_MODEL" \
+  --language JP \
+  --output "$PROJECT_DOCS_DIR/database-design.md"
 ```
 
 Section IDs (stable for diff engine):
@@ -52,10 +64,10 @@ flow (detect_manual_edits → compute_diff → apply_patch).
 ### Step 1: propose
 
 ```bash
-python scripts/db_sync_propose.py \
-  --codebase-paths "src/models,src/entities" \
-  --existing-doc docs/database-design.md \
-  --output .tmp/db-sync-proposal.md
+"$PY" "$DB_SCRIPTS/db_sync_propose.py" \
+  --codebase-paths "$CODEBASE_PATHS" \
+  --existing-doc "$PROJECT_DOCS_DIR/database-design.md" \
+  --output "${PWD}/.tmp/db-sync-proposal.md"
 ```
 
 Scans Prisma / TypeORM / Sequelize / Django / SQLAlchemy / GORM / raw SQL models,
@@ -65,9 +77,9 @@ diffs with documented tables, writes a markdown proposal with `[ ]` checkboxes.
 ### Step 2: apply-sync
 
 ```bash
-python scripts/db_sync_apply.py \
-  --proposal .tmp/db-sync-proposal.md \
-  --output .tmp/db-delta.json
+"$PY" "$DB_SCRIPTS/db_sync_apply.py" \
+  --proposal "${PWD}/.tmp/db-sync-proposal.md" \
+  --output "${PWD}/.tmp/db-delta.json"
 ```
 
 Parses checked items, emits Delta JSON for the standard update flow.

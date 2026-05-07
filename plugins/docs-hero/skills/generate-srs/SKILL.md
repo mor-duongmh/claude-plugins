@@ -14,6 +14,19 @@ metadata:
 Sub-skill for generating SRS + per-screen design specs. Owns `docs/srs.md` and
 `docs/screen-specs/SCREEN-*.md`. Single-language output (JP / EN / VN).
 
+## Environment (plugin context)
+
+```bash
+CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:?must be set by Claude Code}"
+VENV="${HOME}/.claude/plugins/data/docs-hero/.venv"
+PY="${VENV}/bin/python3"
+SRS_SCRIPTS="${CLAUDE_PLUGIN_ROOT}/skills/generate-srs/scripts"
+SRS_TEMPLATES="${CLAUDE_PLUGIN_ROOT}/skills/generate-srs/templates"
+ORCH_SCRIPTS="${CLAUDE_PLUGIN_ROOT}/skills/docs-hero-orchestrator/scripts"
+PROJECT_DOCS_DIR="${PWD}/docs"
+PROJECT_META="${PWD}/.docs-hero-meta.json"
+```
+
 ## Output Structure (template-updated)
 
 13 numbered sections + 2 appendices:
@@ -49,29 +62,29 @@ Sub-skill for generating SRS + per-screen design specs. Owns `docs/srs.md` and
 ## Init Workflow
 
 ```bash
-python scripts/render_srs.py \
-  --project-model {path}.json \
-  --template templates/srs-template.md \
-  --language JP|EN|VN \
-  --output docs/srs.md
+"$PY" "$SRS_SCRIPTS/render_srs.py" \
+  --project-model "$PROJECT_MODEL" \
+  --template "$SRS_TEMPLATES/srs-template.md" \
+  --language JP \
+  --output "$PROJECT_DOCS_DIR/srs.md"
 
 # Per screen:
-python scripts/render_screen_spec.py \
-  --project-model {path}.json \
+"$PY" "$SRS_SCRIPTS/render_screen_spec.py" \
+  --project-model "$PROJECT_MODEL" \
   --screen-id SCREEN-001 \
-  --template templates/screen-spec-template.md \
+  --template "$SRS_TEMPLATES/screen-spec-template.md" \
   --language JP \
-  --output docs/screen-specs/SCREEN-001-{slug}.md
+  --output "$PROJECT_DOCS_DIR/screen-specs/SCREEN-001-${SLUG}.md"
 
-# If user provided mockup image at assets/screens/SCREEN-001-{slug}.png:
+# Mockup annotation when image provided at assets/screens/SCREEN-001-{slug}.png:
 #   1. Use Read tool on the image (Claude vision native)
 #   2. Apply prompt from references/screen-vision-prompt.md
 #   3. Save vision JSON to .tmp/mockup-SCREEN-001.json
 #   4. Run annotate_mockup.py to draw numbered circles
-python scripts/annotate_mockup.py \
-  --image assets/screens/SCREEN-001-login.png \
-  --items .tmp/mockup-SCREEN-001.json \
-  --output assets/screens/SCREEN-001-login-annotated.png
+"$PY" "$SRS_SCRIPTS/annotate_mockup.py" \
+  --image "${PWD}/assets/screens/SCREEN-001-login.png" \
+  --items "${PWD}/.tmp/mockup-SCREEN-001.json" \
+  --output "${PWD}/assets/screens/SCREEN-001-login-annotated.png"
 ```
 
 ## Update Workflow
@@ -80,9 +93,21 @@ The orchestrator pre-filters the Delta to SRS-relevant entity types
 (FR, NFR, SCREEN, DATA, INT) and runs the standard diff-engine flow:
 
 ```bash
-python {orchestrator}/detect_manual_edits.py --doc docs/srs.md --meta {meta} --output edits.json
-python {orchestrator}/compute_diff.py --delta srs-delta.json --doc docs/srs.md --manual-edits edits.json --output plan.json
-python {orchestrator}/apply_patch.py --plan plan.json --doc docs/srs.md --meta {meta}
+"$PY" "$ORCH_SCRIPTS/detect_manual_edits.py" \
+  --doc "$PROJECT_DOCS_DIR/srs.md" \
+  --meta "$PROJECT_META" \
+  --output "${PWD}/.tmp/srs-edits.json"
+
+"$PY" "$ORCH_SCRIPTS/compute_diff.py" \
+  --delta "${PWD}/.tmp/srs-delta.json" \
+  --doc "$PROJECT_DOCS_DIR/srs.md" \
+  --manual-edits "${PWD}/.tmp/srs-edits.json" \
+  --output "${PWD}/.tmp/srs-plan.json"
+
+"$PY" "$ORCH_SCRIPTS/apply_patch.py" \
+  --plan "${PWD}/.tmp/srs-plan.json" \
+  --doc "$PROJECT_DOCS_DIR/srs.md" \
+  --meta "$PROJECT_META"
 ```
 
 Sub-skill responsibility on update: re-resolve mockups for any new/changed

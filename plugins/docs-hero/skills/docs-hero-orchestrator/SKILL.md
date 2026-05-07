@@ -15,6 +15,37 @@ Single entry point for the documentation generation pipeline. Coordinates three
 sub-skills (`generate-srs`, `generate-api-docs`, `generate-db-design`) with shared
 parsers, the diff engine, atomic write, and a session lock.
 
+## Environment (plugin context)
+
+This skill runs as a Claude Code plugin. Path resolution uses these variables:
+
+```bash
+# Plugin root (set by Claude Code at runtime)
+CLAUDE_PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:?must be set by Claude Code}"
+
+# Python venv (created by /docs-hero:setup)
+VENV="${HOME}/.claude/plugins/data/docs-hero/.venv"
+PY="${VENV}/bin/python3"
+
+# Skill scripts (within plugin)
+ORCH_SCRIPTS="${CLAUDE_PLUGIN_ROOT}/skills/docs-hero-orchestrator/scripts"
+SRS_SCRIPTS="${CLAUDE_PLUGIN_ROOT}/skills/generate-srs/scripts"
+API_SCRIPTS="${CLAUDE_PLUGIN_ROOT}/skills/generate-api-docs/scripts"
+DB_SCRIPTS="${CLAUDE_PLUGIN_ROOT}/skills/generate-db-design/scripts"
+
+# Project paths (always relative to user's cwd, NOT plugin root)
+PROJECT_DOCS_DIR="${PWD}/docs"
+PROJECT_META="${PWD}/.docs-hero-meta.json"
+PROJECT_LOCK="${PWD}/.docs-hero.lock"
+PROJECT_TMP="${PWD}/.tmp"
+```
+
+**Pre-flight check** every mutating operation must perform:
+
+```bash
+test -d "$VENV" || { echo "ERROR: venv missing. Run /docs-hero:setup first." >&2; exit 1; }
+```
+
 ## Operations
 
 | Command | Purpose |
@@ -39,66 +70,86 @@ Parse first arg:
 ## Init Flow
 
 ```bash
-# 1. Collect inputs (AskUserQuestion when interactive)
-#    - outputs: [SRS, API, DB] (multi-select)
-#    - language: JP|EN|VN (single)
-#    - codebase paths (optional)
-#    - input docs path
+# Pre-flight
+test -d "$VENV" || { echo "ERROR: run /docs-hero:setup first." >&2; exit 1; }
+mkdir -p "$PROJECT_TMP"
 
-# 2. Parse inputs → ProjectModel JSON
-python scripts/parse_inputs.py --inputs {dir} --output .tmp/raw-bundle.json
-# (apply OpenSpec / plan parsers here if applicable)
+# 1. Parse inputs → ProjectModel JSON
+"$PY" "$ORCH_SCRIPTS/parse_inputs.py" \
+  --inputs "$INPUT_DIR" \
+  --output "$PROJECT_TMP/raw-bundle.json"
 
-# 3. Dispatch to sub-skills (parallel or serial)
-python scripts/dispatch_coordinator.py init \
-  --project-model .tmp/project-model.json \
+# 2. Dispatch to sub-skills (CLAUDE_PLUGIN_ROOT inherited from env)
+"$PY" "$ORCH_SCRIPTS/dispatch_coordinator.py" init \
+  --project-model "$PROJECT_TMP/project-model.json" \
   --language EN \
   --outputs srs,api,db \
-  --docs-dir docs/
+  --docs-dir "$PROJECT_DOCS_DIR"
 
-# 4. Aggregate report
-python scripts/aggregate_report.py --docs-dir docs/ --output .tmp/init-report.md
+# 3. Aggregate report
+"$PY" "$ORCH_SCRIPTS/aggregate_report.py" \
+  --docs-dir "$PROJECT_DOCS_DIR" \
+  --output "$PROJECT_TMP/init-report.md"
 
-# 5. Spawn docs-hero agent for QA review
+# 4. Spawn docs-hero agent for QA review (Skill tool: docs-hero)
 ```
 
 ## Update Flow
 
 ```bash
-# 1. Parse delta source
-python scripts/parse_plan.py     --plan {plan.md}      --output .tmp/delta.json
-# OR
-python scripts/parse_openspec.py --change-dir {path}   --output .tmp/delta.json
+# Pre-flight + lock
+test -d "$VENV" || { echo "ERROR: run /docs-hero:setup first." >&2; exit 1; }
+"$PY" "$ORCH_SCRIPTS/lock_manager.py" acquire --lock "$PROJECT_LOCK" || exit 1
+trap '"$PY" "$ORCH_SCRIPTS/lock_manager.py" release --lock "$PROJECT_LOCK"' EXIT
 
-# 2. For each affected doc (filter Delta by entity_type):
-python scripts/detect_manual_edits.py --doc {doc} --meta {meta} --output edits.json
-python scripts/compute_diff.py --delta .tmp/delta.json --doc {doc} \
-                               --manual-edits edits.json --output plan.json
-python scripts/apply_patch.py --plan plan.json --doc {doc} --meta {meta}
+# 1. Parse delta source
+"$PY" "$ORCH_SCRIPTS/parse_plan.py"     --plan "$PLAN_PATH"           --output "$PROJECT_TMP/delta.json"
+# OR
+"$PY" "$ORCH_SCRIPTS/parse_openspec.py" --change-dir "$OPENSPEC_DIR"  --output "$PROJECT_TMP/delta.json"
+
+# 2. dispatch_coordinator update mode automates: filter delta by entity_type per doc,
+#    detect manual edits, compute diff, apply patch.
+"$PY" "$ORCH_SCRIPTS/dispatch_coordinator.py" update \
+  --delta "$PROJECT_TMP/delta.json" \
+  --docs-dir "$PROJECT_DOCS_DIR" \
+  --meta "$PROJECT_META"
 
 # 3. Aggregate + spawn docs-hero agent
 ```
 
-The `dispatch_coordinator.py` automates the per-doc filter + diff + apply chain.
-
 ## Sync Flow (2-step)
 
-Step 1 — propose:
+Step 1 — propose (read-only, no lock):
 ```bash
-python ../generate-api-docs/scripts/api_sync_propose.py ...
-python ../generate-db-design/scripts/db_sync_propose.py ...
+"$PY" "$API_SCRIPTS/api_sync_propose.py" \
+  --codebase-paths "$CODEBASE_PATHS" \
+  --existing-doc "$PROJECT_DOCS_DIR/api-docs.md" \
+  --output "$PROJECT_TMP/api-sync-proposal.md"
+
+"$PY" "$DB_SCRIPTS/db_sync_propose.py" \
+  --codebase-paths "$CODEBASE_PATHS" \
+  --existing-doc "$PROJECT_DOCS_DIR/database-design.md" \
+  --output "$PROJECT_TMP/db-sync-proposal.md"
 # SRS sync not supported (requirements cannot be inferred from code)
 ```
 
-Step 2 — apply (after user ticks checkboxes):
+Step 2 — apply-sync (after user ticks checkboxes):
 ```bash
-python ../generate-api-docs/scripts/api_sync_apply.py ... → delta.json → standard update flow
+"$PY" "$API_SCRIPTS/api_sync_apply.py" \
+  --proposal "$PROJECT_TMP/api-sync-proposal.md" \
+  --output "$PROJECT_TMP/api-delta.json"
+
+# Then run standard update flow with the resulting delta
+"$PY" "$ORCH_SCRIPTS/dispatch_coordinator.py" update \
+  --delta "$PROJECT_TMP/api-delta.json" \
+  --docs-dir "$PROJECT_DOCS_DIR" \
+  --meta "$PROJECT_META"
 ```
 
 ## Lock Acquisition (mutating ops only)
 
 Before any mutate:
-1. `python scripts/lock_manager.py acquire`
+1. `"$PY" "$ORCH_SCRIPTS/lock_manager.py" acquire --lock "$PROJECT_LOCK"`
 2. If lock exists + valid (PID alive, < 1h) → exit
 3. If stale → cleanup + acquire
 4. On exit → release
