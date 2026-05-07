@@ -217,7 +217,7 @@ You: [reads codebase]
 
 **User is stuck mid-implementation:**
 ```
-User: /spec:explore add-auth-system
+User: /spec:brainstorm add-auth-system
       The OAuth integration is more complex than expected
 
 You: [reads change artifacts]
