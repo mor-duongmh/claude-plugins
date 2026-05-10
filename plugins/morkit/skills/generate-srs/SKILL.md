@@ -36,7 +36,7 @@ PROJECT_META="${PWD}/.docs-hero-meta.json"
 | 0 | Document Control Rules | (status & priority definitions) |
 | 1 | Overview | TargetRelease, Reference (REF), OpenQuestion (Q), Stakeholder |
 | 2 | Current State & Business Flow | Issue (ISSUE), UseCase (UC) with detail |
-| 3 | Functional Requirements | FunctionalRequirement (FR) with validation/permission/audit/AC/test viewpoints |
+| 3 | Functional Requirements | FunctionalRequirement (FR) with validation/permission/audit/AC/test viewpoints + Implementation Status dashboard |
 | 4 | Business Rules | BusinessRule (BR) |
 | 5 | Roles & Permissions | Role (ROLE), PermissionEntry matrix |
 | 6 | Non-Functional Requirements | NFR (IPA-6 categories), SecurityPiiItem |
@@ -58,6 +58,23 @@ PROJECT_META="${PWD}/.docs-hero-meta.json"
 |---|---|
 | `init` | Render SRS + screen specs from a ProjectModel JSON |
 | `update` | Apply Delta filtered for SRS scope (FR/NFR/SCREEN/DATA/INT/UC/BR/ROLE/RPT/AC/Q/CONS/ASM/ENT/REF/RISK/ISSUE) |
+
+## Implementation Status (§3 dashboard + per-FR badge)
+
+Every `FunctionalRequirement` carries two status fields:
+
+- `doc_status` (existing): document-review state — Draft / In Review / Reviewed / Approved / Deferred
+- `impl_status` (new): implementation progress — `NotStarted` ⬜ / `InProgress` 🟡 / `Done` 🟢 / `Verified` 🔵 / `Blocked` 🔴
+
+`render_srs.py` renders both as separate columns in §3.1 FR list and as separate
+rows in §3.2 FR detail, plus an "Implementation Status Snapshot" table at the
+top of §3 (counts + % per status). Optional `evidence_refs` (list of
+`{kind, ref, note}` where `kind ∈ openspec | commit | test | code | manual`) are
+shown in the FR detail as an Evidence row when present.
+
+The orchestrator populates `impl_status` + `evidence_refs` BEFORE calling this
+skill (see `commands/init.md` "Status detection" step). This skill is render-only
+— it does not scan the repo itself.
 
 ## Init Workflow
 
