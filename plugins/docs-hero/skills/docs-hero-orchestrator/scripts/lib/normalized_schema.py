@@ -55,6 +55,21 @@ class DocStatus(str, Enum):
     DEFERRED = "Deferred"
 
 
+class ImplStatus(str, Enum):
+    """Implementation progress for an FR / Endpoint / Screen.
+
+    Distinct from DocStatus (which tracks doc-review state). Surfaces
+    in SRS § 3 so BrSE/PM can see at a glance which functions are done
+    vs still on paper.
+    """
+
+    NOT_STARTED = "NotStarted"
+    IN_PROGRESS = "InProgress"
+    DONE = "Done"
+    VERIFIED = "Verified"  # Done + has passing tests
+    BLOCKED = "Blocked"
+
+
 # --- Common base ---
 
 
@@ -69,6 +84,14 @@ class SourceRef(_Base):
     file_path: Optional[str] = None
     line_range: Optional[tuple[int, int]] = None
     openspec_change_id: Optional[str] = None
+
+
+class EvidenceRef(_Base):
+    """Pointer to evidence backing an ImplStatus claim."""
+
+    kind: Literal["openspec", "commit", "test", "code", "manual"]
+    ref: str  # change-id, commit SHA, file path, etc.
+    note: Optional[str] = None
 
 
 class _Entity(_Base):
@@ -282,6 +305,8 @@ class FunctionalRequirement(_Entity):
     owner: Optional[str] = None
     doc_status: Optional[DocStatus] = None
     priority: Priority = Priority.MID
+    impl_status: ImplStatus = ImplStatus.NOT_STARTED
+    evidence_refs: list[EvidenceRef] = Field(default_factory=list)
 
 
 # IPA-aligned NFR categories (template §6.1)

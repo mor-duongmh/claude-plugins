@@ -28,6 +28,7 @@ from lib.normalized_schema import (  # noqa: E402
     EntityDef,
     ExternalInterface,
     FunctionalRequirement,
+    ImplStatus,
     NonFunctionalRequirement,
     ProjectModel,
     Report,
@@ -35,6 +36,20 @@ from lib.normalized_schema import (  # noqa: E402
     Screen,
     load_project_model,
 )
+
+# Visual badges for ImplStatus in markdown tables. Kept ASCII-friendly so
+# rendered SRS stays readable in terminals that don't render emoji.
+_IMPL_BADGE = {
+    ImplStatus.NOT_STARTED: "⬜ Not Started",
+    ImplStatus.IN_PROGRESS: "🟡 In Progress",
+    ImplStatus.DONE: "🟢 Done",
+    ImplStatus.VERIFIED: "🔵 Verified",
+    ImplStatus.BLOCKED: "🔴 Blocked",
+}
+
+
+def _impl_badge(status: ImplStatus | None) -> str:
+    return _IMPL_BADGE.get(status or ImplStatus.NOT_STARTED, "⬜ Not Started")
 
 # --- shared helpers ---
 
@@ -257,7 +272,13 @@ def _render_business_flow(model: ProjectModel, lang: Language) -> str:
 def _render_fr_detail(fr: FunctionalRequirement, lang: Language) -> str:
     out = _h(3, f"{fr.id}: {fr.name}")
     out += "| Field | Value |\n|---|---|\n"
-    out += f"| Status | {_safe(fr.doc_status.value if fr.doc_status else None, 'Draft')} |\n"
+    out += f"| Doc Status | {_safe(fr.doc_status.value if fr.doc_status else None, 'Draft')} |\n"
+    out += f"| Impl Status | {_impl_badge(fr.impl_status)} |\n"
+    if fr.evidence_refs:
+        ev = "; ".join(
+            f"{e.kind}:{e.ref}" + (f" ({e.note})" if e.note else "") for e in fr.evidence_refs
+        )
+        out += f"| Evidence | {ev} |\n"
     out += f"| Priority | {fr.priority.value} |\n"
     out += f"| Source | {_safe(fr.source.origin if fr.source else None)} |\n"
     out += f"| Owner | {_safe(fr.owner)} |\n"
@@ -353,25 +374,56 @@ def _render_fr_detail(fr: FunctionalRequirement, lang: Language) -> str:
     return out
 
 
+def _render_impl_dashboard(items: list[FunctionalRequirement]) -> str:
+    """Implementation Status snapshot table (counts + percentage by ImplStatus).
+
+    Rendered above the FR list so BrSE/PM see at-a-glance progress without
+    scanning every FR row.
+    """
+    if not items:
+        return ""
+    total = len(items)
+    counts: dict[ImplStatus, int] = dict.fromkeys(ImplStatus, 0)
+    for fr in items:
+        counts[fr.impl_status or ImplStatus.NOT_STARTED] += 1
+
+    out = "> **Implementation Status Snapshot** (auto-derived from openspec/, codebase scan, and manual overrides)\n\n"
+    out += "| Status | Count | % |\n|---|---|---|\n"
+    for status in (
+        ImplStatus.VERIFIED,
+        ImplStatus.DONE,
+        ImplStatus.IN_PROGRESS,
+        ImplStatus.BLOCKED,
+        ImplStatus.NOT_STARTED,
+    ):
+        c = counts[status]
+        pct = (c * 100 // total) if total else 0
+        out += f"| {_IMPL_BADGE[status]} | {c} | {pct}% |\n"
+    out += f"| **Total** | **{total}** | **100%** |\n\n"
+    return out
+
+
 def _render_fr_section(items: list[FunctionalRequirement], lang: Language) -> str:
     out = _h(2, f"3. {t('functional_requirements', lang)}")
+    out += _render_impl_dashboard(items)
     out += _h(3, f"3.1 {t('fr_list', lang)}")
     out += (
-        "| FR-ID | Function | Summary | UC | Screen | Role | Priority | Status | Source |\n"
-        "|---|---|---|---|---|---|---|---|---|\n"
+        "| FR-ID | Function | Summary | UC | Screen | Role | Priority | Doc Status | Impl Status | Source |\n"
+        "|---|---|---|---|---|---|---|---|---|---|\n"
     )
     if items:
         for fr in items:
             screens = ", ".join(fr.related_screens) or "-"
             ucs = ", ".join(fr.related_uc) or "-"
             src = fr.source.origin if fr.source else "-"
-            status = fr.doc_status.value if fr.doc_status else "Draft"
+            doc_status = fr.doc_status.value if fr.doc_status else "Draft"
+            impl = _impl_badge(fr.impl_status)
             out += (
                 f"| {fr.id} | {fr.name} | {_safe(fr.summary or fr.description[:60] if fr.description else None)} | "
-                f"{ucs} | {screens} | {_safe(fr.role)} | {fr.priority.value} | {status} | {src} |\n"
+                f"{ucs} | {screens} | {_safe(fr.role)} | {fr.priority.value} | {doc_status} | {impl} | {src} |\n"
             )
     else:
-        out += "| FR-001 | _TBD_ | _TBD_ | - | - | - | - | Draft | - |\n"
+        out += "| FR-001 | _TBD_ | _TBD_ | - | - | - | - | Draft | ⬜ Not Started | - |\n"
     out += "\n"
 
     if items:

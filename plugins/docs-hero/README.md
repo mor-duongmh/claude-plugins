@@ -31,6 +31,12 @@ Plus a QA agent (`docs-hero`, model `haiku`) that validates cross-references and
 ### `/docs-hero:init`
 Render fresh docs from a `ProjectModel` JSON (Pydantic schema in `lib/normalized_schema.py`, ~40 entity types: FR, NFR, UseCase, Screen, DataItem, ExternalInterface, Report, Table, Endpoint, ...).
 
+Before rendering, the orchestrator runs two gates:
+1. **Doc-type selection** — pick which of SRS / API docs / DB design to generate.
+2. **Gap & Risk analysis** — Claude inspects the parsed inputs, writes `.tmp/docs-plan.md` (§0 Project Overview / §1 per-doc plan / §2 severity-tagged gaps / §3 risks / §4 implementation status snapshot / §5 recommended action per gap: ask / placeholder / drop / assumption) and asks for approval before any doc is written. Unresolved gaps surface in the aggregate report and the QA agent verifies each one is either resolved or carried forward as a `<TBD: …>` placeholder.
+
+**Implementation Status tracking in SRS** — every FR carries an `impl_status` (`NotStarted` ⬜ / `InProgress` 🟡 / `Done` 🟢 / `Verified` 🔵 / `Blocked` 🔴) auto-detected from `openspec/changes`, codebase scan (FR-ID references in source + git log), and test files. SRS §3 renders a dashboard (counts + %) plus an "Impl Status" column in the FR list and an Evidence row in each FR detail — so BrSE/PM see at a glance which functions are done vs still on paper. Manual override in `project-model.json` wins over auto-detect.
+
 ### `/docs-hero:update`
 Apply Delta from OpenSpec change OR brainstorm plan, **preserving manual edits**. The diff engine:
 1. Detect manual edits → preserve those regions

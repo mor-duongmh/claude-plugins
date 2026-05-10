@@ -86,7 +86,47 @@ mkdir -p "$PROJECT_TMP"
   --inputs "$INPUT_DIR" \
   --output "$PROJECT_TMP/raw-bundle.json"
 
-# 2. Dispatch to sub-skills (CLAUDE_PLUGIN_ROOT inherited from env)
+# 1b. Implementation status detection (LLM-driven, populates FR.impl_status
+#     + FR.evidence_refs in project-model.json BEFORE the plan is written).
+#     Order of evidence (later signals upgrade earlier ones):
+#       a. openspec/changes/{id}/ archived         → Done   (kind=openspec)
+#       b. openspec/changes/{id}/ pending          → InProgress (kind=openspec)
+#       c. openspec/specs mention                  → InProgress (kind=openspec)
+#       d. FR-ID in source files / git log --grep  → InProgress (kind=code|commit)
+#       e. FR-ID in test files                     → Verified  (kind=test)
+#     Manual override (impl_status already set in inputs) wins over auto-detect.
+#     FRs with no signal stay NotStarted.
+
+# 2. Gap & Risk analysis → docs-plan.md (LLM-driven, REQUIRED gate)
+#    Claude reads project-model.json + raw inputs and writes
+#    $PROJECT_TMP/docs-plan.md with sections in this order:
+#      §0 Project Overview — what it is, phase, stack, stakeholders
+#         mentioned, doc maturity, source input quality (per-input notes
+#         on completeness/conflicts), entity counts, render strategy.
+#      §1 Per-doc plan — sections × source entities for each selected
+#         output (srs / api / db).
+#      §2 Gaps — severity-tagged: blocker | warning | info.
+#      §3 Risks — scope creep, conflicts, undocumented deps, etc.
+#      §4 Implementation Status Snapshot — counts by status + per-FR
+#         table from step 1b. Mirrors what SRS §3 will render.
+#      §5 Recommended action per gap — ask user / placeholder <TBD: ...> /
+#         drop section / proceed with explicit assumption.
+#
+#    Then present a summary via AskUserQuestion:
+#      [Proceed | Revise plan | Abort]
+#    Only on "Proceed" continue. On "Revise plan" capture user
+#    feedback and rewrite docs-plan.md, re-prompt.
+
+# 2b. Honor plan decisions BEFORE dispatch:
+#     For each gap whose action is "placeholder", Claude edits
+#     project-model.json in place to set the affected field to
+#     "<TBD: <reason>>" so sub-skills emit the placeholder verbatim
+#     instead of guessing. For "drop section" decisions, the relevant
+#     entities are removed from project-model.json. For "assumption"
+#     decisions the assumption is written into the entity's
+#     description prefixed with "[ASSUMPTION] ".
+
+# 3. Dispatch to sub-skills (CLAUDE_PLUGIN_ROOT inherited from env)
 #    $OUTPUTS = user-selected subset, e.g. "srs,api" or "srs,api,db"
 "$PY" "$ORCH_SCRIPTS/dispatch_coordinator.py" init \
   --project-model "$PROJECT_TMP/project-model.json" \
@@ -94,12 +134,20 @@ mkdir -p "$PROJECT_TMP"
   --outputs "$OUTPUTS" \
   --docs-dir "$PROJECT_DOCS_DIR"
 
-# 3. Aggregate report
+# 4. Aggregate report
 "$PY" "$ORCH_SCRIPTS/aggregate_report.py" \
   --docs-dir "$PROJECT_DOCS_DIR" \
   --output "$PROJECT_TMP/init-report.md"
 
-# 4. Spawn docs-hero agent for QA review (Skill tool: docs-hero)
+# 4b. Claude appends a "Gaps & Risks" section to init-report.md by
+#     copying the unresolved entries from docs-plan.md (those whose
+#     action was "placeholder" or "assumption"). Resolved gaps are
+#     omitted.
+
+# 5. Spawn docs-hero agent for QA review (Skill tool: docs-hero)
+#    The QA agent must cross-check that every blocker/warning gap
+#    from docs-plan.md is either resolved in the rendered docs or
+#    explicitly carried forward as a <TBD: ...> placeholder.
 ```
 
 ## Update Flow
