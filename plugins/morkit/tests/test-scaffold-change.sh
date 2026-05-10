@@ -36,12 +36,12 @@ case_1_1() {
     bash "$SCAFFOLD" add-csv-export >/dev/null 2>&1
     local rc=$?
     assert_equal "$rc" 0 "1.1 exit 0"
-    assert_dir_exists "morkit/changes/add-csv-export" "1.1 dir created"
-    assert_file_exists "morkit/changes/add-csv-export/proposal.md" "1.1 proposal"
-    assert_file_exists "morkit/changes/add-csv-export/design.md" "1.1 design"
-    assert_file_exists "morkit/changes/add-csv-export/tasks.md" "1.1 tasks"
-    assert_file_exists "morkit/changes/add-csv-export/.meta.json" "1.1 meta"
-    assert_file_exists "morkit/changes/.morkit" "1.1 marker"
+    assert_dir_exists "docs/morkit/spec/add-csv-export" "1.1 dir created"
+    assert_file_exists "docs/morkit/spec/add-csv-export/proposal.md" "1.1 proposal"
+    assert_file_exists "docs/morkit/spec/add-csv-export/design.md" "1.1 design"
+    assert_file_exists "docs/morkit/spec/add-csv-export/tasks.md" "1.1 tasks"
+    assert_file_exists "docs/morkit/spec/add-csv-export/.meta.json" "1.1 meta"
+    assert_file_exists "docs/morkit/spec/.morkit" "1.1 marker"
     cd /; rm -rf "$tmp"
 }
 
@@ -51,7 +51,7 @@ case_1_1() {
 case_1_2() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return 1
     bash "$SCAFFOLD" add-csv-export >/dev/null 2>&1
-    local meta; meta=$(cat morkit/changes/add-csv-export/.meta.json 2>/dev/null)
+    local meta; meta=$(cat docs/morkit/spec/add-csv-export/.meta.json 2>/dev/null)
     assert_json_path "$meta" '.name' 'add-csv-export' "1.2 meta.name"
     assert_json_path "$meta" '.schema_version' '1' "1.2 meta.schema_version"
     local created; created=$(printf '%s' "$meta" | jq -r '.created_at' 2>/dev/null)
@@ -66,9 +66,9 @@ case_1_3() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return 1
     bash "$SCAFFOLD" add-csv-export >/dev/null 2>&1
     local proposal tasks design
-    proposal=$(cat morkit/changes/add-csv-export/proposal.md)
-    tasks=$(cat morkit/changes/add-csv-export/tasks.md)
-    design=$(cat morkit/changes/add-csv-export/design.md)
+    proposal=$(cat docs/morkit/spec/add-csv-export/proposal.md)
+    tasks=$(cat docs/morkit/spec/add-csv-export/tasks.md)
+    design=$(cat docs/morkit/spec/add-csv-export/design.md)
     assert_contains "$proposal" "# add-csv-export" "1.3 proposal title"
     assert_contains "$tasks" "REQUIRED SUB-SKILL" "1.3 tasks header"
     assert_contains "$design" "## Tech Stack" "1.3 design tech stack"
@@ -163,7 +163,7 @@ case_1_10() {
     local rc=$?
     assert_equal "$rc" 0 "1.10 scaffold succeeds"
     assert_file_exists "spec/models/user_spec.rb" "1.10 RSpec untouched"
-    assert_dir_exists "morkit/changes/foo" "1.10 plugin folder created"
+    assert_dir_exists "docs/morkit/spec/foo" "1.10 plugin folder created"
     cd /; rm -rf "$tmp"
 }
 
@@ -174,7 +174,7 @@ case_1_11() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return 1
     MORKIT_ROOT=mor/changes bash "$SCAFFOLD" foo >/dev/null 2>&1
     assert_dir_exists "mor/changes/foo" "1.11 honored MORKIT_ROOT"
-    assert_dir_not_exists "morkit/changes/foo" "1.11 default path skipped"
+    assert_dir_not_exists "docs/morkit/spec/foo" "1.11 default path skipped"
     assert_file_exists "mor/changes/.morkit" "1.11 marker in custom path"
     cd /; rm -rf "$tmp"
 }
@@ -187,7 +187,7 @@ case_1_12() {
     env -u CLAUDE_PLUGIN_ROOT bash "$SCAFFOLD" foo >/dev/null 2>&1
     local rc=$?
     assert_equal "$rc" 0 "1.12 fallback resolves plugin root"
-    assert_file_exists "morkit/changes/foo/proposal.md" "1.12 templates rendered"
+    assert_file_exists "docs/morkit/spec/foo/proposal.md" "1.12 templates rendered"
     cd /; rm -rf "$tmp"
 }
 
@@ -197,7 +197,7 @@ case_1_12() {
 # ---------------------------------------------------------------------------
 case_1_13() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return 1
-    mkdir -p morkit/changes/foo
+    mkdir -p docs/morkit/spec/foo
     bash "$SCAFFOLD" foo 2>/dev/null
     local rc=$?
     [[ "$rc" -ne 0 ]] && _pass "1.13 atomic refuses partial" || _fail "1.13 expected non-zero on existing dir"
@@ -210,7 +210,7 @@ case_1_13() {
 case_1_14() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return 1
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    local meta_at; meta_at=$(jq -r '.created_at' morkit/changes/foo/.meta.json 2>/dev/null)
+    local meta_at; meta_at=$(jq -r '.created_at' docs/morkit/spec/foo/.meta.json 2>/dev/null)
     [[ "$meta_at" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]] && _pass "1.14 ISO 8601 platform-agnostic" || _fail "1.14 bad timestamp: $meta_at"
     cd /; rm -rf "$tmp"
 }
@@ -221,11 +221,11 @@ case_1_14() {
 case_1_15() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return 1
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    echo "manual edit" > morkit/changes/foo/proposal.md
+    echo "manual edit" > docs/morkit/spec/foo/proposal.md
     bash "$SCAFFOLD" --force foo >/dev/null 2>&1
     local rc=$?
     assert_equal "$rc" 0 "1.15 --force succeeds"
-    local proposal; proposal=$(cat morkit/changes/foo/proposal.md)
+    local proposal; proposal=$(cat docs/morkit/spec/foo/proposal.md)
     assert_contains "$proposal" "# foo" "1.15 file replaced"
     cd /; rm -rf "$tmp"
 }
@@ -244,7 +244,7 @@ case_1_16() {
     bash "$SCAFFOLD" foo >/dev/null 2>&1
     local rc=$?
     assert_equal "$rc" 0 "1.16 scaffold succeeds in space-path"
-    assert_dir_exists "morkit/changes/foo" "1.16 dir created"
+    assert_dir_exists "docs/morkit/spec/foo" "1.16 dir created"
     cd /; rm -rf "$tmp"
 }
 

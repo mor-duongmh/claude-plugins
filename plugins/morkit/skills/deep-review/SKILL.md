@@ -94,7 +94,7 @@ findings:
 
 1. Render `${CLAUDE_PLUGIN_ROOT}/templates/report-template.md` with computed values.
 2. **Print full report directly to chat.**
-3. Save to `_deep-review-output/deep-review-<timestamp>-<target>.md` if writable; otherwise skip silently.
+3. Save to `docs/morkit/reviews/deep-review-<timestamp>-<target>.md` if writable; otherwise skip silently.
 4. If `--json` flag passed, emit JSON instead (see "JSON output mode" below).
 
 ## Universal Rules (Tier 3, embedded)
@@ -164,4 +164,4 @@ When the invocation includes the `--json` flag, Phase 4 emits a JSON object inst
 }
 ```
 
-JSON mode is intended for CI/CD pipelines. Save to `deep-review.json` instead of `_deep-review-output/*.md` when `--json` is set.
+JSON mode is intended for CI/CD pipelines. Save to `deep-review.json` instead of `docs/morkit/reviews/*.md` when `--json` is set.

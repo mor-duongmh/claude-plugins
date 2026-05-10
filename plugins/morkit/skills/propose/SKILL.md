@@ -4,7 +4,7 @@ description: Propose a new morkit change with all artifacts generated in one ste
 license: MIT
 ---
 
-Create a new morkit change with all artifacts in `${MORKIT_ROOT:-morkit/changes}/<name>/`:
+Create a new morkit change with all artifacts in `${MORKIT_ROOT:-docs/morkit/spec}/<name>/`:
 
 - `proposal.md` — what & why
 - `design.md` — how, including Tech Stack

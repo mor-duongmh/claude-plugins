@@ -15,7 +15,7 @@ test -d "${HOME}/.claude/plugins/data/docs-hero/.venv" || {
 Invoke the orchestrator skill with mode `sync`. The skill will:
 
 1. Scan paths via `parse_codebase_models.py` (Prisma/TypeORM/Sequelize/Django/SQLAlchemy/GORM/raw SQL) and `parse_codebase_routes.py` (REST patterns)
-2. Diff with current `docs/api-docs.md` and `docs/database-design.md`
+2. Diff with current `docs/morkit/outputs/api-docs.md` and `docs/morkit/outputs/database-design.md`
 3. Write proposals (with `[ ]` checkboxes) to:
    - `${PWD}/.tmp/api-sync-proposal.md`
    - `${PWD}/.tmp/db-sync-proposal.md`

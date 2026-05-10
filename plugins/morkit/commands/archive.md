@@ -11,7 +11,7 @@ The skill will:
 - List active changes via `${CLAUDE_PLUGIN_ROOT}/scripts/list-changes.sh`
 - Prompt the user to select a change (or use argument)
 - Sanity-check task completion (warn if pending `- [ ]` remain)
-- `mv ${MORKIT_ROOT:-morkit/changes}/<name> ${MORKIT_ROOT:-morkit/changes}/archive/<name>`
+- `mv ${MORKIT_ROOT:-docs/morkit/spec}/<name> ${MORKIT_ROOT:-docs/morkit/spec}/archive/<name>`
 - Update `.meta.json.archived = true` and add `archived_at` timestamp
 
 Run this once a change is fully implemented and merged.

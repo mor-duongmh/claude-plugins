@@ -94,7 +94,7 @@ Bước 3 là **chốt chặn của con người**. Plugin chặn `/morkit:execu
 
 ## 5. Plan review gate (chốt chặn human-in-the-loop)
 
-Sau `/morkit:propose`, plugin sinh `morkit/changes/<tên>/review-checklist.md` từ [Google Doc canonical của Mor](https://docs.google.com/document/d/184wY2N2WOUExmZrClvHCfcRCnSQsJYvav6gc6JwL6xc).
+Sau `/morkit:propose`, plugin sinh `docs/morkit/spec/<tên>/review-checklist.md` từ [Google Doc canonical của Mor](https://docs.google.com/document/d/184wY2N2WOUExmZrClvHCfcRCnSQsJYvav6gc6JwL6xc).
 
 Auto-detect variant (BE/FE × Feature/BugFix/Refactor). Override:
 
@@ -158,7 +158,7 @@ Yên tâm — plugin **không động vào** dự án của bạn cho tới khi 
   bash ${CLAUDE_PLUGIN_ROOT}/scripts/migrate-from-openspec.sh              # thực thi
   ```
 
-  Script chỉ làm 3 việc: `mv openspec/changes` → `morkit/changes`, giữ `archive/`, tạo marker `.morkit`.
+  Script chỉ làm 3 việc: `mv openspec/changes` → `docs/morkit/spec`, giữ `archive/`, tạo marker `.morkit`.
 
 - 🤐 Tắt gợi ý migrate vĩnh viễn:
   ```bash

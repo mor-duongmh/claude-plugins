@@ -25,7 +25,7 @@ run_gate_stderr() {
 # Setup: scaffold a change and approve its checklist
 setup_approved_change() {
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    cat > morkit/changes/foo/review-checklist.md <<'EOF'
+    cat > docs/morkit/spec/foo/review-checklist.md <<'EOF'
 # Review Checklist
 - [x] Items
 Overall Decision: OK
@@ -34,7 +34,7 @@ EOF
 
 setup_pending_change() {
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    cat > morkit/changes/foo/review-checklist.md <<'EOF'
+    cat > docs/morkit/spec/foo/review-checklist.md <<'EOF'
 # Review Checklist
 - [ ] Items
 Overall Decision: PENDING
@@ -109,7 +109,7 @@ case_7_7() {
     cd /; rm -rf "$tmp"
 }
 
-# 7.8 — no morkit/changes folder fail-open
+# 7.8 — no docs/morkit/spec folder fail-open
 case_7_8() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     run_gate '{"tool_name":"Skill","tool_input":{"skill":"morkit:executing-plans"}}'
@@ -137,12 +137,12 @@ case_7_10() {
 case_7_11() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     bash "$SCAFFOLD" old >/dev/null 2>&1
-    cat > morkit/changes/old/review-checklist.md <<'EOF'
+    cat > docs/morkit/spec/old/review-checklist.md <<'EOF'
 Overall Decision: OK
 EOF
     sleep 1
     bash "$SCAFFOLD" newest >/dev/null 2>&1
-    cat > morkit/changes/newest/review-checklist.md <<'EOF'
+    cat > docs/morkit/spec/newest/review-checklist.md <<'EOF'
 Overall Decision: PENDING
 EOF
     run_gate '{"tool_name":"Skill","tool_input":{"skill":"morkit:executing-plans"}}'
@@ -154,8 +154,8 @@ EOF
 case_7_12() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    mkdir -p morkit/changes/archive
-    mv morkit/changes/foo morkit/changes/archive/foo
+    mkdir -p docs/morkit/spec/archive
+    mv docs/morkit/spec/foo docs/morkit/spec/archive/foo
     run_gate '{"tool_name":"Skill","tool_input":{"skill":"morkit:executing-plans"}}'
     assert_equal "$?" 0 "7.12 only archive present → fail-open"
     cd /; rm -rf "$tmp"
@@ -165,7 +165,7 @@ case_7_12() {
 case_7_13() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    printf "Overall Decision: OK   \n" > morkit/changes/foo/review-checklist.md
+    printf "Overall Decision: OK   \n" > docs/morkit/spec/foo/review-checklist.md
     run_gate '{"tool_name":"Skill","tool_input":{"skill":"morkit:executing-plans"}}'
     assert_equal "$?" 0 "7.13 trailing whitespace OK"
     cd /; rm -rf "$tmp"
@@ -184,7 +184,7 @@ EOF
     cd /; rm -rf "$tmp"
 }
 
-# 7.15 — dual-read: legacy openspec/changes/ if no morkit/changes
+# 7.15 — dual-read: legacy openspec/changes/ if no docs/morkit/spec
 case_7_15() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     mkdir -p openspec/changes/foo

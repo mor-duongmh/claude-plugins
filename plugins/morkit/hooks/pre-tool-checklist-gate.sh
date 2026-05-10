@@ -17,7 +17,7 @@
 # Legacy v1 OpenSpec skill names (openspec-apply-change, spec:apply) are also
 # matched for projects that haven't migrated yet.
 #
-# Folder convention: ${MORKIT_ROOT:-morkit/changes}/
+# Folder convention: ${MORKIT_ROOT:-docs/morkit/spec}/
 # Dual-read fallback: openspec/changes/ for v1 projects pre-migration.
 #
 # Fail-open scenarios:
@@ -25,7 +25,7 @@
 #   - empty / malformed stdin
 #   - non-Skill tool
 #   - skill not in matcher list
-#   - no morkit/changes/ AND no openspec/changes/
+#   - no docs/morkit/spec/ AND no openspec/changes/
 
 set -euo pipefail
 
@@ -51,7 +51,7 @@ case "$skill_name" in
 esac
 
 # Resolve folder convention. Honor MORKIT_ROOT override.
-PRIMARY="${MORKIT_ROOT:-morkit/changes}"
+PRIMARY="${MORKIT_ROOT:-docs/morkit/spec}"
 LEGACY="openspec/changes"
 
 CHANGES_DIR=""

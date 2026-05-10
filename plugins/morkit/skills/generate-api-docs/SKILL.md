@@ -11,7 +11,7 @@ metadata:
 
 # Generate API Docs Skill
 
-Sub-skill that owns `docs/api-docs.md`. Single-language output (JP / EN / VN).
+Sub-skill that owns `docs/morkit/outputs/api-docs.md`. Single-language output (JP / EN / VN).
 
 ## Environment (plugin context)
 
@@ -29,7 +29,7 @@ PROJECT_META="${PWD}/.docs-hero-meta.json"
 
 | Mode | Purpose |
 |---|---|
-| `init` | Render `docs/api-docs.md` from a ProjectModel JSON |
+| `init` | Render `docs/morkit/outputs/api-docs.md` from a ProjectModel JSON |
 | `update` | Apply Delta filtered for API scope (ENDPOINT/ERROR_CODE/WEBHOOK/AUTH/RATE_LIMIT) |
 | `sync` | Scan codebase, write a human-readable proposal — DOES NOT touch docs |
 | `apply-sync` | Read proposal (with user-checked boxes) → convert to Delta → apply |
@@ -101,11 +101,11 @@ Parses the proposal, extracts checked items, emits a Delta JSON. The orchestrato
 ## File Ownership
 
 This skill owns:
-- `docs/api-docs.md`
+- `docs/morkit/outputs/api-docs.md`
 
 It does **not** modify:
-- `docs/srs.md`
-- `docs/database-design.md`
+- `docs/morkit/outputs/srs.md`
+- `docs/morkit/outputs/database-design.md`
 
 ## References
 

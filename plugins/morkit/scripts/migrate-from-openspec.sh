@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# migrate-from-openspec.sh — convert legacy openspec/changes/ to morkit/changes/
+# migrate-from-openspec.sh — convert legacy openspec/changes/ to docs/morkit/spec/
 # (or to ${MORKIT_ROOT}/<name>/ if env override set).
 #
 # Usage:
@@ -7,8 +7,8 @@
 #
 # Behaviour:
 #   - If openspec/changes/ doesn't exist → no-op, exit 0.
-#   - If primary morkit/changes/ already exists with content → refuse, exit 1.
-#   - Otherwise, move openspec/changes/ → morkit/changes/ (preserving archive/ subfolder).
+#   - If primary docs/morkit/spec/ already exists with content → refuse, exit 1.
+#   - Otherwise, move openspec/changes/ → docs/morkit/spec/ (preserving archive/ subfolder).
 #   - Add .morkit marker in primary root.
 #   - --keep-openspec: don't delete the (now-empty) openspec/ dir.
 #
@@ -30,7 +30,7 @@ print_usage() {
     cat <<'EOF'
 Usage: migrate-from-openspec.sh [--dry-run] [--keep-openspec] [--help]
 
-Migrates legacy openspec/changes/ to ${MORKIT_ROOT:-morkit/changes}/.
+Migrates legacy openspec/changes/ to ${MORKIT_ROOT:-docs/morkit/spec}/.
 
 Options:
   --dry-run           Print plan without modifying filesystem

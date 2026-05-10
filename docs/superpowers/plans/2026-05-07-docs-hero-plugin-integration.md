@@ -2269,7 +2269,7 @@ After all tasks, verify:
 
 ## Execution Handoff
 
-**Plan complete and saved to `claude-plugins/docs/superpowers/plans/2026-05-07-docs-hero-plugin-integration.md`.**
+**Plan complete and saved to `claude-plugins/docs/morkit/plans/2026-05-07-docs-hero-plugin-integration.md`.**
 
 ⚠️ **BEFORE EXECUTING**, per `feedback_plan_review_gate` user memory rule:
 

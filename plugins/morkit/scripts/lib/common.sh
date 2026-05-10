@@ -21,7 +21,7 @@ MORKIT_COMMON_LOADED=1
 # Path resolution
 # ---------------------------------------------------------------------------
 morkit_root() {
-    echo "${MORKIT_ROOT:-morkit/changes}"
+    echo "${MORKIT_ROOT:-docs/morkit/spec}"
 }
 
 marker_path() {

@@ -45,8 +45,8 @@ Use the **Skill tool** to invoke `docs-hero-orchestrator` with mode `init`, pass
 5. Spawn the `docs-hero` QA agent for cross-reference + BrSE-quality validation
 
 Output files:
-- `docs/srs.md`
-- `docs/api-docs.md`
-- `docs/database-design.md`
+- `docs/morkit/outputs/srs.md`
+- `docs/morkit/outputs/api-docs.md`
+- `docs/morkit/outputs/database-design.md`
 - `docs/screen-specs/SCREEN-*.md` (per FR with screens)
 - `.docs-hero-meta.json` (sidecar, gitignored)

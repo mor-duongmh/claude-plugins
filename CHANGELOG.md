@@ -19,7 +19,7 @@ All notable changes to the Mor claude-plugins marketplace are tracked here.
   - `/superpowers:brainstorm|write-plan|execute-plan` → `/morkit:brainstorming|writing-plans|executing-plans`
   - `/deep-review[-doctor|-post]` → `/morkit:deep-review[-doctor|-post]`
   - `/docs-hero:setup|init|update|sync|apply-sync|doctor` → `/morkit:setup|init|update|sync|apply-sync|doctor`
-- **Folder convention:** `mor-kit/changes/` → `morkit/changes/`. Marker `.mor-kit` → `.morkit`. Env override `MOR_KIT_ROOT` → `MORKIT_ROOT`. Bash function `mor_kit_root` → `morkit_root`.
+- **Folder convention:** `mor-kit/changes/` → `docs/morkit/spec/`. Marker `.mor-kit` → `.morkit`. Env override `MOR_KIT_ROOT` → `MORKIT_ROOT`. Bash function `mor_kit_root` → `morkit_root`.
 - **Marketplace.json:** single entry `morkit` (was 5 entries: mor-stack, mor-kit, superpowers, deep-review, docs-hero).
 - **Hook matchers:** updated to gate `morkit:executing-plans` and `morkit:subagent-driven-development` (legacy `superpowers:executing-plans` still recognized for transition grace).
 - **Vendored superpowers sync workflow REMOVED.** `sync-superpowers.sh` and the overlay system no longer applicable in single-plugin mode. Future upstream changes must be merged manually into `plugins/morkit/skills/`.
@@ -49,7 +49,7 @@ All notable changes to the Mor claude-plugins marketplace are tracked here.
 /plugin install morkit@mor-duongmh
 ```
 
-For projects with `mor-kit/changes/` data: rename folder manually `mv mor-kit/changes morkit/changes && mv morkit/changes/.mor-kit morkit/changes/.morkit`.
+For projects with `mor-kit/changes/` data: rename folder manually `mv mor-kit/changes docs/morkit/spec && mv docs/morkit/spec/.mor-kit docs/morkit/spec/.morkit`.
 
 For projects with `openspec/changes/` data: run `migrate-from-openspec.sh`.
 
@@ -203,5 +203,5 @@ The hook has a 1-version dual-read fallback. Even without migrating, `/spec:appl
 
 ### Files
 
-- Plan: [`docs/superpowers/plans/2026-05-10-spec-self-contained.md`](docs/superpowers/plans/2026-05-10-spec-self-contained.md)
+- Plan: [`docs/morkit/plans/2026-05-10-spec-self-contained.md`](docs/morkit/plans/2026-05-10-spec-self-contained.md)
 - Design: [`docs/superpowers/specs/2026-05-10-spec-self-contained-design.md`](docs/superpowers/specs/2026-05-10-spec-self-contained-design.md)

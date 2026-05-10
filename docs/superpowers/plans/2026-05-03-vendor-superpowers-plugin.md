@@ -1983,7 +1983,7 @@ Adds a second plugin `superpowers@mor-duongmh` to the marketplace — a vendored
 ## Spec & plan
 
 - [Spec](docs/superpowers/specs/2026-05-03-vendor-superpowers-plugin-design.md)
-- [Plan](docs/superpowers/plans/2026-05-03-vendor-superpowers-plugin.md)
+- [Plan](docs/morkit/plans/2026-05-03-vendor-superpowers-plugin.md)
 
 ## Test plan
 

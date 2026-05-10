@@ -14,7 +14,7 @@ Invoke the `deep-review` skill via the Skill tool. Pass through any arguments th
 - `/morkit:deep-review` → defaults to `--diff`
 - `/morkit:deep-review --json` → emit JSON instead of Markdown (CI/CD mode)
 
-The skill orchestrates 5 parallel subagents and prints a full Markdown report directly to chat. It also saves a copy under `_deep-review-output/` if the directory is writable.
+The skill orchestrates 5 parallel subagents and prints a full Markdown report directly to chat. It also saves a copy under `docs/morkit/reviews/` if the directory is writable.
 
 ## First-time on a repo (no graph yet)
 

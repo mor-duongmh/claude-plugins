@@ -11,7 +11,7 @@ metadata:
 
 # Generate DB Design Skill
 
-Sub-skill that owns `docs/database-design.md`. Single-language output (JP / EN / VN).
+Sub-skill that owns `docs/morkit/outputs/database-design.md`. Single-language output (JP / EN / VN).
 Embeds a Mermaid `erDiagram` for tables + relationships.
 
 ## Environment (plugin context)
@@ -30,7 +30,7 @@ PROJECT_META="${PWD}/.docs-hero-meta.json"
 
 | Mode | Purpose |
 |---|---|
-| `init` | Render `docs/database-design.md` from a ProjectModel JSON |
+| `init` | Render `docs/morkit/outputs/database-design.md` from a ProjectModel JSON |
 | `update` | Apply Delta filtered for DB scope (TABLE/INDEX/REL/ENUM) |
 | `sync` | Scan ORM models in codebase, write proposal — DOES NOT touch docs |
 | `apply-sync` | Read proposal (with user-checked boxes) → convert to Delta |
@@ -87,11 +87,11 @@ Parses checked items, emits Delta JSON for the standard update flow.
 ## File Ownership
 
 This skill owns:
-- `docs/database-design.md`
+- `docs/morkit/outputs/database-design.md`
 
 It does **not** modify:
-- `docs/srs.md`
-- `docs/api-docs.md`
+- `docs/morkit/outputs/srs.md`
+- `docs/morkit/outputs/api-docs.md`
 
 ## References
 
