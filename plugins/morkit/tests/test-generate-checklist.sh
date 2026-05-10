@@ -33,7 +33,7 @@ case_4_6() {
     [[ "$rc" -ne 0 ]] && _pass "4.6 nonexistent path fails" || _fail "4.6 should fail"
 }
 
-# 4.10 — works with docs/morkit/spec/<name>/
+# 4.10 — works with morkit/output/spec/<name>/
 case_4_10() {
     if [[ "$HAS_NETWORK" -ne 1 ]]; then
         _pass "4.10 skipped (no network)"
@@ -41,11 +41,11 @@ case_4_10() {
     fi
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    bash "$GEN" docs/morkit/spec/foo --variant BE-Feature >/dev/null 2>&1
+    bash "$GEN" morkit/output/spec/foo --variant BE-Feature >/dev/null 2>&1
     local rc=$?
     if [[ "$rc" -eq 0 ]]; then
-        assert_file_exists "docs/morkit/spec/foo/review-checklist.md" "4.10 review-checklist created"
-        local content; content=$(cat docs/morkit/spec/foo/review-checklist.md 2>/dev/null)
+        assert_file_exists "morkit/output/spec/foo/review-checklist.md" "4.10 review-checklist created"
+        local content; content=$(cat morkit/output/spec/foo/review-checklist.md 2>/dev/null)
         assert_contains "$content" "Overall Decision: PENDING" "4.10 PENDING footer"
     else
         _pass "4.10 skipped (network failed)"

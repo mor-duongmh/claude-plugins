@@ -4,7 +4,7 @@ description: Archive a completed morkit change. Moves it from active to archive 
 license: MIT
 ---
 
-Archive a completed change by moving it from `${MORKIT_ROOT:-docs/morkit/spec}/<name>/` to `${MORKIT_ROOT:-docs/morkit/spec}/archive/<name>/` and updating `.meta.json.archived` + `archived_at`.
+Archive a completed change by moving it from `${MORKIT_ROOT:-morkit/output/spec}/<name>/` to `${MORKIT_ROOT:-morkit/output/spec}/archive/<name>/` and updating `.meta.json.archived` + `archived_at`.
 
 **Input:** Optionally specify a change name. If omitted, list active changes and prompt.
 
@@ -35,7 +35,7 @@ Archive a completed change by moving it from `${MORKIT_ROOT:-docs/morkit/spec}/<
 3. **Move to archive**
 
    ```bash
-   ROOT="${MORKIT_ROOT:-docs/morkit/spec}"
+   ROOT="${MORKIT_ROOT:-morkit/output/spec}"
    mkdir -p "$ROOT/archive"
    mv "$ROOT/<name>" "$ROOT/archive/<name>"
    ```

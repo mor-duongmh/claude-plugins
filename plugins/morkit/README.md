@@ -30,7 +30,7 @@ Cài xong là dùng được — không cần setup gì thêm trong project.
 
 ## Folder convention
 
-`docs/morkit/spec/<name>/` (active) hoặc `docs/morkit/spec/archive/<name>/` (đã archive).
+`morkit/output/spec/<name>/` (active) hoặc `morkit/output/spec/archive/<name>/` (đã archive).
 - Marker: `.morkit` trong root folder
 - Override path: `MORKIT_ROOT=path/to/changes` env var
 
@@ -73,7 +73,7 @@ Plus: using-git-worktrees, finishing-a-development-branch, requesting-code-revie
 
 ## Plan review gate
 
-Sau `/morkit:propose`, plugin sinh `docs/morkit/spec/<name>/review-checklist.md` từ canonical Google Doc. Auto-detect variant (BE/FE × Feature/BugFix/Refactor).
+Sau `/morkit:propose`, plugin sinh `morkit/output/spec/<name>/review-checklist.md` từ canonical Google Doc. Auto-detect variant (BE/FE × Feature/BugFix/Refactor).
 
 Override variant: `/morkit:review --variant FE-BugFix`
 Force refresh: `/morkit:review --refresh`
@@ -105,7 +105,7 @@ bash ${CLAUDE_PLUGIN_ROOT}/scripts/migrate-from-openspec.sh --dry-run
 bash ${CLAUDE_PLUGIN_ROOT}/scripts/migrate-from-openspec.sh
 ```
 
-Script chỉ `mv openspec/changes` → `docs/morkit/spec`, không chạm `openspec/specs/` hay file khác.
+Script chỉ `mv openspec/changes` → `morkit/output/spec`, không chạm `openspec/specs/` hay file khác.
 
 Tắt gợi ý: `touch openspec/.spec-migration-skip`.
 

@@ -18,9 +18,9 @@ case_6_1() {
     bash "$MIG" >/dev/null 2>&1
     local rc=$?
     assert_equal "$rc" 0 "6.1 exit 0"
-    assert_dir_exists "docs/morkit/spec/foo" "6.1 migrated"
-    assert_file_exists "docs/morkit/spec/foo/proposal.md" "6.1 content preserved"
-    assert_file_exists "docs/morkit/spec/.morkit" "6.1 marker created"
+    assert_dir_exists "morkit/output/spec/foo" "6.1 migrated"
+    assert_file_exists "morkit/output/spec/foo/proposal.md" "6.1 content preserved"
+    assert_file_exists "morkit/output/spec/.morkit" "6.1 marker created"
     assert_dir_not_exists "openspec/changes" "6.1 legacy gone"
     cd /; rm -rf "$tmp"
 }
@@ -31,8 +31,8 @@ case_6_2() {
     mkdir -p openspec/changes/active
     mkdir -p openspec/changes/archive/old
     bash "$MIG" >/dev/null 2>&1
-    assert_dir_exists "docs/morkit/spec/active" "6.2 active migrated"
-    assert_dir_exists "docs/morkit/spec/archive/old" "6.2 archive migrated"
+    assert_dir_exists "morkit/output/spec/active" "6.2 active migrated"
+    assert_dir_exists "morkit/output/spec/archive/old" "6.2 archive migrated"
     cd /; rm -rf "$tmp"
 }
 
@@ -42,7 +42,7 @@ case_6_3() {
     bash "$MIG" >/dev/null 2>&1
     local rc=$?
     assert_equal "$rc" 0 "6.3 exit 0"
-    assert_dir_not_exists "docs/morkit/spec" "6.3 nothing created"
+    assert_dir_not_exists "morkit/output/spec" "6.3 nothing created"
     cd /; rm -rf "$tmp"
 }
 
@@ -58,7 +58,7 @@ case_6_4() {
 case_6_5() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     mkdir -p openspec/changes/foo
-    mkdir -p docs/morkit/spec/bar
+    mkdir -p morkit/output/spec/bar
     bash "$MIG" 2>/dev/null
     local rc=$?
     [[ "$rc" -ne 0 ]] && _pass "6.5 refuses conflict" || _fail "6.5 should refuse"
@@ -72,7 +72,7 @@ case_6_6() {
     mkdir -p openspec/changes/foo
     bash "$MIG" --dry-run >/dev/null 2>&1
     assert_dir_exists "openspec/changes/foo" "6.6 source untouched"
-    assert_dir_not_exists "docs/morkit/spec" "6.6 dest not created"
+    assert_dir_not_exists "morkit/output/spec" "6.6 dest not created"
     cd /; rm -rf "$tmp"
 }
 
@@ -83,7 +83,7 @@ case_6_7() {
     mkdir -p openspec/specs       # extra subfolder besides changes
     bash "$MIG" --keep-openspec >/dev/null 2>&1
     assert_dir_exists "openspec" "6.7 openspec preserved"
-    assert_dir_exists "docs/morkit/spec/foo" "6.7 migrated"
+    assert_dir_exists "morkit/output/spec/foo" "6.7 migrated"
     cd /; rm -rf "$tmp"
 }
 
@@ -91,11 +91,11 @@ case_6_7() {
 case_6_8() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     mkdir -p openspec/changes/foo
-    mkdir -p docs/morkit/spec        # empty primary
+    mkdir -p morkit/output/spec        # empty primary
     bash "$MIG" >/dev/null 2>&1
     local rc=$?
     assert_equal "$rc" 0 "6.8 empty primary OK"
-    assert_dir_exists "docs/morkit/spec/foo" "6.8 migrated"
+    assert_dir_exists "morkit/output/spec/foo" "6.8 migrated"
     cd /; rm -rf "$tmp"
 }
 

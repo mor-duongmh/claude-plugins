@@ -58,8 +58,8 @@ case_2_4() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     bash "$SCAFFOLD" active1 >/dev/null 2>&1
     bash "$SCAFFOLD" old1 >/dev/null 2>&1
-    mkdir -p docs/morkit/spec/archive
-    mv docs/morkit/spec/old1 docs/morkit/spec/archive/old1
+    mkdir -p morkit/output/spec/archive
+    mv morkit/output/spec/old1 morkit/output/spec/archive/old1
     local active; active=$(bash "$LIST" --json 2>/dev/null)
     local len; len=$(printf '%s' "$active" | jq 'length')
     assert_equal "$len" "1" "2.4 active count = 1"
@@ -82,7 +82,7 @@ case_2_5() {
 }
 
 # ---------------------------------------------------------------------------
-# 2.6 — no docs/morkit/spec/ dir → empty result, exit 0
+# 2.6 — no morkit/output/spec/ dir → empty result, exit 0
 # ---------------------------------------------------------------------------
 case_2_6() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
@@ -98,7 +98,7 @@ case_2_6() {
 case_2_7() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    rm docs/morkit/spec/foo/.meta.json
+    rm morkit/output/spec/foo/.meta.json
     local out; out=$(bash "$LIST" --json 2>/dev/null)
     local len; len=$(printf '%s' "$out" | jq 'length')
     assert_equal "$len" "1" "2.7 still listed"
@@ -112,7 +112,7 @@ case_2_7() {
 case_2_8() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    echo "{ broken json" > docs/morkit/spec/foo/.meta.json
+    echo "{ broken json" > morkit/output/spec/foo/.meta.json
     bash "$LIST" --json 2>/dev/null >/dev/null
     local rc=$?
     assert_equal "$rc" "0" "2.8 exit 0 on corrupt meta"
@@ -124,13 +124,13 @@ case_2_8() {
 # ---------------------------------------------------------------------------
 case_2_9() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
-    mkdir -p docs/morkit/spec
+    mkdir -p morkit/output/spec
     for i in $(seq 1 50); do
-        mkdir -p "docs/morkit/spec/item-$i"
+        mkdir -p "morkit/output/spec/item-$i"
         echo "{\"name\":\"item-$i\",\"created_at\":\"2026-01-01T00:00:00Z\",\"schema_version\":1,\"archived\":false}" \
-            > "docs/morkit/spec/item-$i/.meta.json"
+            > "morkit/output/spec/item-$i/.meta.json"
     done
-    touch docs/morkit/spec/.morkit
+    touch morkit/output/spec/.morkit
     bash "$LIST" --json >/dev/null 2>&1
     local rc=$?
     assert_equal "$rc" "0" "2.9 50 entries succeeds"
@@ -167,8 +167,8 @@ case_2_11() {
 case_2_12() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     bash "$SCAFFOLD" foo >/dev/null 2>&1
-    mkdir -p docs/morkit/spec/archive
-    mv docs/morkit/spec/foo docs/morkit/spec/archive/
+    mkdir -p morkit/output/spec/archive
+    mv morkit/output/spec/foo morkit/output/spec/archive/
     local out; out=$(bash "$LIST" --json 2>/dev/null)
     assert_equal "$out" "[]" "2.12 active list empty when only archive"
     cd /; rm -rf "$tmp"

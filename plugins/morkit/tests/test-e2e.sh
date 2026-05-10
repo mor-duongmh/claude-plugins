@@ -20,7 +20,7 @@ run_e2e() {
 
     # --- Scaffold ---
     bash "$SCAFFOLD" add-csv-export >/dev/null 2>&1
-    assert_dir_exists "docs/morkit/spec/add-csv-export" "e2e: scaffold ok"
+    assert_dir_exists "morkit/output/spec/add-csv-export" "e2e: scaffold ok"
 
     # --- List ---
     local out; out=$(bash "$LIST" --json 2>/dev/null)
@@ -28,14 +28,14 @@ run_e2e() {
     assert_equal "$len" "1" "e2e: list has 1 entry"
 
     # --- Mock checklist (skip live fetch) — write a valid PENDING file ---
-    cat > docs/morkit/spec/add-csv-export/review-checklist.md <<'EOF'
+    cat > morkit/output/spec/add-csv-export/review-checklist.md <<'EOF'
 # Review Checklist
 - [ ] Items
 Overall Decision: PENDING
 EOF
 
     # --- Augment tasks.md so it passes validator ---
-    cat > docs/morkit/spec/add-csv-export/tasks.md <<'EOF'
+    cat > morkit/output/spec/add-csv-export/tasks.md <<'EOF'
 # add-csv-export
 
 > **For agentic workers:** REQUIRED SUB-SKILL: morkit:executing-plans
@@ -51,7 +51,7 @@ EOF
 - [ ] Refactor
 EOF
 
-    bash "$VALIDATE" docs/morkit/spec/add-csv-export/tasks.md >/dev/null 2>&1
+    bash "$VALIDATE" morkit/output/spec/add-csv-export/tasks.md >/dev/null 2>&1
     assert_equal "$?" 0 "e2e: validate passes"
 
     # --- Gate blocks (PENDING) ---
@@ -61,18 +61,18 @@ EOF
 
     # --- Approve + gate allows ---
     sed -i.bak 's/Overall Decision: PENDING/Overall Decision: OK/' \
-        docs/morkit/spec/add-csv-export/review-checklist.md
-    rm -f docs/morkit/spec/add-csv-export/review-checklist.md.bak
+        morkit/output/spec/add-csv-export/review-checklist.md
+    rm -f morkit/output/spec/add-csv-export/review-checklist.md.bak
 
     printf '%s' '{"tool_name":"Skill","tool_input":{"skill":"morkit:executing-plans"}}' \
         | bash "$GATE" >/dev/null 2>&1
     assert_equal "$?" 0 "e2e: gate allows after OK"
 
     # --- Archive ---
-    mkdir -p docs/morkit/spec/archive
-    mv docs/morkit/spec/add-csv-export docs/morkit/spec/archive/add-csv-export
-    assert_dir_exists "docs/morkit/spec/archive/add-csv-export" "e2e: archived"
-    assert_dir_not_exists "docs/morkit/spec/add-csv-export" "e2e: active gone"
+    mkdir -p morkit/output/spec/archive
+    mv morkit/output/spec/add-csv-export morkit/output/spec/archive/add-csv-export
+    assert_dir_exists "morkit/output/spec/archive/add-csv-export" "e2e: archived"
+    assert_dir_not_exists "morkit/output/spec/add-csv-export" "e2e: active gone"
 
     # --- Migration smoke (separate scenario) ---
     cd /; rm -rf "$tmp"
@@ -80,7 +80,7 @@ EOF
     mkdir -p openspec/changes/legacy
     echo "# legacy" > openspec/changes/legacy/proposal.md
     bash "$MIG" >/dev/null 2>&1
-    assert_dir_exists "docs/morkit/spec/legacy" "e2e: migration succeeded"
+    assert_dir_exists "morkit/output/spec/legacy" "e2e: migration succeeded"
     assert_dir_not_exists "openspec/changes" "e2e: legacy removed"
 
     cd /; rm -rf "$tmp"

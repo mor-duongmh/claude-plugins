@@ -13,7 +13,7 @@ Args:
 - `--variant <id>` (optional) — override auto-detected variant: `BE-Feature`, `BE-BugFix`, `BE-Refactor`, `FE-Feature`, `FE-BugFix`, `FE-Refactor`
 
 The skill will:
-- Locate the target change directory under `${MORKIT_ROOT:-docs/morkit/spec}/`
+- Locate the target change directory under `${MORKIT_ROOT:-morkit/output/spec}/`
 - Generate `review-checklist.md` from the Mor Developer Review Checklist Google Doc (with cache fallback)
 - Auto-detect the variant unless overridden
 - Show the path to the generated file and remind the user to fill it out and set `Overall Decision: OK`

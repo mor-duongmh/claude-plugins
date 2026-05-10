@@ -9,7 +9,7 @@
 #   <name>     Kebab-case identifier (e.g. "add-csv-export")
 #   --force    Overwrite an existing folder
 #
-# Output: writes to ${MORKIT_ROOT:-docs/morkit/spec}/<name>/{proposal,design,tasks}.md
+# Output: writes to ${MORKIT_ROOT:-morkit/output/spec}/<name>/{proposal,design,tasks}.md
 #         + .meta.json + ensures ${MORKIT_ROOT}/.morkit marker
 #
 # Exit codes:
@@ -30,7 +30,7 @@ print_usage() {
     cat <<'EOF'
 Usage: scaffold-change.sh [--force] <name>
 
-Creates a new spec change folder under ${MORKIT_ROOT:-docs/morkit/spec}/<name>/
+Creates a new spec change folder under ${MORKIT_ROOT:-morkit/output/spec}/<name>/
 with proposal.md, design.md, tasks.md, and .meta.json.
 
 Options:
@@ -38,7 +38,7 @@ Options:
   --help     Show this help
 
 Env:
-  MORKIT_ROOT          Override the changes folder (default: docs/morkit/spec)
+  MORKIT_ROOT          Override the changes folder (default: morkit/output/spec)
   CLAUDE_PLUGIN_ROOT     Plugin root (auto-derived from script location if unset)
 EOF
 }

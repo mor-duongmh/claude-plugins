@@ -12,7 +12,7 @@ The skill never modifies the user's review judgement — it only prepares the fi
 
 **Inputs (parsed from the user's invocation):**
 
-- `[change-name]` — optional; otherwise pick the most recently modified change folder under `${MORKIT_ROOT:-docs/morkit/spec}/` (excluding `archive/`).
+- `[change-name]` — optional; otherwise pick the most recently modified change folder under `${MORKIT_ROOT:-morkit/output/spec}/` (excluding `archive/`).
 - `--refresh` — force re-fetch the canonical Google Doc, bypassing the 24h cache.
 - `--variant <id>` — override auto-detection; valid: `BE-Feature`, `BE-BugFix`, `BE-Refactor`, `FE-Feature`, `FE-BugFix`, `FE-Refactor`.
 
@@ -22,10 +22,10 @@ The skill never modifies the user's review judgement — it only prepares the fi
 
 1. **Resolve change directory.**
 
-   - If a name was provided, set `CHANGE_DIR="${MORKIT_ROOT:-docs/morkit/spec}/<name>"` and verify it exists.
+   - If a name was provided, set `CHANGE_DIR="${MORKIT_ROOT:-morkit/output/spec}/<name>"` and verify it exists.
    - Otherwise, find the most recent non-archive folder:
      ```bash
-     ROOT="${MORKIT_ROOT:-docs/morkit/spec}"
+     ROOT="${MORKIT_ROOT:-morkit/output/spec}"
      CHANGE_DIR=$(find "$ROOT" -mindepth 1 -maxdepth 1 -type d ! -name archive \
        -exec stat -f "%m %N" {} \; 2>/dev/null \
        | sort -rn | head -1 | awk '{print $2}')

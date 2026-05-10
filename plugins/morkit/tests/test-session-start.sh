@@ -19,10 +19,10 @@ case_8_1() {
     cd /; rm -rf "$tmp"
 }
 
-# 8.2 — already migrated (docs/morkit/spec/ exists) → quiet
+# 8.2 — already migrated (morkit/output/spec/ exists) → quiet
 case_8_2() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
-    mkdir -p docs/morkit/spec/foo
+    mkdir -p morkit/output/spec/foo
     mkdir -p openspec/changes/foo  # both — should NOT suggest because primary exists
     local out; out=$(bash "$HOOK" 2>/dev/null)
     assert_not_contains "$out" "spec-migration-suggestion" "8.2 quiet when migrated"
@@ -37,7 +37,7 @@ case_8_3() {
     cd /; rm -rf "$tmp"
 }
 
-# 8.4 — RSpec project (spec/ but no docs/morkit/spec/) → quiet
+# 8.4 — RSpec project (spec/ but no morkit/output/spec/) → quiet
 case_8_4() {
     local tmp; tmp="$(mktemp -d)"; cd "$tmp" || return
     mkdir -p spec/models

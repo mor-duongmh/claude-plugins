@@ -121,7 +121,7 @@ Categorize findings:
 ## Workflow
 
 1. Read `aggregate_report.py` summary if provided
-2. Glob `docs/morkit/outputs/srs.md`, `docs/morkit/outputs/api-docs.md`, `docs/morkit/outputs/database-design.md`,
+2. Glob `morkit/output/docs/srs.md`, `morkit/output/docs/api-docs.md`, `morkit/output/docs/database-design.md`,
    `docs/screen-specs/*.md`
 3. Build an in-memory ID index: `{FR-001, NFR-001, SCREEN-001, …}`
 4. Walk each cross-reference and verify

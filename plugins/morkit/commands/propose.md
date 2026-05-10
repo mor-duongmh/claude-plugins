@@ -8,7 +8,7 @@ tags: [spec, propose, superpowers, scaffold]
 Invoke the `propose` skill using the Skill tool. Pass through any arguments the user provided.
 
 The skill will:
-- Scaffold a new change folder under `${MORKIT_ROOT:-docs/morkit/spec}/<name>/`
+- Scaffold a new change folder under `${MORKIT_ROOT:-morkit/output/spec}/<name>/`
 - Generate `proposal.md` (what & why)
 - Generate `design.md` (how, including Tech Stack — verify libraries via Context7)
 - Generate `tasks.md` with Superpowers header + TDD steps

@@ -29,7 +29,7 @@ Usage: generate-checklist.sh <change-dir> [--variant <id>] [--refresh] [--help]
 Detects variant, fetches the Mor Developer Review Checklist from the canonical
 Google Doc, extracts the matching section, and writes <change-dir>/review-checklist.md.
 
-<change-dir> typically resolves to "${MORKIT_ROOT:-docs/morkit/spec}/<name>". Any
+<change-dir> typically resolves to "${MORKIT_ROOT:-morkit/output/spec}/<name>". Any
 folder containing proposal.md and tasks.md works.
 
 Variant ids (override --variant):

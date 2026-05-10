@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# list-changes.sh — list spec changes in ${MORKIT_ROOT:-docs/morkit/spec}/
+# list-changes.sh — list spec changes in ${MORKIT_ROOT:-morkit/output/spec}/
 # Replaces `npx openspec list`.
 #
 # Usage:

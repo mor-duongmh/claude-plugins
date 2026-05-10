@@ -11,7 +11,7 @@ set -euo pipefail
 
 CWD="$(pwd)"
 HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PRIMARY="${MORKIT_ROOT:-docs/morkit/spec}"
+PRIMARY="${MORKIT_ROOT:-morkit/output/spec}"
 
 # ----------------------------------------------------------------------------
 # Responsibility 1: Migration suggestion when legacy openspec/changes/ residual
