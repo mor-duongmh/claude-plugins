@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# validate-tasks.sh — validate a tasks.md against the superpowers-driven schema.
+# validate-tasks.sh — validate a tasks.md against the morkit-driven schema.
 # Replaces `npx openspec schema validate`.
 #
 # Rules (R1-R6):
@@ -34,7 +34,7 @@ print_usage() {
     cat <<'EOF'
 Usage: validate-tasks.sh [--rule R1|R2|R3|R4|R5|R6] [--explain] <tasks.md>
 
-Validates tasks.md against the superpowers-driven schema. Rules R1-R6 are checked
+Validates tasks.md against the morkit-driven schema. Rules R1-R6 are checked
 in order. First failure exits non-zero.
 
 Options:
@@ -46,7 +46,7 @@ EOF
 
 print_explanation() {
     cat <<'EOF'
-superpowers-driven tasks.md schema rules
+morkit-driven tasks.md schema rules
 ========================================
 
 R1 Header

@@ -173,4 +173,3 @@ npx -y ctx7 docs "<library-id>" "<topic>"
 
 When you encounter a library API you're not 100% certain about — query Context7 first, then proceed. Cheaper than discovering the bug at test time or rewriting after.
 
-*This overlay is maintained by `mor-duongmh/claude-plugins`; not part of upstream `obra/superpowers`.*

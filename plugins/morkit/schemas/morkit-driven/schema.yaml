@@ -1,4 +1,4 @@
-name: superpowers-driven
+name: morkit-driven
 version: 1
 description: OpenSpec workflow optimized for Superpowers implementation - proposal → specs → design → tasks (TDD-ready)
 artifacts:
