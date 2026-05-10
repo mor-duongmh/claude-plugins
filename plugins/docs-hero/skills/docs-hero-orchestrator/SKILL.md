@@ -69,6 +69,13 @@ Parse first arg:
 
 ## Init Flow
 
+**Doc-type selection (REQUIRED before dispatch):** when invoked via `/docs-hero:init`
+without an explicit `--outputs` flag, the caller (slash command) MUST ask the user
+via AskUserQuestion which doc types to generate (multi-select: SRS / API docs /
+DB design) and pass the resolved comma-separated list as `--outputs`. Never
+default silently to all three — the user picks. See `commands/init.md` for the
+exact question template.
+
 ```bash
 # Pre-flight
 test -d "$VENV" || { echo "ERROR: run /docs-hero:setup first." >&2; exit 1; }
@@ -80,10 +87,11 @@ mkdir -p "$PROJECT_TMP"
   --output "$PROJECT_TMP/raw-bundle.json"
 
 # 2. Dispatch to sub-skills (CLAUDE_PLUGIN_ROOT inherited from env)
+#    $OUTPUTS = user-selected subset, e.g. "srs,api" or "srs,api,db"
 "$PY" "$ORCH_SCRIPTS/dispatch_coordinator.py" init \
   --project-model "$PROJECT_TMP/project-model.json" \
   --language EN \
-  --outputs srs,api,db \
+  --outputs "$OUTPUTS" \
   --docs-dir "$PROJECT_DOCS_DIR"
 
 # 3. Aggregate report
