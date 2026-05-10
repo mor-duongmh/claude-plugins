@@ -1,207 +1,149 @@
 # Mor Claude Plugins
 
-> Marketplace plugin Claude Code của Mor — spec-driven, TDD-first, vendored Superpowers.
+> Marketplace của Mor — một plugin `morkit` consolidates tất cả: spec workflow, brainstorm/execute, code review, doc generation. Một namespace `/morkit:*` cho tất cả.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Cài đặt
+---
 
-Yêu cầu: [Claude Code](https://docs.anthropic.com/claude/docs/claude-code) + Node.js ≥ 18.
+## 1. Cài đặt (1 plugin, 1 lệnh)
+
+Yêu cầu: [Claude Code](https://docs.anthropic.com/claude/docs/claude-code) và Node.js ≥ 18.
 
 ```
 /plugin add marketplace github:mor-duongmh/claude-plugins
-/plugin install spec@mor-duongmh
-/plugin install superpowers@mor-duongmh
+/plugin install morkit@mor-duongmh
 ```
 
-> `superpowers@mor-duongmh` là bản vendored fork của [obra/superpowers](https://github.com/obra/superpowers). Cùng plugin name → không cài đồng thời với upstream.
+Cài xong là dùng được luôn — không cần setup gì thêm trong từng project.
 
-## Verify install
+---
 
-Sau 3 lệnh trên, kiểm tra mọi thứ đúng:
+## 2. `morkit` có những gì?
 
-```bash
-# 1. Marketplace có cả 2 plugin
-ls ~/.claude/plugins/marketplaces/mor-duongmh
+Một plugin chứa 4 nhóm chức năng dưới namespace `/morkit:*`:
 
-# 2. Skills available trong session — gõ trong Claude Code:
-#    "List skills with namespace superpowers:"
-#    Phải thấy 14 skills (brainstorming, executing-plans, ...)
-#    "List skills with namespace spec:" → 5 skills (openspec-*, spec-setup)
+| Nhóm | Bao gồm | Để làm gì |
+|---|---|---|
+| **Spec workflow** | `propose`, `review`, `archive` | Scaffold proposal/design/tasks + review-checklist gate |
+| **Plan & build** | `brainstorming`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `test-driven-development`, `systematic-debugging`, +8 skills khác | Brainstorm, viết plan, thực thi plan, debug, TDD |
+| **Code review** | `deep-review`, `deep-review-doctor`, `deep-review-post` | Review code bằng 5 chuyên gia AI song song |
+| **Doc generation** | `setup`, `init`, `update`, `sync`, `apply-sync`, `doctor` | Sinh SRS + API + DB doc cho ITO Japan offshore |
 
-# 3. Slash commands available
-#    /spec:setup --help     → in usage
-#    /superpowers:brainstorm → invoke brainstorming skill
+Tổng cộng: **22 skills + 9 specialist agents + 15 slash commands** đều có prefix `/morkit:`.
 
-# 4. Companion tools state (sau session đầu tiên)
-ls ~/.claude/plugins/data/spec/.tools-setup-* 2>/dev/null
-# .tools-setup-done   = đã setup (RTK đã cài hoặc skip)
-# .tools-setup-skip   = "don't ask again"
-```
+---
 
-## Workflow at a glance
+## 3. Quy trình điển hình một feature
 
 ```
-   ┌─────────────────────────────────────────────────────────────────┐
-   │  /spec:brainstorm      (optional — think before committing)      │
-   └────────────────────────────┬────────────────────────────────────┘
-                                ▼
-   ┌─────────────────────────────────────────────────────────────────┐
-   │  /spec:propose                                                   │
-   │    → proposal.md         (what & why)                            │
-   │    → design.md           (how + Tech Stack — verified via Context7)│
-   │    → tasks.md            (Superpowers header + Files + TDD)      │
-   │    → review-checklist.md (auto-generated: BE/FE × Feat/Bug/Refactor)│
-   └────────────────────────────┬────────────────────────────────────┘
-                                ▼
-              🚦 HUMAN GATE — review-checklist.md
-                    Tick items, fill summary,
-                    set "Overall Decision: OK"
-                                │
-              [Plugin's PreToolUse hook + skill-level check
-               BLOCK every implementation skill until OK]
-                                ▼
-       ┌────────────────────────┼────────────────────────┐
-       ▼                        ▼                        ▼
-   /spec:apply       /superpowers:execute-plan    /superpowers:
-   (native runner)    (single agent, TDD)          subagent-driven-
-                                                    development
-                                                    (parallel agents)
-                                ▼
-   ┌─────────────────────────────────────────────────────────────────┐
-   │  /spec:archive          (after merge)                            │
-   └─────────────────────────────────────────────────────────────────┘
+  1. /morkit:brainstorming           → Suy nghĩ, không code
+              ↓
+  2. /morkit:propose                 → Sinh proposal + design + tasks + checklist
+              ↓
+  3. 🚦 Mở review-checklist.md, tick từng mục, đặt "Overall Decision: OK"
+              ↓
+  4. /morkit:executing-plans          → Chạy plan, code TDD
+        (hoặc /morkit:subagent-driven-development cho parallel agents)
+              ↓
+  5. /morkit:deep-review               → Review code (5 chuyên gia AI)
+              ↓
+  6. /morkit:archive                   → Đóng change sau khi merge
 ```
 
-> Need to regenerate or refresh the checklist for an existing change?
-> Run **`/spec:review`** (auto-detects variant) or **`/spec:review --variant FE-BugFix --refresh`**.
+Bước 3 là **chốt chặn của con người**. Plugin chặn `/morkit:executing-plans` cho tới khi `Overall Decision: OK`.
 
-## Plugins
+---
 
-| Plugin | Mục đích |
-|--------|----------|
-| [`spec`](./plugins/spec) | Spec-driven workflow trên OpenSpec với schema `superpowers-driven`. Artifacts plug thẳng vào Superpowers. |
-| [`superpowers`](./plugins/superpowers) | Vendored fork của obra/superpowers, sync qua script. **6 high-ROI skills (`brainstorming`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `systematic-debugging`, `test-driven-development`) đã được overlay với Context7 research guidance** — agent sẽ tự verify library API thay vì hallucinate. Custom thêm qua `overlay/`. |
-| [`deep-review`](./plugins/deep-review) | Multi-language deep code review agent: chạy 5 specialist subagents (risk, security, pattern, tests, convention) song song trên git diff hoặc PR. Powered by [code-review-graph](https://github.com/tirth8205/code-review-graph) MCP (bundled qua `uvx`). Ưu tiên `CLAUDE.md` của project hơn language profile mặc định. |
-| [`docs-hero`](./plugins/docs-hero) | BrSE document generation: SRS + API + DB cho ITO Japan offshore. Init/update/sync với conflict-minimal diff engine. Synergy với `spec`: `/spec:propose` → `/docs-hero:update --from-openspec`. Python venv tại `~/.claude/plugins/data/docs-hero/.venv` (one-time `/docs-hero:setup`). |
+## 4. Slash command đầy đủ
 
-## Slash commands
+### Spec workflow
+| Command | Việc |
+|---|---|
+| `/morkit:propose [mô tả]` | Sinh đầy đủ proposal + design + tasks + review-checklist |
+| `/morkit:review [tên]` | Tạo lại review-checklist từ Google Doc |
+| `/morkit:archive [tên]` | Đóng change sau merge |
 
-| Command | Plugin | Mục đích |
-|---------|--------|----------|
-| `/spec:setup [path]` | spec | Cài schema vào project |
-| `/spec:brainstorm` | spec | Suy nghĩ trước khi implement |
-| `/spec:propose [desc]` | spec | Sinh proposal + design + tasks (TDD) **+ review-checklist** |
-| `/spec:review [name]` | spec | (Re)generate developer review checklist (human gate) |
-| `/spec:apply [name]` | spec | Native runner thực thi tasks (blocked nếu checklist chưa OK) |
-| `/spec:archive [name]` | spec | Đóng change sau merge |
-| `/superpowers:brainstorm` | superpowers | Brainstorming skill |
-| `/superpowers:write-plan` | superpowers | Writing-plans skill |
-| `/superpowers:execute-plan` | superpowers | Executing-plans skill |
-| `/deep-review [target]` | deep-review | Chạy deep code review trên PR hoặc git diff (5 subagents song song) |
-| `/deep-review-doctor` | deep-review | Kiểm tra trạng thái cài đặt deep-review (uvx, code-review-graph, gh, graph build) |
-| `/docs-hero:setup` | docs-hero | Bootstrap Python venv (~30-60s, one-time) |
-| `/docs-hero:init` | docs-hero | Generate fresh SRS + API docs + DB design from ProjectModel JSON |
-| `/docs-hero:update` | docs-hero | Apply OpenSpec change or brainstorm plan to docs (preserves manual edits) |
-| `/docs-hero:sync` | docs-hero | Scan codebase, propose changes to API + DB docs (read-only) |
-| `/docs-hero:apply-sync` | docs-hero | Apply user-approved sync proposal (ticked checkboxes) |
-| `/docs-hero:doctor` | docs-hero | Health-check installation |
+### Plan & build (brainstorm, plan, execute, debug, TDD)
+14 skills under `/morkit:*` namespace. Most-used:
+- `/morkit:brainstorming` — suy nghĩ + investigate codebase, không code
+- `/morkit:writing-plans` — viết plan từ ý tưởng
+- `/morkit:executing-plans` — thực thi plan từng bước (bị review-gate chặn)
+- `/morkit:subagent-driven-development` — parallel agents, fast iteration
+- `/morkit:test-driven-development` — TDD discipline
+- `/morkit:systematic-debugging` — debug có hệ thống
 
-Workflow điển hình: `/spec:propose` → `tasks.md` ready-for-Superpowers → `/superpowers:execute-plan` (hoặc `subagent-driven-development`).
-Code review tự động: sau khi implement, chạy `/deep-review --diff` hoặc `/deep-review <PR-number>` để có bảng đánh giá đầy đủ về risk · security · pattern · tests · convention.
+### Code review
+| Command | Việc |
+|---|---|
+| `/morkit:deep-review [target]` | Review trên git diff hoặc PR (5 specialists song song) |
+| `/morkit:deep-review-doctor` | Health-check |
+| `/morkit:deep-review-post` | Post-review hook |
 
-## Schema `superpowers-driven` khác default ở 3 chỗ
+### Doc generation
+| Command | Việc |
+|---|---|
+| `/morkit:setup` | Bootstrap Python venv (~30-60s, 1 lần) |
+| `/morkit:init` | Sinh fresh SRS + API + DB từ ProjectModel JSON |
+| `/morkit:update` | Apply change/plan vào doc |
+| `/morkit:sync` | Scan codebase, đề xuất update |
+| `/morkit:apply-sync` | Apply đề xuất từ sync |
+| `/morkit:doctor` | Health-check docs |
 
-1. `design.md` bắt buộc section **`## Tech Stack`**.
-2. `tasks.md` mở đầu bằng **Superpowers header** + chú thích `REQUIRED SUB-SKILL`.
-3. Mỗi task group có **Files block** + **5 bước TDD bắt buộc**.
+---
 
-## Auto-suggestion
+## 5. Plan review gate (chốt chặn human-in-the-loop)
 
-Project có `openspec/` nhưng chưa cài schema → plugin gợi ý `/spec:setup` ở đầu session. Tắt vĩnh viễn:
+Sau `/morkit:propose`, plugin sinh `morkit/output/spec/<tên>/review-checklist.md` từ [Google Doc canonical của Mor](https://docs.google.com/document/d/184wY2N2WOUExmZrClvHCfcRCnSQsJYvav6gc6JwL6xc).
 
-```bash
-touch openspec/.spec-setup-skip
+Auto-detect variant (BE/FE × Feature/BugFix/Refactor). Override:
+
+```
+/morkit:review --variant FE-BugFix
+/morkit:review --refresh
 ```
 
-## Plan review gate (human checkpoint between propose and implement)
+Bạn mở file, tick từng mục, sửa dòng cuối:
 
-Sau `/spec:propose`, plugin tự sinh `openspec/changes/<name>/review-checklist.md` từ canonical [Mor Developer Review Checklist Google Doc](https://docs.google.com/document/d/184wY2N2WOUExmZrClvHCfcRCnSQsJYvav6gc6JwL6xc) — auto-detect variant (BE/FE × Feature/BugFix/Refactor), fetch live (cache 24h), điền meta header, mặc định `Overall Decision: PENDING`.
-
-**Hai layer enforcement:**
-
-| Layer | Cơ chế | Khi nào fire |
-|-------|--------|-------------|
-| **PreToolUse hook** | `pre-tool-checklist-gate.sh` — Claude Code harness chặn tool call | Khi Claude invoke `Skill openspec-apply-change` / `executing-plans` / `subagent-driven-development` |
-| **Skill content** | Mỗi skill có pre-flight check ở Step 0 — refuse to proceed | Khi skill tự đọc nội dung của mình |
-
-Nếu một layer bị bypass (rare), layer kia vẫn block → defense-in-depth.
-
-**Override variant:** `/spec:review --variant FE-BugFix` (BE-Feature, BE-BugFix, BE-Refactor, FE-Feature, FE-BugFix, FE-Refactor)
-**Refresh source:** `/spec:review --refresh` (force re-fetch Google Doc, bypass cache)
-
-Khi review xong, sửa file:
 ```diff
 - Overall Decision: PENDING
 + Overall Decision: OK
 ```
-→ Implementation skills mở khoá.
 
-## Companion tools (Context7 + RTK)
+→ `/morkit:executing-plans` mở khoá.
 
-Hai tool optional làm tăng chất lượng research và giảm token consumption — plugin tự dò khi mở session đầu tiên và xử lý lịch sự:
+**Hai lớp bảo vệ song song** (defense-in-depth):
+1. **PreToolUse hook** — Claude Code chặn tool call ngay từ harness
+2. **Skill content** — mỗi skill tự kiểm tra ở Step 0 trước khi làm việc
 
-| Tool | Vai trò | Cài kiểu nào |
-|------|---------|-------------|
-| **[Context7](https://github.com/upstash/context7)** | Trả về docs/API version-specific cho library, tránh hallucinated calls | **Lazy via npx** — không cần cài trước. Skill gọi `npx -y ctx7 library ... && npx -y ctx7 docs ...` (two-step: resolve ID rồi query docs). Nếu user đã setup MCP (`mcp.context7.com`), plugin tự ưu tiên dùng MCP tools `mcp__context7__resolve-library-id` + `mcp__context7__query-docs`. |
-| **[RTK](https://github.com/rtk-ai/rtk)** | Rewrite + nén output Bash → giảm 60-90% tokens | **Ask once** — session đầu tiên, plugin hỏi user qua AskUserQuestion: cài RTK ngay không? User chọn `Yes`/`Skip`/`Don't ask again`. Không tự cài silent. |
+---
 
-> **🎯 Context7 đã active trong 6 high-ROI Superpowers skills sau khi cài** — `brainstorming`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `systematic-debugging`, `test-driven-development`. Khi gặp library API không chắc chắn, agent sẽ tự gọi Context7 (qua MCP nếu có, fallback `npx`) thay vì đoán. Cộng với 3 Mor skills (`/spec:brainstorm`, `/spec:propose`, `/spec:apply`) → **9 skills tổng có Context7 guidance built-in**.
+## 6. Companion tools (Context7 + RTK)
 
-State files trong `~/.claude/plugins/data/spec/`:
-- `.tools-setup-done` — đã setup hoặc skip
-- `.tools-setup-skip` — không hỏi nữa
+Hai tool nâng chất lượng research và giảm token. Plugin xử lý lịch sự — không cài silent.
 
-Cài RTK thủ công bất kỳ lúc nào:
+| Tool | Vai trò | Cách cài |
+|---|---|---|
+| **[Context7](https://github.com/upstash/context7)** | Trả docs/API version-specific cho library, agent không cần đoán | **Lazy** — plugin tự `npx -y ctx7` khi cần. MCP optional. |
+| **[RTK](https://github.com/rtk-ai/rtk)** | Nén output bash, giảm 60-90% token | **Hỏi 1 lần** session đầu — bạn chọn `Yes`/`Skip`/`Don't ask again`. |
+
+> 🎯 Context7 đã active trong 6 brainstorm/execute skills + 3 spec-workflow skill — agent sẽ tự gọi Context7 thay vì đoán API.
+
+Cài RTK thủ công:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
 rtk init -g
 ```
 
-Cài Context7 dạng MCP (full features qua OAuth):
+Cài Context7 dạng MCP (full features):
+
 ```bash
 npx -y ctx7 setup
 ```
 
-## Sync upstream Superpowers
+---
 
-```bash
-cd plugins/superpowers
-./scripts/sync-superpowers.sh                    # use pinned version
-./scripts/sync-superpowers.sh 5.1.0              # bump
-./scripts/sync-superpowers.sh --dry-run 5.1.0    # preview
-./scripts/verify-vendor.sh                       # check sha256 still matches
-```
+## 7. License
 
-Customization → đọc [plugins/superpowers/overlay/README.md](plugins/superpowers/overlay/README.md).
-
-> ⚠️ **Reconcile overlay khi sync upstream version mới.** 6 skills đang có overlay (`brainstorming`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `systematic-debugging`, `test-driven-development`). Overlay dùng full-file replace mode → nếu upstream cập nhật chính SKILL.md của 6 skills này, sync sẽ ghi đè bản upstream bằng overlay (giữ Mor's customization, mất upstream changes).
->
-> **Sau mỗi sync version mới:**
-> 1. Xem `.overlay-meta.json` mỗi overlay → ghi `based_on_upstream_version` cũ.
-> 2. Diff manually giữa upstream new vs overlay để biết upstream sửa gì cần merge vào.
-> 3. Cập nhật `overlay/skills/<name>/SKILL.md` với upstream changes + giữ Mor's appended block.
-> 4. Update `.overlay-meta.json` → `based_on_upstream_version` thành version mới.
-> 5. Run `sync-superpowers.sh` lại để apply overlay đã reconcile.
->
-> Drift detection tự động — defer cho v2 sync script.
-
-## Troubleshooting
-
-- **Commands hiện `/mor-openspec:*` thay vì `/spec:*`** → `/plugin update spec@mor-duongmh`.
-- **`schema validate` báo lỗi** → xóa `openspec/schemas/superpowers-driven/` và chạy lại `/spec:setup`.
-- **Đã cài upstream `superpowers@obra` trước đó** → `/plugin uninstall superpowers@obra` rồi cài lại Mor's bản.
-
-## License
-
-[MIT](LICENSE) © Mor. See [plugins/superpowers/ATTRIBUTION.md](plugins/superpowers/ATTRIBUTION.md) for upstream attribution.
+[MIT](LICENSE) © Mor.
