@@ -141,6 +141,34 @@ npx -y ctx7 setup
 
 ---
 
-## 7. License
+## 7. Đã có OpenSpec sẵn trong dự án?
+
+Yên tâm — plugin **không động vào** dự án của bạn cho tới khi bạn cho phép.
+
+Cụ thể:
+
+- ✅ File OpenSpec hiện tại (`openspec/changes/`, `openspec/specs/`, `openspec.yaml`...) **vẫn nguyên vẹn**, plugin chỉ đọc, không ghi.
+- 🔔 Lần đầu mở Claude Code trong project, plugin **gợi ý migrate** (chỉ gợi ý — không tự chạy):
+  > _"Phát hiện `openspec/changes/` cũ. Migrate sang `mor-kit/changes/` không?"_
+- 🤝 Nếu bạn chưa muốn migrate: plugin vẫn hoạt động với `openspec/changes/` (chế độ dual-read), kèm warning nhẹ ở stderr. Review-checklist gate vẫn enforce bình thường.
+- 🚀 Khi muốn migrate, chạy 1 lệnh:
+
+  ```bash
+  bash ${CLAUDE_PLUGIN_ROOT}/scripts/migrate-from-openspec.sh --dry-run    # xem trước
+  bash ${CLAUDE_PLUGIN_ROOT}/scripts/migrate-from-openspec.sh              # thực thi
+  ```
+
+  Script chỉ làm 3 việc: `mv openspec/changes` → `mor-kit/changes`, giữ nguyên `archive/`, tạo marker `.mor-kit`. Không chạm vào `openspec/specs/` hay file OpenSpec khác.
+
+- 🤐 Tắt gợi ý migrate vĩnh viễn:
+  ```bash
+  touch openspec/.spec-migration-skip
+  ```
+
+> Plugin **không yêu cầu uninstall OpenSpec CLI** — bạn vẫn dùng `npx openspec` cho việc khác nếu muốn. Mor-kit chỉ thay thế phần "scaffold change + review checklist" của OpenSpec, không phải toàn bộ.
+
+---
+
+## 8. License
 
 [MIT](LICENSE) © Mor.
