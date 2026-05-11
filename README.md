@@ -55,7 +55,7 @@ Bước 3 là **chốt chặn của con người**. Plugin chặn `/morkit:execu
 
 ---
 
-## 4. Slash command đầy đủ
+## 4. Command
 
 ### Spec workflow
 | Command | Việc |
