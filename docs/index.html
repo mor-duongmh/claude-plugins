@@ -149,104 +149,82 @@ td code { font-size: 12px; }
     <button id="themeBtn" class="toggle" type="button">☾ Vesper / Paper</button>
   </div>
   <h1>morkit</h1>
-  <p class="lede">Marketplace của Mor — một plugin <code>morkit</code> consolidates tất cả:
-  spec workflow, brainstorm/execute, code review, doc generation.
-  Một namespace <code>/morkit:*</code> cho tất cả.</p>
+  <p class="lede">Plugin <code>morkit</code> của Mor — gói toàn bộ công cụ vào một chỗ:
+  viết spec, lên kế hoạch và chạy, review code, sinh tài liệu.
+  Tất cả gọi qua cùng một tiền tố <code>/morkit:*</code>.</p>
 
 <h2>1. Cài đặt</h2>
-  <p>Yêu cầu: <a href="https://docs.anthropic.com/claude/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> và Node.js ≥ 18.</p>
+  <p>Cần có: <a href="https://docs.anthropic.com/claude/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> và Node.js từ 18 trở lên.</p>
   <pre><code>/plugin add marketplace github:mor-duongmh/claude-plugins
 /plugin install morkit@mor-duongmh</code></pre>
-  <p class="lede" style="font-size:14px;">Cài xong là dùng được luôn — không cần setup gì thêm trong từng project.</p>
+  <p class="lede" style="font-size:14px;">Cài xong là dùng được luôn — không cần làm gì thêm trong từng dự án.</p>
 
   <h2>2. morkit có những gì?</h2>
-  <p>Một plugin chứa 4 nhóm chức năng dưới namespace <code>/morkit:*</code>:</p>
+  <p>Một plugin gói 4 nhóm chức năng, tất cả gọi qua tiền tố <code>/morkit:*</code>:</p>
   <table>
     <thead><tr><th>Nhóm</th><th>Bao gồm</th><th>Để làm gì</th></tr></thead>
     <tbody>
-      <tr><td><strong>Spec workflow</strong></td><td><a href="commands/propose.html"><code>/morkit:propose</code></a>, <a href="commands/review.html"><code>/morkit:review</code></a>, <a href="commands/archive.html"><code>/morkit:archive</code></a></td><td>Scaffold proposal/design/tasks + review-checklist gate</td></tr>
-      <tr><td><strong>Plan &amp; build</strong></td><td><a href="skills/brainstorming.html"><code>brainstorming</code></a>, <a href="skills/writing-plans.html"><code>writing-plans</code></a>, <a href="skills/executing-plans.html"><code>executing-plans</code></a>, <a href="skills/subagent-driven-development.html"><code>subagent-driven-development</code></a>, <a href="skills/test-driven-development.html"><code>test-driven-development</code></a>, <a href="skills/systematic-debugging.html"><code>systematic-debugging</code></a>, <a href="skills/dispatching-parallel-agents.html"><code>dispatching-parallel-agents</code></a>, <a href="skills/using-git-worktrees.html"><code>using-git-worktrees</code></a>, <a href="skills/finishing-a-development-branch.html"><code>finishing-a-development-branch</code></a>, <a href="skills/verification-before-completion.html"><code>verification-before-completion</code></a>, <a href="skills/requesting-code-review.html"><code>requesting-code-review</code></a>, <a href="skills/receiving-code-review.html"><code>receiving-code-review</code></a>, <a href="skills/writing-skills.html"><code>writing-skills</code></a></td><td>Brainstorm, viết plan, thực thi plan, TDD, debug, review</td></tr>
-      <tr><td><strong>Code review</strong></td><td><a href="commands/deep-review.html"><code>/morkit:deep-review</code></a>, <a href="commands/deep-review-doctor.html"><code>/morkit:deep-review-doctor</code></a>, <a href="commands/deep-review-post.html"><code>/morkit:deep-review-post</code></a></td><td>Review code bằng 5 chuyên gia AI song song</td></tr>
-      <tr><td><strong>Doc generation</strong></td><td><a href="commands/setup.html"><code>/morkit:setup</code></a>, <a href="commands/init.html"><code>/morkit:init</code></a>, <a href="commands/update.html"><code>/morkit:update</code></a>, <a href="commands/sync.html"><code>/morkit:sync</code></a>, <a href="commands/apply-sync.html"><code>/morkit:apply-sync</code></a>, <a href="commands/doctor.html"><code>/morkit:doctor</code></a></td><td>Sinh SRS + API + DB doc cho ITO Japan offshore</td></tr>
+      <tr><td><strong>Viết spec</strong></td><td><a href="commands/propose.html"><code>/morkit:propose</code></a>, <a href="commands/review.html"><code>/morkit:review</code></a>, <a href="commands/archive.html"><code>/morkit:archive</code></a></td><td>Tự sinh proposal, design, tasks và checklist để bạn duyệt trước khi cho code chạy.</td></tr>
+      <tr><td><strong>Lên kế hoạch và làm</strong></td><td><a href="skills/brainstorming.html"><code>brainstorming</code></a>, <a href="skills/writing-plans.html"><code>writing-plans</code></a>, <a href="skills/executing-plans.html"><code>executing-plans</code></a>, <a href="skills/subagent-driven-development.html"><code>subagent-driven-development</code></a>, <a href="skills/test-driven-development.html"><code>test-driven-development</code></a>, <a href="skills/systematic-debugging.html"><code>systematic-debugging</code></a>, <a href="skills/dispatching-parallel-agents.html"><code>dispatching-parallel-agents</code></a>, <a href="skills/using-git-worktrees.html"><code>using-git-worktrees</code></a>, <a href="skills/finishing-a-development-branch.html"><code>finishing-a-development-branch</code></a>, <a href="skills/verification-before-completion.html"><code>verification-before-completion</code></a>, <a href="skills/requesting-code-review.html"><code>requesting-code-review</code></a>, <a href="skills/receiving-code-review.html"><code>receiving-code-review</code></a>, <a href="skills/writing-skills.html"><code>writing-skills</code></a></td><td>Suy nghĩ ý tưởng, viết kế hoạch, chạy kế hoạch từng bước, viết test trước, debug có hệ thống và xin review.</td></tr>
+      <tr><td><strong>Review code</strong></td><td><a href="commands/deep-review.html"><code>/morkit:deep-review</code></a>, <a href="commands/deep-review-doctor.html"><code>/morkit:deep-review-doctor</code></a>, <a href="commands/deep-review-post.html"><code>/morkit:deep-review-post</code></a></td><td>Review code chuyên sâu bằng 5 chuyên gia AI chạy song song.</td></tr>
+      <tr><td><strong>Sinh tài liệu</strong></td><td><a href="commands/setup.html"><code>/morkit:setup</code></a>, <a href="commands/init.html"><code>/morkit:init</code></a>, <a href="commands/update.html"><code>/morkit:update</code></a>, <a href="commands/sync.html"><code>/morkit:sync</code></a>, <a href="commands/apply-sync.html"><code>/morkit:apply-sync</code></a>, <a href="commands/doctor.html"><code>/morkit:doctor</code></a></td><td>Tự sinh tài liệu dự án theo chuẩn ITO Japan offshore: SRS, API, schema DB, kiến trúc...</td></tr>
     </tbody>
   </table>
-  <p class="lede" style="font-size:14px;">Tổng cộng: <strong>22 skills + 9 specialist agents + 15 slash commands</strong> đều có prefix <code>/morkit:</code>.</p>
+  <p class="lede" style="font-size:14px;">Tổng cộng <strong>22 skill + 9 agent chuyên trách + 15 slash command</strong>, tất cả đều có tiền tố <code>/morkit:</code>.</p>
 
-  <h2>3. Slash command đầy đủ</h2>
-  <p>Bấm vào tên command để xem chi tiết, cách dùng và ví dụ.</p>
+  <h2>3. Danh sách slash command</h2>
+  <p>Bấm vào tên command để xem giải thích chi tiết, cách gọi và ví dụ.</p>
   <table>
-    <thead><tr><th>Command</th><th>Việc</th></tr></thead>
+    <thead><tr><th>Command</th><th>Để làm gì</th></tr></thead>
     <tbody>
-      <tr><td><a href="commands/propose.html"><code>/morkit:propose [mô tả]</code></a></td><td>Sinh đầy đủ proposal + design + tasks + review-checklist</td></tr>
-      <tr><td><a href="commands/review.html"><code>/morkit:review [tên]</code></a></td><td>Tạo lại review-checklist từ Google Doc</td></tr>
-      <tr><td><a href="commands/archive.html"><code>/morkit:archive [tên]</code></a></td><td>Đóng change sau merge</td></tr>
-      <tr><td><a href="commands/brainstorm.html"><code>/morkit:brainstorm</code></a></td><td><span class="tag deprecated">Deprecated</span> Dùng skill <code>brainstorming</code></td></tr>
-      <tr><td><a href="commands/write-plan.html"><code>/morkit:write-plan</code></a></td><td><span class="tag deprecated">Deprecated</span> Dùng skill <code>writing-plans</code></td></tr>
-      <tr><td><a href="commands/execute-plan.html"><code>/morkit:execute-plan</code></a></td><td><span class="tag deprecated">Deprecated</span> Dùng skill <code>executing-plans</code></td></tr>
-      <tr><td><a href="commands/deep-review.html"><code>/morkit:deep-review [target]</code></a></td><td>Review trên git diff hoặc PR (5 specialists song song)</td></tr>
-      <tr><td><a href="commands/deep-review-doctor.html"><code>/morkit:deep-review-doctor</code></a></td><td>Health-check Deep Review installation</td></tr>
-      <tr><td><a href="commands/deep-review-post.html"><code>/morkit:deep-review-post</code></a></td><td>Post report làm PR comment</td></tr>
-      <tr><td><a href="commands/setup.html"><code>/morkit:setup</code></a></td><td>Bootstrap Python venv (~30-60s, 1 lần)</td></tr>
-      <tr><td><a href="commands/init.html"><code>/morkit:init</code></a></td><td>Sinh fresh SRS + API + DB từ ProjectModel JSON</td></tr>
-      <tr><td><a href="commands/update.html"><code>/morkit:update</code></a></td><td>Apply change/plan vào doc</td></tr>
-      <tr><td><a href="commands/sync.html"><code>/morkit:sync</code></a></td><td>Scan codebase, đề xuất update</td></tr>
-      <tr><td><a href="commands/apply-sync.html"><code>/morkit:apply-sync</code></a></td><td>Apply đề xuất từ sync</td></tr>
-      <tr><td><a href="commands/doctor.html"><code>/morkit:doctor</code></a></td><td>Health-check docs-hero install</td></tr>
+      <tr><td><a href="commands/propose.html"><code>/morkit:propose [mô tả]</code></a></td><td>Sinh đầy đủ proposal, design, tasks và checklist trong một lần chạy.</td></tr>
+      <tr><td><a href="commands/review.html"><code>/morkit:review [tên]</code></a></td><td>Tạo hoặc làm mới checklist duyệt thiết kế cho một change.</td></tr>
+      <tr><td><a href="commands/archive.html"><code>/morkit:archive [tên]</code></a></td><td>Đóng một change folder sau khi đã merge và deploy ổn.</td></tr>
+      <tr><td><a href="commands/brainstorm.html"><code>/morkit:brainstorm</code></a></td><td><span class="tag deprecated">Đã thay thế</span> Dùng skill <code>brainstorming</code>.</td></tr>
+      <tr><td><a href="commands/write-plan.html"><code>/morkit:write-plan</code></a></td><td><span class="tag deprecated">Đã thay thế</span> Dùng skill <code>writing-plans</code>.</td></tr>
+      <tr><td><a href="commands/execute-plan.html"><code>/morkit:execute-plan</code></a></td><td><span class="tag deprecated">Đã thay thế</span> Dùng skill <code>executing-plans</code>.</td></tr>
+      <tr><td><a href="commands/deep-review.html"><code>/morkit:deep-review [target]</code></a></td><td>Review chuyên sâu trên PR hoặc git diff (5 chuyên gia AI chạy song song).</td></tr>
+      <tr><td><a href="commands/deep-review-doctor.html"><code>/morkit:deep-review-doctor</code></a></td><td>Kiểm tra cài đặt Deep Review đã đủ điều kiện chạy chưa.</td></tr>
+      <tr><td><a href="commands/deep-review-post.html"><code>/morkit:deep-review-post</code></a></td><td>Post báo cáo review lên PR làm comment.</td></tr>
+      <tr><td><a href="commands/setup.html"><code>/morkit:setup</code></a></td><td>Dựng môi trường Python cho docs-hero (khoảng 30-60 giây, chạy 1 lần).</td></tr>
+      <tr><td><a href="commands/init.html"><code>/morkit:init</code></a></td><td>Sinh bộ tài liệu mới (SRS, API, DB...) từ một file ProjectModel JSON.</td></tr>
+      <tr><td><a href="commands/update.html"><code>/morkit:update</code></a></td><td>Áp dụng một change hoặc plan đã chốt vào tài liệu hiện có.</td></tr>
+      <tr><td><a href="commands/sync.html"><code>/morkit:sync</code></a></td><td>Đọc mã nguồn và đề xuất nội dung nên cập nhật vào tài liệu (chỉ đọc, không ghi).</td></tr>
+      <tr><td><a href="commands/apply-sync.html"><code>/morkit:apply-sync</code></a></td><td>Áp dụng các nội dung bạn đã tick trong file sync-proposal.md.</td></tr>
+      <tr><td><a href="commands/doctor.html"><code>/morkit:doctor</code></a></td><td>Kiểm tra cài đặt docs-hero xem có ổn không.</td></tr>
     </tbody>
   </table>
 
-  <h2>4. Plan review gate (chốt chặn human-in-the-loop)</h2>
-  <p>Sau <a href="commands/propose.html"><code>/morkit:propose</code></a>, plugin sinh <code>morkit/output/spec/&lt;tên&gt;/review-checklist.md</code>
-  từ <a href="https://docs.google.com/document/d/184wY2N2WOUExmZrClvHCfcRCnSQsJYvav6gc6JwL6xc" target="_blank" rel="noopener">Google Doc canonical của Mor</a>.</p>
-
-  <p>Auto-detect variant (BE/FE × Feature/BugFix/Refactor). Override:</p>
-  <pre><code>/morkit:review --variant FE-BugFix
-/morkit:review --refresh</code></pre>
-
-  <p>Bạn mở file, tick từng mục, sửa dòng cuối:</p>
-  <pre><code>- Overall Decision: PENDING
-+ Overall Decision: OK</code></pre>
-
-  <p>→ <a href="skills/executing-plans.html"><code>executing-plans</code></a> mở khoá.</p>
-
-  <div class="note">
-    <strong>Hai lớp bảo vệ song song</strong> (defense-in-depth):
-    <ol>
-      <li><strong>PreToolUse hook</strong> — Claude Code chặn tool call ngay từ harness</li>
-      <li><strong>Skill content</strong> — mỗi skill tự kiểm tra ở Step 0 trước khi làm việc</li>
-    </ol>
-  </div>
-
-  <h2>5. Companion tools (Context7 + RTK)</h2>
-  <p>Hai tool nâng chất lượng research và giảm token. Plugin xử lý lịch sự — không cài silent.</p>
+  <h2>4. Hai công cụ đi kèm (Context7 + RTK)</h2>
+  <p>Hai công cụ giúp agent trả lời chính xác hơn và tiết kiệm token. Plugin không cài lặng lẽ — sẽ hỏi bạn trước.</p>
   <table>
-    <thead><tr><th>Tool</th><th>Vai trò</th><th>Cách cài</th></tr></thead>
+    <thead><tr><th>Công cụ</th><th>Vai trò</th><th>Cách cài</th></tr></thead>
     <tbody>
       <tr>
         <td><a href="https://github.com/upstash/context7" target="_blank" rel="noopener">Context7</a></td>
-        <td>Trả docs/API version-specific cho library, agent không cần đoán</td>
-        <td><strong>Lazy</strong> — plugin tự <code>npx -y ctx7</code> khi cần. MCP optional.</td>
+        <td>Trả về tài liệu/API đúng phiên bản cho thư viện, agent không phải đoán.</td>
+        <td>Cài lười — plugin tự gọi <code>npx -y ctx7</code> khi cần.</td>
       </tr>
       <tr>
         <td><a href="https://github.com/rtk-ai/rtk" target="_blank" rel="noopener">RTK</a></td>
-        <td>Nén output bash, giảm 60-90% token</td>
-        <td><strong>Hỏi 1 lần</strong> session đầu — bạn chọn Yes/Skip/Don't ask again.</td>
+        <td>Nén output của lệnh bash, giảm 60-90% token.</td>
+        <td>Hỏi 1 lần ở phiên đầu — bạn chọn Cài / Bỏ qua / Đừng hỏi lại.</td>
       </tr>
     </tbody>
   </table>
-  <p class="lede" style="font-size:14px;">🎯 Context7 đã active trong 6 brainstorm/execute skills + 3 spec-workflow skill —
+  <p class="lede" style="font-size:14px;">Context7 đã được bật sẵn trong 6 skill nhóm Lên kế hoạch và 3 skill nhóm Viết spec —
   agent sẽ tự gọi Context7 thay vì đoán API.</p>
 
   <p>Cài RTK thủ công:</p>
   <pre><code>curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
 rtk init -g</code></pre>
 
-  <p>Cài Context7 dạng MCP (full features):</p>
+  <p>Cài Context7 dạng MCP (đầy đủ tính năng):</p>
   <pre><code>npx -y ctx7 setup</code></pre>
 
 
   <div class="footer">
-    <a href="docs.html">Use cases →</a>
+    <a href="docs.html">Xem tình huống sử dụng →</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
     <a href="https://github.com/mor-duongmh/claude-plugins/blob/main/README.md" target="_blank" rel="noopener">README</a>
   </div>

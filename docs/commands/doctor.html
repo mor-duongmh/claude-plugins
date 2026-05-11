@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>morkit › commands › doctor</title>
+<title>morkit › command › doctor</title>
 <style>
 :root {
   --bg: #fbf8f2; --bg-elev: #ffffff; --bg-subtle: #f0ece2; --bg-window: #ebe7dd;
@@ -145,27 +145,24 @@ td code { font-size: 12px; }
 <body>
 <main class="page">
   <div class="crumbs">
-    <div>morkit › <a href="../index.html">tổng quan</a> › commands › <span class="path">doctor</span></div>
+    <div>morkit › <a href="../index.html">tổng quan</a> › command › <span class="path">doctor</span></div>
     <button id="themeBtn" class="toggle" type="button">☾ Vesper / Paper</button>
   </div>
-  <div style="margin-bottom: 10px;"><span class="tag">Doc generation</span><span class="tag">Command</span></div>
+  <div style="margin-bottom: 10px;"><span class="tag">Sinh tài liệu</span><span class="tag">Command</span></div>
   <h1>doctor</h1>
-  <p class="lede">Health-check docs-hero install (Python version, venv, deps, schema importable, mmdc availability). Read-only.</p>
+  <p class="lede">Kiểm tra cài đặt docs-hero xem có ổn không (Python, venv, dependencies...).</p>
 
-  <h2>1. Để làm gì</h2>
-  <p>Health-check docs-hero install (Python version, venv, deps, schema importable, mmdc availability). Read-only.</p>
+  <h2>1. Cách gọi</h2>
+  <pre><code>/morkit:doctor [tham số]</code></pre>
+  <p class="lede" style="font-size:14px;">Slash command — gõ trực tiếp trong Claude Code.</p>
 
-  <h2>2. Cách gọi</h2>
-  <pre><code>/morkit:doctor [args]</code></pre>
-  <p class="lede" style="font-size:14px;">Slash command thuần — gõ trong Claude Code REPL.</p>
-
-  <h2>3. Khi nào dùng</h2>
+  <h2>2. Khi nào dùng</h2>
   <ul>
-  <li>Khi `/morkit:init` hoặc `/morkit:update` báo lỗi setup</li>
-  <li>Sau khi cài lần đầu để verify env sẵn sàng</li>
+  <li>Khi /morkit:init hoặc /morkit:update báo lỗi cài đặt</li>
+  <li>Sau khi cài lần đầu, muốn xác nhận môi trường đã sẵn sàng</li>
   </ul>
 
-  <h2>4. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -173,20 +170,20 @@ td code { font-size: 12px; }
     </div>
     <pre><code>$ /morkit:doctor</code></pre>
   </div>
-  <p class="lede" style="font-size:14px;">Check Python version, venv, deps, schema importable, mmdc availability. Read-only.</p>
+  <p class="lede" style="font-size:14px;">Chỉ đọc và báo cáo, không sửa gì. Kiểm tra Python version, venv, dependencies, schema và mmdc.</p>
 
-  <h2>5. Liên quan</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
-    <a class="related-card" href="../commands/setup.html"><div class="ttl">/morkit:setup</div><div class="sub">Doc generation · command</div></a>
-    <a class="related-card" href="../commands/init.html"><div class="ttl">/morkit:init</div><div class="sub">Doc generation · command</div></a>
-    <a class="related-card" href="../commands/update.html"><div class="ttl">/morkit:update</div><div class="sub">Doc generation · command</div></a>
-    <a class="related-card" href="../commands/sync.html"><div class="ttl">/morkit:sync</div><div class="sub">Doc generation · command</div></a>
-    <a class="related-card" href="../commands/apply-sync.html"><div class="ttl">/morkit:apply-sync</div><div class="sub">Doc generation · command</div></a>
+    <a class="related-card" href="../commands/setup.html"><div class="ttl">/morkit:setup</div><div class="sub">Sinh tài liệu · command</div></a>
+    <a class="related-card" href="../commands/init.html"><div class="ttl">/morkit:init</div><div class="sub">Sinh tài liệu · command</div></a>
+    <a class="related-card" href="../commands/update.html"><div class="ttl">/morkit:update</div><div class="sub">Sinh tài liệu · command</div></a>
+    <a class="related-card" href="../commands/sync.html"><div class="ttl">/morkit:sync</div><div class="sub">Sinh tài liệu · command</div></a>
+    <a class="related-card" href="../commands/apply-sync.html"><div class="ttl">/morkit:apply-sync</div><div class="sub">Sinh tài liệu · command</div></a>
   </div>
 
   <div class="footer">
-    <a href="../index.html">← Tổng quan</a>
-    <a href="../docs.html">Use cases</a>
+    <a href="../index.html">← Về tổng quan</a>
+    <a href="../docs.html">Tình huống sử dụng</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
   </div>
 </main>

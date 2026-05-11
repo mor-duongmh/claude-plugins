@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>morkit › skills › generate-system-architecture</title>
+<title>morkit › skill › generate-system-architecture</title>
 <style>
 :root {
   --bg: #fbf8f2; --bg-elev: #ffffff; --bg-subtle: #f0ece2; --bg-window: #ebe7dd;
@@ -145,46 +145,43 @@ td code { font-size: 12px; }
 <body>
 <main class="page">
   <div class="crumbs">
-    <div>morkit › <a href="../index.html">tổng quan</a> › skills › <span class="path">generate-system-architecture</span></div>
+    <div>morkit › <a href="../index.html">tổng quan</a> › skill › <span class="path">generate-system-architecture</span></div>
     <button id="themeBtn" class="toggle" type="button">☾ Vesper / Paper</button>
   </div>
-  <div style="margin-bottom: 10px;"><span class="tag">Doc generation</span><span class="tag">Skill</span></div>
+  <div style="margin-bottom: 10px;"><span class="tag">Sinh tài liệu</span><span class="tag">Skill</span></div>
   <h1>generate-system-architecture</h1>
-  <p class="lede">Generate or update system architecture document (arc42-lite, 8 sections) with embedded Mermaid component diagram. Init renders system-architecture.md from ProjectModel; update applies a Delta filtered for arch scope (CMP/LAY/INX/QG); sync scans the codebase (services / packages / Dockerfile / k8s / import graph) and proposes Add/Deprecate per Component.</p>
-
-  <h2>1. Để làm gì</h2>
-  <p>Generate or update system architecture document (arc42-lite, 8 sections) with embedded Mermaid component diagram. Init renders system-architecture.md from ProjectModel; update applies a Delta filtered for arch scope (CMP/LAY/INX/QG); sync scans the codebase (services / packages / Dockerfile / k8s / import graph) and proposes Add/Deprecate per Component.</p>
+  <p class="lede">Sinh hoặc cập nhật tài liệu kiến trúc hệ thống theo arc42-lite, kèm sơ đồ thành phần bằng Mermaid.</p>
 
   
-  <h2>2. Khi nào dùng</h2>
+  <h2>1. Khi nào dùng</h2>
   <ul>
-  <li>Khi cần arc42-lite architecture document</li>
-  <li>Khi muốn embed Mermaid component diagram</li>
+  <li>Khi cần tài liệu kiến trúc cho dự án</li>
+  <li>Khi muốn nhúng sơ đồ component vẽ bằng Mermaid</li>
   </ul>
 
-  <h2>3. Ví dụ</h2>
+  <h2>2. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
       <span class="window-title">claude-code · morkit</span>
     </div>
-    <pre><code>$ /morkit:generate-system-architecture (invoke qua /morkit:init / update / sync)</code></pre>
+    <pre><code>$ /morkit:generate-system-architecture (gọi qua /morkit:init / update / sync)</code></pre>
   </div>
-  <p class="lede" style="font-size:14px;">8 sections arc42-lite, embed Mermaid. Sync scan services/packages/Docker/k8s/import graph.</p>
+  <p class="lede" style="font-size:14px;">Gồm 8 mục theo chuẩn arc42-lite. Sync quét services, packages, Docker, k8s và đồ thị import.</p>
 
-  <h2>4. Liên quan</h2>
+  <h2>3. Xem thêm</h2>
   <div class="related-grid">
-    <a class="related-card" href="../skills/generate-srs.html"><div class="ttl">generate-srs</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-api-docs.html"><div class="ttl">generate-api-docs</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-db-design.html"><div class="ttl">generate-db-design</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-code-standards.html"><div class="ttl">generate-code-standards</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-codebase-summary.html"><div class="ttl">generate-codebase-summary</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-design-guidelines.html"><div class="ttl">generate-design-guidelines</div><div class="sub">Doc generation · skill</div></a>
+    <a class="related-card" href="../skills/generate-srs.html"><div class="ttl">generate-srs</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-api-docs.html"><div class="ttl">generate-api-docs</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-db-design.html"><div class="ttl">generate-db-design</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-code-standards.html"><div class="ttl">generate-code-standards</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-codebase-summary.html"><div class="ttl">generate-codebase-summary</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-design-guidelines.html"><div class="ttl">generate-design-guidelines</div><div class="sub">Sinh tài liệu · skill</div></a>
   </div>
 
   <div class="footer">
-    <a href="../index.html">← Tổng quan</a>
-    <a href="../docs.html">Use cases</a>
+    <a href="../index.html">← Về tổng quan</a>
+    <a href="../docs.html">Tình huống sử dụng</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
   </div>
 </main>

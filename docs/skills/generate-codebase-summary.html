@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>morkit › skills › generate-codebase-summary</title>
+<title>morkit › skill › generate-codebase-summary</title>
 <style>
 :root {
   --bg: #fbf8f2; --bg-elev: #ffffff; --bg-subtle: #f0ece2; --bg-window: #ebe7dd;
@@ -145,46 +145,43 @@ td code { font-size: 12px; }
 <body>
 <main class="page">
   <div class="crumbs">
-    <div>morkit › <a href="../index.html">tổng quan</a> › skills › <span class="path">generate-codebase-summary</span></div>
+    <div>morkit › <a href="../index.html">tổng quan</a> › skill › <span class="path">generate-codebase-summary</span></div>
     <button id="themeBtn" class="toggle" type="button">☾ Vesper / Paper</button>
   </div>
-  <div style="margin-bottom: 10px;"><span class="tag">Doc generation</span><span class="tag">Skill</span></div>
+  <div style="margin-bottom: 10px;"><span class="tag">Sinh tài liệu</span><span class="tag">Skill</span></div>
   <h1>generate-codebase-summary</h1>
-  <p class="lede">Generate or update codebase-summary.md (README-style overview: tech stack, repo layout, packages, entry points, LOC by language). Init renders from ProjectModel; update applies a Delta filtered for summary scope (RPO/TCH/PKG/MOD); sync scans the repo for file tree + manifests + LOC and proposes Add/Deprecate.</p>
-
-  <h2>1. Để làm gì</h2>
-  <p>Generate or update codebase-summary.md (README-style overview: tech stack, repo layout, packages, entry points, LOC by language). Init renders from ProjectModel; update applies a Delta filtered for summary scope (RPO/TCH/PKG/MOD); sync scans the repo for file tree + manifests + LOC and proposes Add/Deprecate.</p>
+  <p class="lede">Sinh hoặc cập nhật tài liệu tổng quan mã nguồn dạng README: tech stack, cấu trúc, gói, entry point.</p>
 
   
-  <h2>2. Khi nào dùng</h2>
+  <h2>1. Khi nào dùng</h2>
   <ul>
-  <li>Khi cần README-style overview cho codebase</li>
-  <li>Khi onboard team member mới cần hiểu tech stack + layout</li>
+  <li>Khi cần một bản tổng quan dự án dành cho người mới onboard</li>
+  <li>Khi muốn ai đó hiểu nhanh dự án mà không cần đọc hết code</li>
   </ul>
 
-  <h2>3. Ví dụ</h2>
+  <h2>2. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
       <span class="window-title">claude-code · morkit</span>
     </div>
-    <pre><code>$ /morkit:generate-codebase-summary (invoke qua /morkit:init / update / sync)</code></pre>
+    <pre><code>$ /morkit:generate-codebase-summary (gọi qua /morkit:init / update / sync)</code></pre>
   </div>
-  <p class="lede" style="font-size:14px;">Tech stack, repo layout, packages, entry points, LOC by language.</p>
+  <p class="lede" style="font-size:14px;">Liệt kê công nghệ, bố cục thư mục, các package, entry point và số dòng code theo ngôn ngữ.</p>
 
-  <h2>4. Liên quan</h2>
+  <h2>3. Xem thêm</h2>
   <div class="related-grid">
-    <a class="related-card" href="../skills/generate-srs.html"><div class="ttl">generate-srs</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-api-docs.html"><div class="ttl">generate-api-docs</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-db-design.html"><div class="ttl">generate-db-design</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-system-architecture.html"><div class="ttl">generate-system-architecture</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-code-standards.html"><div class="ttl">generate-code-standards</div><div class="sub">Doc generation · skill</div></a>
-    <a class="related-card" href="../skills/generate-design-guidelines.html"><div class="ttl">generate-design-guidelines</div><div class="sub">Doc generation · skill</div></a>
+    <a class="related-card" href="../skills/generate-srs.html"><div class="ttl">generate-srs</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-api-docs.html"><div class="ttl">generate-api-docs</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-db-design.html"><div class="ttl">generate-db-design</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-system-architecture.html"><div class="ttl">generate-system-architecture</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-code-standards.html"><div class="ttl">generate-code-standards</div><div class="sub">Sinh tài liệu · skill</div></a>
+    <a class="related-card" href="../skills/generate-design-guidelines.html"><div class="ttl">generate-design-guidelines</div><div class="sub">Sinh tài liệu · skill</div></a>
   </div>
 
   <div class="footer">
-    <a href="../index.html">← Tổng quan</a>
-    <a href="../docs.html">Use cases</a>
+    <a href="../index.html">← Về tổng quan</a>
+    <a href="../docs.html">Tình huống sử dụng</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
   </div>
 </main>

@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>morkit › skills › executing-plans</title>
+<title>morkit › skill › executing-plans</title>
 <style>
 :root {
   --bg: #fbf8f2; --bg-elev: #ffffff; --bg-subtle: #f0ece2; --bg-window: #ebe7dd;
@@ -145,46 +145,43 @@ td code { font-size: 12px; }
 <body>
 <main class="page">
   <div class="crumbs">
-    <div>morkit › <a href="../index.html">tổng quan</a> › skills › <span class="path">executing-plans</span></div>
+    <div>morkit › <a href="../index.html">tổng quan</a> › skill › <span class="path">executing-plans</span></div>
     <button id="themeBtn" class="toggle" type="button">☾ Vesper / Paper</button>
   </div>
-  <div style="margin-bottom: 10px;"><span class="tag">Plan & build</span><span class="tag">Skill</span></div>
+  <div style="margin-bottom: 10px;"><span class="tag">Lên kế hoạch và làm</span><span class="tag">Skill</span></div>
   <h1>executing-plans</h1>
-  <p class="lede">Use when you have a written implementation plan to execute in a separate session with review checkpoints</p>
-
-  <h2>1. Để làm gì</h2>
-  <p>Use when you have a written implementation plan to execute in a separate session with review checkpoints</p>
+  <p class="lede">Chạy plan từng bước trong một phiên làm việc riêng, có điểm dừng để bạn xem lại giữa chừng.</p>
 
   
-  <h2>2. Khi nào dùng</h2>
+  <h2>1. Khi nào dùng</h2>
   <ul>
-  <li>Sau khi plan đã viết và review-checklist đã `Overall Decision: OK`</li>
-  <li>Khi muốn chạy plan trong session riêng với review checkpoints</li>
+  <li>Khi plan đã viết xong và checklist review đã được duyệt OK</li>
+  <li>Khi muốn chạy có kiểm soát, dừng để confirm ở mỗi mốc quan trọng</li>
   </ul>
 
-  <h2>3. Ví dụ</h2>
+  <h2>2. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
       <span class="window-title">claude-code · morkit</span>
     </div>
-    <pre><code>$ /morkit:executing-plans (tự load plan đã viết)</code></pre>
+    <pre><code>$ /morkit:executing-plans (tự nạp plan đã viết)</code></pre>
   </div>
-  <p class="lede" style="font-size:14px;">Bị block bởi review-gate cho tới khi human approve checklist. Chạy step-by-step, dừng để confirm ở các checkpoint.</p>
+  <p class="lede" style="font-size:14px;">Bị chặn cho đến khi human duyệt checklist. Khi chạy, dừng ở các checkpoint để bạn xác nhận trước khi đi tiếp.</p>
 
-  <h2>4. Liên quan</h2>
+  <h2>3. Xem thêm</h2>
   <div class="related-grid">
-    <a class="related-card" href="../skills/brainstorming.html"><div class="ttl">brainstorming</div><div class="sub">Plan &amp; build · skill</div></a>
-    <a class="related-card" href="../skills/writing-plans.html"><div class="ttl">writing-plans</div><div class="sub">Plan &amp; build · skill</div></a>
-    <a class="related-card" href="../skills/subagent-driven-development.html"><div class="ttl">subagent-driven-development</div><div class="sub">Plan &amp; build · skill</div></a>
-    <a class="related-card" href="../skills/test-driven-development.html"><div class="ttl">test-driven-development</div><div class="sub">Plan &amp; build · skill</div></a>
-    <a class="related-card" href="../skills/systematic-debugging.html"><div class="ttl">systematic-debugging</div><div class="sub">Plan &amp; build · skill</div></a>
-    <a class="related-card" href="../skills/dispatching-parallel-agents.html"><div class="ttl">dispatching-parallel-agents</div><div class="sub">Plan &amp; build · skill</div></a>
+    <a class="related-card" href="../skills/brainstorming.html"><div class="ttl">brainstorming</div><div class="sub">Lên kế hoạch và làm · skill</div></a>
+    <a class="related-card" href="../skills/writing-plans.html"><div class="ttl">writing-plans</div><div class="sub">Lên kế hoạch và làm · skill</div></a>
+    <a class="related-card" href="../skills/subagent-driven-development.html"><div class="ttl">subagent-driven-development</div><div class="sub">Lên kế hoạch và làm · skill</div></a>
+    <a class="related-card" href="../skills/test-driven-development.html"><div class="ttl">test-driven-development</div><div class="sub">Lên kế hoạch và làm · skill</div></a>
+    <a class="related-card" href="../skills/systematic-debugging.html"><div class="ttl">systematic-debugging</div><div class="sub">Lên kế hoạch và làm · skill</div></a>
+    <a class="related-card" href="../skills/dispatching-parallel-agents.html"><div class="ttl">dispatching-parallel-agents</div><div class="sub">Lên kế hoạch và làm · skill</div></a>
   </div>
 
   <div class="footer">
-    <a href="../index.html">← Tổng quan</a>
-    <a href="../docs.html">Use cases</a>
+    <a href="../index.html">← Về tổng quan</a>
+    <a href="../docs.html">Tình huống sử dụng</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
   </div>
 </main>

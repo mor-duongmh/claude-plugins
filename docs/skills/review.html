@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>morkit › skills › review</title>
+<title>morkit › skill › review</title>
 <style>
 :root {
   --bg: #fbf8f2; --bg-elev: #ffffff; --bg-subtle: #f0ece2; --bg-window: #ebe7dd;
@@ -145,24 +145,21 @@ td code { font-size: 12px; }
 <body>
 <main class="page">
   <div class="crumbs">
-    <div>morkit › <a href="../index.html">tổng quan</a> › skills › <span class="path">review</span></div>
+    <div>morkit › <a href="../index.html">tổng quan</a> › skill › <span class="path">review</span></div>
     <button id="themeBtn" class="toggle" type="button">☾ Vesper / Paper</button>
   </div>
-  <div style="margin-bottom: 10px;"><span class="tag">Spec workflow</span><span class="tag">Skill</span></div>
+  <div style="margin-bottom: 10px;"><span class="tag">Viết spec</span><span class="tag">Skill</span></div>
   <h1>review</h1>
-  <p class="lede">Generate the developer review checklist (human gate) for a morkit change, blocking implementation skills until the human flips &quot;Overall Decision: OK&quot;. Triggered by /morkit:review or after /morkit:propose finishes.</p>
-
-  <h2>1. Để làm gì</h2>
-  <p>Generate the developer review checklist (human gate) for a morkit change, blocking implementation skills until the human flips &quot;Overall Decision: OK&quot;. Triggered by /morkit:review or after /morkit:propose finishes.</p>
+  <p class="lede">Sinh checklist để bạn duyệt thiết kế. Khi nào bạn ghi 'Overall Decision: OK', bước thực thi mới được mở khoá.</p>
 
   
-  <h2>2. Khi nào dùng</h2>
+  <h2>1. Khi nào dùng</h2>
   <ul>
-  <li>Sau khi `propose` hoàn tất — cần kích hoạt human gate trước khi code</li>
-  <li>Khi muốn refresh checklist từ Google Doc canonical của Mor</li>
+  <li>Sau khi vừa chạy propose xong</li>
+  <li>Khi muốn làm mới checklist với một biến thể khác (BE/FE × Feature/BugFix/Refactor)</li>
   </ul>
 
-  <h2>3. Ví dụ</h2>
+  <h2>2. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -170,19 +167,19 @@ td code { font-size: 12px; }
     </div>
     <pre><code>$ /morkit:review --variant FE-BugFix</code></pre>
   </div>
-  <p class="lede" style="font-size:14px;">Tạo `review-checklist.md`. Bạn mở file, tick, đổi `Overall Decision: PENDING → OK` để mở khoá `executing-plans`.</p>
+  <p class="lede" style="font-size:14px;">Bạn mở file review-checklist.md, tick các mục, đổi dòng cuối từ PENDING sang OK. Sau đó skill executing-plans mới chịu chạy.</p>
 
-  <h2>4. Liên quan</h2>
+  <h2>3. Xem thêm</h2>
   <div class="related-grid">
-    <a class="related-card" href="../skills/propose.html"><div class="ttl">propose</div><div class="sub">Spec workflow · skill</div></a>
-    <a class="related-card" href="../skills/archive.html"><div class="ttl">archive</div><div class="sub">Spec workflow · skill</div></a>
-    <a class="related-card" href="../commands/propose.html"><div class="ttl">/morkit:propose</div><div class="sub">Spec workflow · command</div></a>
-    <a class="related-card" href="../commands/review.html"><div class="ttl">/morkit:review</div><div class="sub">Spec workflow · command</div></a>
+    <a class="related-card" href="../skills/propose.html"><div class="ttl">propose</div><div class="sub">Viết spec · skill</div></a>
+    <a class="related-card" href="../skills/archive.html"><div class="ttl">archive</div><div class="sub">Viết spec · skill</div></a>
+    <a class="related-card" href="../commands/propose.html"><div class="ttl">/morkit:propose</div><div class="sub">Viết spec · command</div></a>
+    <a class="related-card" href="../commands/review.html"><div class="ttl">/morkit:review</div><div class="sub">Viết spec · command</div></a>
   </div>
 
   <div class="footer">
-    <a href="../index.html">← Tổng quan</a>
-    <a href="../docs.html">Use cases</a>
+    <a href="../index.html">← Về tổng quan</a>
+    <a href="../docs.html">Tình huống sử dụng</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
   </div>
 </main>

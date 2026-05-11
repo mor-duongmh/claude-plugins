@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>morkit › skills › archive</title>
+<title>morkit › skill › archive</title>
 <style>
 :root {
   --bg: #fbf8f2; --bg-elev: #ffffff; --bg-subtle: #f0ece2; --bg-window: #ebe7dd;
@@ -145,24 +145,21 @@ td code { font-size: 12px; }
 <body>
 <main class="page">
   <div class="crumbs">
-    <div>morkit › <a href="../index.html">tổng quan</a> › skills › <span class="path">archive</span></div>
+    <div>morkit › <a href="../index.html">tổng quan</a> › skill › <span class="path">archive</span></div>
     <button id="themeBtn" class="toggle" type="button">☾ Vesper / Paper</button>
   </div>
-  <div style="margin-bottom: 10px;"><span class="tag">Spec workflow</span><span class="tag">Skill</span></div>
+  <div style="margin-bottom: 10px;"><span class="tag">Viết spec</span><span class="tag">Skill</span></div>
   <h1>archive</h1>
-  <p class="lede">Archive a completed morkit change. Moves it from active to archive subfolder and updates .meta.json. Use when implementation is complete and merged.</p>
-
-  <h2>1. Để làm gì</h2>
-  <p>Archive a completed morkit change. Moves it from active to archive subfolder and updates .meta.json. Use when implementation is complete and merged.</p>
+  <p class="lede">Đóng một change folder sau khi PR đã merge và đã deploy ổn.</p>
 
   
-  <h2>2. Khi nào dùng</h2>
+  <h2>1. Khi nào dùng</h2>
   <ul>
-  <li>Sau khi implementation đã merge và verified production</li>
-  <li>Khi muốn dọn dẹp `morkit/output/spec/` để giữ active changes gọn</li>
+  <li>Sau khi đã merge và verify ở môi trường thật</li>
+  <li>Khi muốn giữ thư mục morkit/output/spec/ gọn gàng</li>
   </ul>
 
-  <h2>3. Ví dụ</h2>
+  <h2>2. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -170,19 +167,19 @@ td code { font-size: 12px; }
     </div>
     <pre><code>$ /morkit:archive feat-pdf-export</code></pre>
   </div>
-  <p class="lede" style="font-size:14px;">Move folder change từ active sang `archive/YYYY-MM/` + update `.meta.json`.</p>
+  <p class="lede" style="font-size:14px;">Folder sẽ được di chuyển sang archive/YYYY-MM/, không bị xoá. Có thể tra lại sau này.</p>
 
-  <h2>4. Liên quan</h2>
+  <h2>3. Xem thêm</h2>
   <div class="related-grid">
-    <a class="related-card" href="../skills/propose.html"><div class="ttl">propose</div><div class="sub">Spec workflow · skill</div></a>
-    <a class="related-card" href="../skills/review.html"><div class="ttl">review</div><div class="sub">Spec workflow · skill</div></a>
-    <a class="related-card" href="../commands/propose.html"><div class="ttl">/morkit:propose</div><div class="sub">Spec workflow · command</div></a>
-    <a class="related-card" href="../commands/review.html"><div class="ttl">/morkit:review</div><div class="sub">Spec workflow · command</div></a>
+    <a class="related-card" href="../skills/propose.html"><div class="ttl">propose</div><div class="sub">Viết spec · skill</div></a>
+    <a class="related-card" href="../skills/review.html"><div class="ttl">review</div><div class="sub">Viết spec · skill</div></a>
+    <a class="related-card" href="../commands/propose.html"><div class="ttl">/morkit:propose</div><div class="sub">Viết spec · command</div></a>
+    <a class="related-card" href="../commands/review.html"><div class="ttl">/morkit:review</div><div class="sub">Viết spec · command</div></a>
   </div>
 
   <div class="footer">
-    <a href="../index.html">← Tổng quan</a>
-    <a href="../docs.html">Use cases</a>
+    <a href="../index.html">← Về tổng quan</a>
+    <a href="../docs.html">Tình huống sử dụng</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
   </div>
 </main>

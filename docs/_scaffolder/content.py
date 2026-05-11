@@ -1,9 +1,14 @@
-"""Curated content for morkit docs site.
+"""Curated content for morkit docs site (Vietnamese).
 
-This file is hand-edited. Content here drives the "Khi nào dùng", "Ví dụ",
-and "Liên quan" sections of each command/skill detail page. The "Để làm gì"
-section is rendered from `description` in SKILL.md/command.md frontmatter,
-unless an override is supplied here.
+Mỗi entry trong CURATED có 4 field:
+  - lede        : 1 câu ngắn mô tả mục đích (hiện ở đầu trang)
+  - when_to_use : 2-3 bullet "Khi nào dùng" (tiếng Việt)
+  - example_args: tham số gõ kèm slash command
+  - example_note: 1 câu giải thích kết quả
+
+Mọi chỉnh sửa nội dung làm tại đây, sau đó chạy
+    python3 docs/_scaffolder/build.py
+để regenerate 42 trang HTML.
 """
 
 # ----------------------------------------------------------------------
@@ -46,10 +51,10 @@ GROUPS = {
 }
 
 GROUP_LABELS = {
-    "spec":        "Spec workflow",
-    "plan-build":  "Plan & build",
-    "code-review": "Code review",
-    "doc-gen":     "Doc generation",
+    "spec":        "Viết spec",
+    "plan-build":  "Lên kế hoạch và làm",
+    "code-review": "Review code",
+    "doc-gen":     "Sinh tài liệu",
     "misc":        "Khác",
 }
 
@@ -63,348 +68,396 @@ def group_of(kind, slug):
 
 
 # ----------------------------------------------------------------------
-# Per-item curated content
-#   Keys are "<kind>.<slug>" — "skills.brainstorming", "commands.propose".
-#   Any missing field falls back to a heuristic in build.py.
+# Per-item content (slug → dict).
+#   Key format: "<kind>.<slug>" — vd "skills.brainstorming"
 # ----------------------------------------------------------------------
 CURATED = {
-    # -------- SPEC WORKFLOW (skills) --------
+    # ====================================================================
+    # NHÓM 1 — VIẾT SPEC
+    # ====================================================================
     "skills.propose": {
+        "lede": "Mô tả ý tưởng bằng 1-2 câu → tự sinh đầy đủ 4 file: proposal, design, tasks và checklist review.",
         "when_to_use": [
-            "Khi bạn muốn mô tả 1 thay đổi mới và cần đầy đủ proposal + design + tasks + review-checklist",
-            "Trước khi bắt tay implement bất kỳ feature nào",
+            "Khi muốn bắt đầu một thay đổi mới trong dự án",
+            "Trước khi viết bất kỳ dòng code nào, để có spec rõ ràng",
         ],
         "example_args": "Thêm tính năng export PDF cho dashboard",
-        "example_note": "Sinh 1 change folder `morkit/output/spec/<tên>/` với 4 file artifacts, sẵn sàng cho bước review-checklist.",
+        "example_note": "Sau khi chạy, một thư mục mới sẽ được tạo trong morkit/output/spec/<tên-change>/ chứa 4 file sẵn sàng để bạn duyệt.",
     },
     "skills.review": {
+        "lede": "Sinh checklist để bạn duyệt thiết kế. Khi nào bạn ghi 'Overall Decision: OK', bước thực thi mới được mở khoá.",
         "when_to_use": [
-            "Sau khi `propose` hoàn tất — cần kích hoạt human gate trước khi code",
-            "Khi muốn refresh checklist từ Google Doc canonical của Mor",
+            "Sau khi vừa chạy propose xong",
+            "Khi muốn làm mới checklist với một biến thể khác (BE/FE × Feature/BugFix/Refactor)",
         ],
         "example_args": "--variant FE-BugFix",
-        "example_note": "Tạo `review-checklist.md`. Bạn mở file, tick, đổi `Overall Decision: PENDING → OK` để mở khoá `executing-plans`.",
+        "example_note": "Bạn mở file review-checklist.md, tick các mục, đổi dòng cuối từ PENDING sang OK. Sau đó skill executing-plans mới chịu chạy.",
     },
     "skills.archive": {
+        "lede": "Đóng một change folder sau khi PR đã merge và đã deploy ổn.",
         "when_to_use": [
-            "Sau khi implementation đã merge và verified production",
-            "Khi muốn dọn dẹp `morkit/output/spec/` để giữ active changes gọn",
+            "Sau khi đã merge và verify ở môi trường thật",
+            "Khi muốn giữ thư mục morkit/output/spec/ gọn gàng",
         ],
         "example_args": "feat-pdf-export",
-        "example_note": "Move folder change từ active sang `archive/YYYY-MM/` + update `.meta.json`.",
+        "example_note": "Folder sẽ được di chuyển sang archive/YYYY-MM/, không bị xoá. Có thể tra lại sau này.",
     },
 
-    # -------- SPEC WORKFLOW (commands, slash-command thin wrappers) --------
     "commands.propose": {
+        "lede": "Slash command tương đương skill propose — gõ nhanh để tạo đầy đủ 4 file artifact.",
         "when_to_use": [
-            "Khi nhanh muốn scaffold đầy đủ artifacts cho 1 change mới",
-            "Equivalent với skill `propose` nhưng gọi qua slash command",
+            "Khi muốn tạo nhanh một change mới mà không cần invoke skill thủ công",
         ],
         "example_args": "Thêm dark mode toggle",
-        "example_note": "Sinh `morkit/output/spec/<auto-named>/` với proposal/design/tasks/review-checklist.",
+        "example_note": "Một thư mục mới sẽ xuất hiện trong morkit/output/spec/ với tên tự đặt từ mô tả.",
     },
     "commands.review": {
+        "lede": "Slash command sinh hoặc làm mới checklist duyệt thiết kế cho một change đang có.",
         "when_to_use": [
-            "Sau khi `/morkit:propose` chạy xong",
-            "Khi muốn override variant (BE/FE × Feature/BugFix/Refactor) hoặc refresh từ Google Doc",
+            "Ngay sau khi gõ /morkit:propose xong",
+            "Khi muốn ép một biến thể khác hoặc đồng bộ lại checklist mới nhất từ Google Doc",
         ],
         "example_args": "--variant BE-Feature",
-        "example_note": "Tạo `review-checklist.md` theo variant chỉ định. `--refresh` để re-fetch Google Doc canonical.",
+        "example_note": "Có thể thêm --refresh để tải lại nội dung mới nhất từ Google Doc canonical của Mor.",
     },
     "commands.archive": {
+        "lede": "Slash command đóng change folder sau khi đã merge.",
         "when_to_use": [
-            "Sau khi PR đã merge và feature đã verified ở production",
+            "Sau khi PR đã merge và feature đã chạy ổn trên môi trường thật",
         ],
         "example_args": "feat-dark-mode",
-        "example_note": "Đóng change folder. Không xoá — chỉ move sang archive subfolder.",
+        "example_note": "Không xoá file — chỉ chuyển sang thư mục archive/ để giữ phần active luôn sạch.",
     },
 
-    # -------- PLAN & BUILD (skills) --------
+    # ====================================================================
+    # NHÓM 2 — LÊN KẾ HOẠCH VÀ LÀM
+    # ====================================================================
     "skills.brainstorming": {
+        "lede": "Cùng bạn suy nghĩ ý tưởng và khảo sát mã nguồn trước khi viết code. Chỉ tư duy — không tạo file, không sửa code.",
         "when_to_use": [
-            "Khi nhận task chưa rõ scope hoặc requirements",
-            "Trước khi viết plan implementation",
-            "Khi cần map codebase trước khi đụng code",
+            "Khi nhận một yêu cầu chưa rõ phạm vi",
+            "Trước khi viết kế hoạch chi tiết",
+            "Khi cần đọc và hiểu mã nguồn hiện tại trước khi đụng vào",
         ],
-        "example_args": "Thêm real-time collab vào editor",
-        "example_note": "Skill hỏi 1 câu/lần để clarify, rồi đề xuất 2-3 approaches kèm trade-offs. KHÔNG code.",
+        "example_args": "Thêm tính năng cộng tác thời gian thực vào editor",
+        "example_note": "Skill sẽ hỏi từng câu một để làm rõ, rồi đề xuất 2-3 cách làm kèm ưu nhược điểm. Bạn chốt rồi mới qua bước viết plan.",
     },
     "skills.writing-plans": {
+        "lede": "Khi đã có yêu cầu rõ ràng, dùng skill này để viết kế hoạch nhiều bước trước khi đụng code.",
         "when_to_use": [
-            "Sau khi `brainstorming` đã chốt design",
-            "Khi có spec/requirements rõ ràng và cần break xuống steps",
+            "Sau khi brainstorming đã chốt phương án",
+            "Khi đã có yêu cầu cụ thể và cần chia nhỏ thành các bước",
         ],
-        "example_args": "(tự lấy context từ brainstorming session)",
-        "example_note": "Output là plan file với numbered steps, mỗi step có verification criteria.",
+        "example_args": "(tự lấy ngữ cảnh từ phiên brainstorming trước đó)",
+        "example_note": "Kết quả là một file plan có các bước đánh số, mỗi bước kèm tiêu chí xác minh đã làm xong.",
     },
     "skills.executing-plans": {
+        "lede": "Chạy plan từng bước trong một phiên làm việc riêng, có điểm dừng để bạn xem lại giữa chừng.",
         "when_to_use": [
-            "Sau khi plan đã viết và review-checklist đã `Overall Decision: OK`",
-            "Khi muốn chạy plan trong session riêng với review checkpoints",
+            "Khi plan đã viết xong và checklist review đã được duyệt OK",
+            "Khi muốn chạy có kiểm soát, dừng để confirm ở mỗi mốc quan trọng",
         ],
-        "example_args": "(tự load plan đã viết)",
-        "example_note": "Bị block bởi review-gate cho tới khi human approve checklist. Chạy step-by-step, dừng để confirm ở các checkpoint.",
+        "example_args": "(tự nạp plan đã viết)",
+        "example_note": "Bị chặn cho đến khi human duyệt checklist. Khi chạy, dừng ở các checkpoint để bạn xác nhận trước khi đi tiếp.",
     },
     "skills.subagent-driven-development": {
+        "lede": "Khi plan có nhiều việc độc lập, spawn nhiều subagent chạy song song thay vì làm tuần tự.",
         "when_to_use": [
-            "Khi plan có nhiều task độc lập có thể parallel",
-            "Khi muốn iterate nhanh hơn so với sequential execution",
+            "Khi plan chứa các bước không phụ thuộc lẫn nhau",
+            "Khi muốn đi nhanh hơn so với chạy tuần tự",
         ],
-        "example_args": "(tự load plan)",
-        "example_note": "Spawn subagents song song, mỗi agent chạy 1 task. Bị block bởi review-gate giống executing-plans.",
+        "example_args": "(tự nạp plan)",
+        "example_note": "Mỗi subagent đảm nhận một task. Vẫn bị chặn bởi gate review giống executing-plans.",
     },
     "skills.test-driven-development": {
+        "lede": "Bắt buộc viết test trước, code sau. Quy trình Red → Green → Refactor.",
         "when_to_use": [
-            "Khi implement bất kỳ feature hoặc bugfix nào",
+            "Khi triển khai bất kỳ tính năng hoặc bản sửa lỗi nào",
             "Trước khi viết code production",
         ],
-        "example_args": "(invoke trước khi code)",
-        "example_note": "Red → Green → Refactor. Viết test fail trước, code tối thiểu để pass, refactor.",
+        "example_args": "(gọi trước khi bắt tay code)",
+        "example_note": "Viết test fail trước, rồi viết code tối thiểu để test pass, cuối cùng refactor cho gọn.",
     },
     "skills.systematic-debugging": {
+        "lede": "Khi gặp lỗi, debug có hệ thống thay vì đoán mò. Tái hiện lỗi trước, sửa sau.",
         "when_to_use": [
-            "Khi gặp bug, test failure, hoặc behavior bất thường",
-            "Trước khi đề xuất fix",
+            "Khi gặp bug, test thất bại hoặc hành vi bất thường",
+            "Trước khi đề xuất bất kỳ bản sửa nào",
         ],
-        "example_args": "(invoke khi gặp lỗi)",
-        "example_note": "Reproduce → narrow scope → form hypothesis → verify → fix. Không guess.",
+        "example_args": "(gọi khi gặp lỗi)",
+        "example_note": "Tái hiện lỗi → thu hẹp phạm vi → đặt giả thuyết → xác minh → sửa. Không đoán mò.",
     },
     "skills.dispatching-parallel-agents": {
+        "lede": "Khi có từ 2 việc độc lập trở lên, spawn nhiều agent chạy song song để tiết kiệm thời gian.",
         "when_to_use": [
-            "Khi đối mặt 2+ task độc lập không chia sẻ state",
-            "Khi cần research/investigation song song trên nhiều khía cạnh",
+            "Khi có 2 hoặc nhiều việc không phụ thuộc lẫn nhau",
+            "Khi cần khảo sát nhiều khía cạnh cùng lúc",
         ],
-        "example_args": "(invoke khi có ≥2 task độc lập)",
-        "example_note": "Spawn nhiều Agent tool calls trong 1 message với `run_in_background: true`.",
+        "example_args": "(gọi khi có nhiều việc song song)",
+        "example_note": "Các agent chạy đồng thời, sau đó tổng hợp kết quả. Phù hợp với nghiên cứu nhiều hướng cùng lúc.",
     },
     "skills.using-git-worktrees": {
+        "lede": "Tạo worktree riêng cho feature mới, không ảnh hưởng đến workspace hiện tại.",
         "when_to_use": [
-            "Khi bắt đầu feature cần isolation khỏi workspace hiện tại",
-            "Trước khi execute implementation plan có thể đụng nhiều file",
+            "Khi bắt đầu một feature cần làm cách ly khỏi workspace hiện tại",
+            "Trước khi chạy plan thực thi có thể đụng nhiều file",
         ],
-        "example_args": "(invoke trước khi cut branch)",
-        "example_note": "Tạo worktree ở thư mục riêng, không ảnh hưởng working tree chính. Safety checks built-in.",
+        "example_args": "(gọi trước khi cut branch)",
+        "example_note": "Tạo worktree ở thư mục riêng, có kiểm tra an toàn sẵn để không xung đột với branch hiện tại.",
     },
     "skills.finishing-a-development-branch": {
+        "lede": "Khi feature đã xong và test pass, skill gợi ý các lựa chọn đóng branch (merge, mở PR, hoặc bỏ).",
         "when_to_use": [
-            "Khi implementation đã xong, tests pass",
-            "Khi cần quyết định merge / open PR / cleanup",
+            "Khi đã code xong, test pass hết",
+            "Khi cần quyết định bước đóng nhánh",
         ],
-        "example_args": "(invoke khi xong feature)",
-        "example_note": "Đưa structured options: squash merge, regular PR, hoặc abandon. Không tự action — đề xuất rồi user chọn.",
+        "example_args": "(gọi khi đã làm xong feature)",
+        "example_note": "Đưa ra các lựa chọn: squash merge, mở PR thường, hoặc bỏ branch. Skill không tự action — chỉ đề xuất.",
     },
     "skills.verification-before-completion": {
+        "lede": "Trước khi nói \"xong rồi\" hoặc commit, bắt buộc chạy lệnh kiểm tra thật và xem output thật.",
         "when_to_use": [
-            "Khi sắp claim 'xong' / 'fixed' / 'passing'",
+            "Trước khi báo cáo \"đã làm xong\" hay \"đã sửa rồi\"",
             "Trước khi commit hoặc mở PR",
         ],
-        "example_args": "(invoke trước khi commit)",
-        "example_note": "Bắt buộc chạy verification command thật, xem output thật, mới được claim success. Evidence before assertions.",
+        "example_args": "(gọi trước khi commit)",
+        "example_note": "Bằng chứng có trước lời khẳng định. Phải có output thật mới được nói thành công.",
     },
     "skills.requesting-code-review": {
+        "lede": "Khi feature đã xong, dùng skill này để chuẩn bị xin review một cách có hệ thống.",
         "when_to_use": [
-            "Sau khi complete task, implement major feature, hoặc trước khi merge",
+            "Sau khi đã làm xong một task hoặc một feature lớn",
+            "Trước khi merge",
         ],
-        "example_args": "(invoke khi feature đã xong)",
-        "example_note": "Verify work đáp ứng requirements trước khi xin review. Có thể gọi `/morkit:deep-review` nội bộ.",
+        "example_args": "(gọi khi feature đã xong)",
+        "example_note": "Tự kiểm tra trước xem code đã đạt yêu cầu chưa. Có thể chạy /morkit:deep-review nội bộ trước khi gửi cho người.",
     },
     "skills.receiving-code-review": {
+        "lede": "Khi nhận góp ý review, skill này giúp bạn hiểu rõ trước khi sửa — không đồng ý theo phản xạ.",
         "when_to_use": [
-            "Khi nhận code review feedback",
-            "Đặc biệt khi feedback unclear hoặc technically questionable",
+            "Khi đọc các comment review trên PR",
+            "Đặc biệt khi feedback chưa rõ hoặc nghe có vẻ chưa hợp lý",
         ],
-        "example_args": "(invoke khi đọc PR comments)",
-        "example_note": "Technical rigor + verification, không 'agree' theo phản xạ. Mỗi suggestion phải hiểu rõ trước khi implement.",
+        "example_args": "(gọi khi đọc PR comments)",
+        "example_note": "Bắt buộc hiểu rõ từng góp ý trước khi thực hiện. Không đồng ý lấy lệ.",
     },
     "skills.writing-skills": {
+        "lede": "Khi cần tạo skill mới hoặc sửa skill cũ, dùng skill này để đảm bảo viết đúng chuẩn.",
         "when_to_use": [
-            "Khi tạo skill mới, edit skill có sẵn",
-            "Khi verify 1 skill hoạt động trước deploy",
+            "Khi viết file SKILL.md mới",
+            "Khi sửa skill có sẵn",
+            "Trước khi đưa skill vào sử dụng thực tế",
         ],
-        "example_args": "(invoke khi viết SKILL.md)",
-        "example_note": "Đảm bảo frontmatter đúng format, content rõ ràng, examples đầy đủ, đã test trong session thật.",
+        "example_args": "(gọi khi soạn SKILL.md)",
+        "example_note": "Đảm bảo frontmatter đúng định dạng, nội dung rõ ràng, có ví dụ đầy đủ và đã thử chạy thật.",
     },
 
-    # -------- PLAN & BUILD (commands — deprecated wrappers) --------
     "commands.brainstorm": {
+        "lede": "Slash command cũ — đã được thay bằng skill morkit:brainstorming.",
         "deprecated": True,
         "when_to_use": [
-            "Command này deprecated — dùng skill `morkit:brainstorming` thay thế",
+            "Đừng dùng nữa — dùng skill morkit:brainstorming thay thế",
         ],
         "example_args": "",
-        "example_note": "Sẽ bị remove ở major release tiếp theo.",
+        "example_note": "Sẽ bị gỡ ở bản major tiếp theo.",
     },
     "commands.write-plan": {
+        "lede": "Slash command cũ — đã được thay bằng skill morkit:writing-plans.",
         "deprecated": True,
         "when_to_use": [
-            "Command này deprecated — dùng skill `morkit:writing-plans` thay thế",
+            "Đừng dùng nữa — dùng skill morkit:writing-plans thay thế",
         ],
         "example_args": "",
-        "example_note": "Sẽ bị remove ở major release tiếp theo.",
+        "example_note": "Sẽ bị gỡ ở bản major tiếp theo.",
     },
     "commands.execute-plan": {
+        "lede": "Slash command cũ — đã được thay bằng skill morkit:executing-plans.",
         "deprecated": True,
         "when_to_use": [
-            "Command này deprecated — dùng skill `morkit:executing-plans` thay thế",
+            "Đừng dùng nữa — dùng skill morkit:executing-plans thay thế",
         ],
         "example_args": "",
-        "example_note": "Sẽ bị remove ở major release tiếp theo.",
+        "example_note": "Sẽ bị gỡ ở bản major tiếp theo.",
     },
 
-    # -------- CODE REVIEW --------
+    # ====================================================================
+    # NHÓM 3 — REVIEW CODE
+    # ====================================================================
     "skills.deep-review": {
+        "lede": "Review code chuyên sâu bằng 5 chuyên gia AI chạy song song (rủi ro, bảo mật, pattern, kiểm thử, quy ước).",
         "when_to_use": [
-            "Khi cần review code chất lượng cao trên git diff hoặc PR",
-            "Trước khi merge feature lớn",
+            "Khi cần review chất lượng cao một PR hoặc git diff",
+            "Trước khi merge một feature lớn",
         ],
         "example_args": "PR#123",
-        "example_note": "Dispatch 5 chuyên gia (risk, security, pattern, tests, convention) song song. Output là Markdown matrix report.",
+        "example_note": "Kết quả là một báo cáo dạng bảng Markdown gồm các phát hiện về rủi ro, bảo mật, pattern, độ phủ test và quy ước code.",
     },
     "commands.deep-review": {
+        "lede": "Slash command chạy review chuyên sâu trên PR hoặc git diff, kết quả là báo cáo Markdown dạng bảng.",
         "when_to_use": [
-            "Sau khi push branch và muốn review trước khi xin team review",
-            "Khi cần verify rủi ro / security / test coverage trên 1 PR cụ thể",
+            "Sau khi push branch, muốn tự review trước khi mời team xem",
+            "Khi cần kiểm tra rủi ro, bảo mật và độ phủ test trên một PR cụ thể",
         ],
         "example_args": "123  # hoặc HEAD~3..HEAD",
-        "example_note": "Output Markdown matrix với risk/security/pattern/tests/convention findings.",
+        "example_note": "Báo cáo gồm các phát hiện về rủi ro, bảo mật, pattern, kiểm thử và quy ước code.",
     },
     "commands.deep-review-doctor": {
+        "lede": "Kiểm tra xem cài đặt Deep Review đã đủ điều kiện chạy chưa.",
         "when_to_use": [
-            "Khi `/morkit:deep-review` báo lỗi setup",
-            "Sau khi cài lần đầu để verify env sẵn sàng",
+            "Khi /morkit:deep-review báo lỗi không chạy được",
+            "Sau khi cài plugin lần đầu, muốn xác nhận môi trường đã sẵn sàng",
         ],
         "example_args": "",
-        "example_note": "Check uvx, code-review-graph, gh, git, graph build, CLAUDE.md presence. Read-only.",
+        "example_note": "Chỉ đọc và báo cáo, không sửa gì. Kiểm tra uvx, code-review-graph, gh, git, build graph và CLAUDE.md.",
     },
     "commands.deep-review-post": {
+        "lede": "Sau khi đã có báo cáo review, lệnh này post lên PR làm comment qua gh CLI.",
         "when_to_use": [
-            "Sau khi `/morkit:deep-review` xong và muốn post report làm PR comment",
+            "Khi vừa chạy xong /morkit:deep-review và muốn chia sẻ kết quả lên PR",
         ],
         "example_args": "",
-        "example_note": "Dùng `gh pr comment` để post report. Không request changes — user vẫn giữ quyền quyết định.",
+        "example_note": "Chỉ post báo cáo, không yêu cầu thay đổi gì — quyết định cuối vẫn là của bạn.",
     },
 
-    # -------- DOC GENERATION (skills) --------
+    # ====================================================================
+    # NHÓM 4 — SINH TÀI LIỆU
+    # ====================================================================
     "skills.docs-hero-orchestrator": {
+        "lede": "Điều phối các sub-skill để sinh hoặc cập nhật bộ tài liệu đầy đủ cho một dự án.",
         "when_to_use": [
-            "Khi muốn sinh hoặc update bộ docs đầy đủ cho 1 project",
-            "Khi cần coordinate nhiều sub-skill (SRS/API/DB/arch...) một lúc",
+            "Khi cần sinh nguyên bộ tài liệu (SRS, API, DB, kiến trúc…) một lần",
+            "Khi muốn các sub-skill phối hợp với nhau, ít xung đột nhất có thể",
         ],
-        "example_args": "(invoke qua /morkit:init hoặc /morkit:update)",
-        "example_note": "Orchestrate 7 sub-skill, conflict-minimal updates. Standards: BrSE ITO Japan, arc42-lite, MADR.",
+        "example_args": "(gọi qua /morkit:init hoặc /morkit:update)",
+        "example_note": "Theo các chuẩn quen thuộc: BrSE ITO Japan cho SRS, arc42-lite cho kiến trúc, MADR cho ADR.",
     },
     "skills.generate-srs": {
+        "lede": "Sinh hoặc cập nhật tài liệu yêu cầu phần mềm (SRS) theo chuẩn BrSE cho ITO Japan offshore.",
         "when_to_use": [
-            "Khi project cần SRS theo chuẩn BrSE ITO Japan",
-            "Khi muốn refresh SRS sau khi requirements thay đổi",
+            "Khi dự án cần SRS theo chuẩn của khách Nhật",
+            "Khi yêu cầu thay đổi và cần làm mới SRS",
         ],
-        "example_args": "(invoke qua /morkit:init hoặc /morkit:update)",
-        "example_note": "13 sections + 2 appendices: Doc Control, Overview, Business Flow, FR/NFR, Roles, Data Items, Acceptance/UAT, Traceability...",
+        "example_args": "(gọi qua /morkit:init hoặc /morkit:update)",
+        "example_note": "Gồm 13 mục lớn và 2 phụ lục: Doc Control, tổng quan, luồng nghiệp vụ, FR/NFR, quyền, dữ liệu, UAT, traceability...",
     },
     "skills.generate-api-docs": {
+        "lede": "Sinh hoặc cập nhật tài liệu REST API.",
         "when_to_use": [
-            "Khi cần REST API documentation",
-            "Khi muốn sync docs theo route changes trong codebase",
+            "Khi cần tài liệu mô tả endpoint, request, response",
+            "Khi route trong mã nguồn đã đổi và muốn đồng bộ lại tài liệu",
         ],
-        "example_args": "(invoke qua /morkit:init / update / sync)",
-        "example_note": "Init render từ ProjectModel; update apply Delta; sync scan codebase và đề xuất changes.",
+        "example_args": "(gọi qua /morkit:init / update / sync)",
+        "example_note": "Chế độ init sinh từ ProjectModel; update áp dụng thay đổi; sync quét mã và đề xuất nội dung cần cập nhật.",
     },
     "skills.generate-db-design": {
+        "lede": "Sinh hoặc cập nhật tài liệu thiết kế database, có sơ đồ ERD bằng Mermaid.",
         "when_to_use": [
-            "Khi cần DB design document với Mermaid ERD",
-            "Khi muốn sync schema từ ORM models",
+            "Khi cần tài liệu mô tả schema DB",
+            "Khi muốn đồng bộ tài liệu với ORM model trong mã nguồn",
         ],
-        "example_args": "(invoke qua /morkit:init / update / sync)",
-        "example_note": "Render `database-design.md` với Mermaid ERD. Sync scan ORM models và propose Add/Update/Deprecate.",
+        "example_args": "(gọi qua /morkit:init / update / sync)",
+        "example_note": "Sinh file database-design.md kèm ERD vẽ bằng Mermaid. Chế độ sync quét ORM và đề xuất Thêm/Sửa/Bỏ.",
     },
     "skills.generate-system-architecture": {
+        "lede": "Sinh hoặc cập nhật tài liệu kiến trúc hệ thống theo arc42-lite, kèm sơ đồ thành phần bằng Mermaid.",
         "when_to_use": [
-            "Khi cần arc42-lite architecture document",
-            "Khi muốn embed Mermaid component diagram",
+            "Khi cần tài liệu kiến trúc cho dự án",
+            "Khi muốn nhúng sơ đồ component vẽ bằng Mermaid",
         ],
-        "example_args": "(invoke qua /morkit:init / update / sync)",
-        "example_note": "8 sections arc42-lite, embed Mermaid. Sync scan services/packages/Docker/k8s/import graph.",
+        "example_args": "(gọi qua /morkit:init / update / sync)",
+        "example_note": "Gồm 8 mục theo chuẩn arc42-lite. Sync quét services, packages, Docker, k8s và đồ thị import.",
     },
     "skills.generate-code-standards": {
+        "lede": "Sinh hoặc cập nhật tài liệu quy ước code (Conventional Commits + cấu hình lint/format).",
         "when_to_use": [
-            "Khi cần code standards doc",
-            "Khi muốn extract rules từ lint/format/commit configs hiện có",
+            "Khi dự án cần một tài liệu thống nhất về quy ước code",
+            "Khi muốn rút quy ước từ các file cấu hình lint/format đang có",
         ],
-        "example_args": "(invoke qua /morkit:init / update / sync)",
-        "example_note": "Conventional Commits + auto-extracted lint/format rules. Link CONTRIBUTING.md thay vì duplicate.",
+        "example_args": "(gọi qua /morkit:init / update / sync)",
+        "example_note": "Nếu đã có CONTRIBUTING.md, sẽ link sang chứ không nhân đôi nội dung.",
     },
     "skills.generate-codebase-summary": {
+        "lede": "Sinh hoặc cập nhật tài liệu tổng quan mã nguồn dạng README: tech stack, cấu trúc, gói, entry point.",
         "when_to_use": [
-            "Khi cần README-style overview cho codebase",
-            "Khi onboard team member mới cần hiểu tech stack + layout",
+            "Khi cần một bản tổng quan dự án dành cho người mới onboard",
+            "Khi muốn ai đó hiểu nhanh dự án mà không cần đọc hết code",
         ],
-        "example_args": "(invoke qua /morkit:init / update / sync)",
-        "example_note": "Tech stack, repo layout, packages, entry points, LOC by language.",
+        "example_args": "(gọi qua /morkit:init / update / sync)",
+        "example_note": "Liệt kê công nghệ, bố cục thư mục, các package, entry point và số dòng code theo ngôn ngữ.",
     },
     "skills.generate-design-guidelines": {
+        "lede": "Sinh hoặc cập nhật tài liệu Design Principles, Patterns và các ADR (MADR format).",
         "when_to_use": [
-            "Khi cần Design Principles + Patterns + ADRs",
-            "Khi muốn record kiến trúc quyết định theo MADR format",
+            "Khi cần một tài liệu thống nhất về nguyên tắc thiết kế",
+            "Khi muốn ghi lại các quyết định kiến trúc theo MADR format",
         ],
-        "example_args": "(invoke qua /morkit:init / update)",
-        "example_note": "MADR format. Init emit per-ADR stubs ở `docs/adr/NNN-slug.md`. Sync intentionally not supported — guidelines là manual.",
+        "example_args": "(gọi qua /morkit:init / update)",
+        "example_note": "Khi init, mỗi ADR sẽ có một file riêng tại docs/adr/NNN-slug.md. Skill này không hỗ trợ chế độ sync — guidelines do người viết.",
     },
 
-    # -------- DOC GENERATION (commands) --------
     "commands.setup": {
+        "lede": "Chạy 1 lần sau khi cài plugin để dựng môi trường Python cho docs-hero.",
         "when_to_use": [
-            "Lần đầu sau khi `/plugin install morkit`",
-            "Sau khi đổi Python version hoặc rebuild venv",
+            "Lần đầu sau khi /plugin install morkit",
+            "Sau khi đổi Python version và muốn dựng lại venv",
         ],
         "example_args": "",
-        "example_note": "Bootstrap Python venv tại `~/.claude/plugins/data/docs-hero/.venv` + install pinned deps. Idempotent, ~30-60s.",
+        "example_note": "Mất khoảng 30-60 giây. Lệnh idempotent — chạy lại không gây hại.",
     },
     "commands.init": {
+        "lede": "Sinh bộ tài liệu mới (SRS, API, DB...) từ một file ProjectModel JSON.",
         "when_to_use": [
-            "Khi project chưa có doc nào, muốn sinh fresh từ ProjectModel JSON",
+            "Khi dự án chưa có tài liệu, muốn sinh lần đầu từ ProjectModel",
         ],
         "example_args": "--lang VN",
-        "example_note": "Multi-select gate hỏi pick doc nào (SRS/API/DB/...). Output ra `./docs/`. Single-language (JP|EN|VN).",
+        "example_note": "Có menu chọn tài liệu muốn sinh (SRS / API / DB / ...). Đầu ra nằm ở thư mục docs/ của dự án. Chọn 1 ngôn ngữ: JP, EN hoặc VN.",
     },
     "commands.update": {
+        "lede": "Áp dụng một change hoặc plan đã chốt vào tài liệu đang có — vẫn giữ phần bạn đã sửa tay.",
         "when_to_use": [
-            "Khi OpenSpec change đã merge và cần apply vào doc tương ứng",
-            "Khi brainstorm plan đã chốt và muốn update doc",
+            "Khi một change đã merge và cần cập nhật vào tài liệu tương ứng",
+            "Khi plan brainstorm đã chốt và muốn cập nhật tài liệu theo plan đó",
         ],
-        "example_args": "<change-name>",
-        "example_note": "Apply OpenSpec change/plan vào doc hiện có. Preserve manual edits qua diff engine.",
+        "example_args": "<tên-change>",
+        "example_note": "Phần bạn đã sửa tay trong tài liệu sẽ được giữ nguyên nhờ diff engine.",
     },
     "commands.sync": {
+        "lede": "Đọc mã nguồn, đề xuất các nội dung nên cập nhật vào tài liệu. Chỉ đọc, không ghi.",
         "when_to_use": [
-            "Khi schema/route trong code đã đổi nhưng doc chưa update",
-            "Khi muốn propose changes mà chưa apply ngay",
+            "Khi schema hoặc route trong code đã đổi nhưng tài liệu chưa cập nhật",
+            "Khi muốn xem trước các thay đổi sẽ áp dụng trước khi quyết",
         ],
         "example_args": "",
-        "example_note": "Read-only scan ORM + REST routes. Output `sync-proposal.md` với checkboxes ADD/UPDATE/DEPRECATE.",
+        "example_note": "Xuất file sync-proposal.md có checkbox để bạn tick các nội dung muốn áp dụng. Sau đó gõ /morkit:apply-sync.",
     },
     "commands.apply-sync": {
+        "lede": "Áp dụng các nội dung bạn đã tick trong sync-proposal.md vào tài liệu.",
         "when_to_use": [
-            "Sau khi `/morkit:sync` đã sinh proposal và user đã tick checkboxes",
+            "Ngay sau khi /morkit:sync đã sinh proposal và bạn đã tick chọn",
         ],
         "example_args": "",
-        "example_note": "Convert ticked items thành Delta, chạy standard update flow.",
+        "example_note": "Chuyển các mục được tick thành thay đổi cụ thể rồi chạy update flow chuẩn.",
     },
     "commands.doctor": {
+        "lede": "Kiểm tra cài đặt docs-hero xem có ổn không (Python, venv, dependencies...).",
         "when_to_use": [
-            "Khi `/morkit:init` hoặc `/morkit:update` báo lỗi setup",
-            "Sau khi cài lần đầu để verify env sẵn sàng",
+            "Khi /morkit:init hoặc /morkit:update báo lỗi cài đặt",
+            "Sau khi cài lần đầu, muốn xác nhận môi trường đã sẵn sàng",
         ],
         "example_args": "",
-        "example_note": "Check Python version, venv, deps, schema importable, mmdc availability. Read-only.",
+        "example_note": "Chỉ đọc và báo cáo, không sửa gì. Kiểm tra Python version, venv, dependencies, schema và mmdc.",
     },
 
-    # -------- MISC --------
+    # ====================================================================
+    # NHÓM 5 — KHÁC
+    # ====================================================================
     "skills.using-morkit": {
+        "lede": "Skill nền — tự chạy ở đầu mỗi cuộc hội thoại để Claude biết cách tìm và dùng các skill khác.",
         "when_to_use": [
-            "Tự động invoke khi bắt đầu mỗi conversation",
-            "Khi cần hiểu cách find và dùng các skill khác",
+            "Tự chạy mỗi khi bắt đầu một phiên mới — bạn không cần gọi tay",
+            "Khi cần Claude hiểu cách điều phối các skill khác trong morkit",
         ],
-        "example_args": "(auto-invoke)",
-        "example_note": "Establish how to find and use skills. Required ở đầu mọi conversation.",
+        "example_args": "(tự gọi)",
+        "example_note": "Bắt buộc chạy ở đầu mỗi phiên. Đây là điều kiện để các skill khác hoạt động đúng.",
     },
 }

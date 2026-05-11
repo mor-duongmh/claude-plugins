@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>morkit › commands › deep-review</title>
+<title>morkit › command › deep-review</title>
 <style>
 :root {
   --bg: #fbf8f2; --bg-elev: #ffffff; --bg-subtle: #f0ece2; --bg-window: #ebe7dd;
@@ -145,27 +145,24 @@ td code { font-size: 12px; }
 <body>
 <main class="page">
   <div class="crumbs">
-    <div>morkit › <a href="../index.html">tổng quan</a> › commands › <span class="path">deep-review</span></div>
+    <div>morkit › <a href="../index.html">tổng quan</a> › command › <span class="path">deep-review</span></div>
     <button id="themeBtn" class="toggle" type="button">☾ Vesper / Paper</button>
   </div>
-  <div style="margin-bottom: 10px;"><span class="tag">Code review</span><span class="tag">Command</span></div>
+  <div style="margin-bottom: 10px;"><span class="tag">Review code</span><span class="tag">Command</span></div>
   <h1>morkit:deep-review</h1>
-  <p class="lede">Run a deep multi-agent code review on a PR or git diff. Produces a Markdown matrix report with risk, security, design pattern, test coverage, and convention findings.</p>
+  <p class="lede">Slash command chạy review chuyên sâu trên PR hoặc git diff, kết quả là báo cáo Markdown dạng bảng.</p>
 
-  <h2>1. Để làm gì</h2>
-  <p>Run a deep multi-agent code review on a PR or git diff. Produces a Markdown matrix report with risk, security, design pattern, test coverage, and convention findings.</p>
+  <h2>1. Cách gọi</h2>
+  <pre><code>/morkit:deep-review [tham số]</code></pre>
+  <p class="lede" style="font-size:14px;">Slash command — gõ trực tiếp trong Claude Code.</p>
 
-  <h2>2. Cách gọi</h2>
-  <pre><code>/morkit:deep-review [args]</code></pre>
-  <p class="lede" style="font-size:14px;">Slash command thuần — gõ trong Claude Code REPL.</p>
-
-  <h2>3. Khi nào dùng</h2>
+  <h2>2. Khi nào dùng</h2>
   <ul>
-  <li>Sau khi push branch và muốn review trước khi xin team review</li>
-  <li>Khi cần verify rủi ro / security / test coverage trên 1 PR cụ thể</li>
+  <li>Sau khi push branch, muốn tự review trước khi mời team xem</li>
+  <li>Khi cần kiểm tra rủi ro, bảo mật và độ phủ test trên một PR cụ thể</li>
   </ul>
 
-  <h2>4. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -173,18 +170,18 @@ td code { font-size: 12px; }
     </div>
     <pre><code>$ /morkit:deep-review 123  # hoặc HEAD~3..HEAD</code></pre>
   </div>
-  <p class="lede" style="font-size:14px;">Output Markdown matrix với risk/security/pattern/tests/convention findings.</p>
+  <p class="lede" style="font-size:14px;">Báo cáo gồm các phát hiện về rủi ro, bảo mật, pattern, kiểm thử và quy ước code.</p>
 
-  <h2>5. Liên quan</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
-    <a class="related-card" href="../commands/deep-review-doctor.html"><div class="ttl">/morkit:deep-review-doctor</div><div class="sub">Code review · command</div></a>
-    <a class="related-card" href="../commands/deep-review-post.html"><div class="ttl">/morkit:deep-review-post</div><div class="sub">Code review · command</div></a>
-    <a class="related-card" href="../skills/deep-review.html"><div class="ttl">deep-review</div><div class="sub">Code review · skill</div></a>
+    <a class="related-card" href="../commands/deep-review-doctor.html"><div class="ttl">/morkit:deep-review-doctor</div><div class="sub">Review code · command</div></a>
+    <a class="related-card" href="../commands/deep-review-post.html"><div class="ttl">/morkit:deep-review-post</div><div class="sub">Review code · command</div></a>
+    <a class="related-card" href="../skills/deep-review.html"><div class="ttl">deep-review</div><div class="sub">Review code · skill</div></a>
   </div>
 
   <div class="footer">
-    <a href="../index.html">← Tổng quan</a>
-    <a href="../docs.html">Use cases</a>
+    <a href="../index.html">← Về tổng quan</a>
+    <a href="../docs.html">Tình huống sử dụng</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
   </div>
 </main>

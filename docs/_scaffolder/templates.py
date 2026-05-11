@@ -185,8 +185,8 @@ def page_shell(title, breadcrumb_html, body_html):
   </div>
   {body_html}
   <div class="footer">
-    <a href="../index.html">← Tổng quan</a>
-    <a href="../docs.html">Use cases</a>
+    <a href="../index.html">← Về tổng quan</a>
+    <a href="../docs.html">Tình huống sử dụng</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
   </div>
 </main>
@@ -206,9 +206,10 @@ def detail_page(*, kind, slug, name, lede, group_label, deprecated,
     """
     tag_html = ""
     if deprecated:
-        tag_html += '<span class="tag deprecated">Deprecated</span>'
+        tag_html += '<span class="tag deprecated">Đã thay thế</span>'
     tag_html += f'<span class="tag">{group_label}</span>'
-    tag_html += f'<span class="tag">{kind.capitalize()}</span>'
+    kind_label = "Skill" if kind == "skill" else "Command"
+    tag_html += f'<span class="tag">{kind_label}</span>'
 
     when_html = "\n".join(f"  <li>{b}</li>" for b in when_bullets)
 
@@ -222,20 +223,18 @@ def detail_page(*, kind, slug, name, lede, group_label, deprecated,
   </div>
   <p class="lede" style="font-size:14px;">{example_note}</p>"""
 
-    invocation_block = f"""<h2>2. Cách gọi</h2>
-  <pre><code>{invocation} [args]</code></pre>
-  <p class="lede" style="font-size:14px;">Slash command thuần — gõ trong Claude Code REPL.</p>
+    invocation_block = f"""<h2>1. Cách gọi</h2>
+  <pre><code>{invocation} [tham số]</code></pre>
+  <p class="lede" style="font-size:14px;">Slash command — gõ trực tiếp trong Claude Code.</p>
 """ if kind == "command" else ""
 
-    when_idx, example_idx = (3, 4) if kind == "command" else (2, 3)
-    related_idx = 5 if kind == "command" else 4
+    when_idx = 2 if kind == "command" else 1
+    example_idx = when_idx + 1
+    related_idx = example_idx + 1
 
     body = f"""<div style="margin-bottom: 10px;">{tag_html}</div>
   <h1>{name}</h1>
   <p class="lede">{lede}</p>
-
-  <h2>1. Để làm gì</h2>
-  <p>{lede}</p>
 
   {invocation_block}
   <h2>{when_idx}. Khi nào dùng</h2>
@@ -246,16 +245,17 @@ def detail_page(*, kind, slug, name, lede, group_label, deprecated,
   <h2>{example_idx}. Ví dụ</h2>
   {example_html}
 
-  <h2>{related_idx}. Liên quan</h2>
+  <h2>{related_idx}. Xem thêm</h2>
   <div class="related-grid">
 {related_cards_html}
   </div>
 """
 
-    crumbs_path = f'morkit › <a href="../index.html">tổng quan</a> › {kind}s › <span class="path">{slug}</span>'
+    kind_label_vn = "skill" if kind == "skill" else "command"
+    crumbs_path = f'morkit › <a href="../index.html">tổng quan</a> › {kind_label_vn} › <span class="path">{slug}</span>'
     breadcrumb_html = f'<div>{crumbs_path}</div>'
 
-    title = f"morkit › {kind}s › {slug}"
+    title = f"morkit › {kind_label_vn} › {slug}"
     return AUTOGEN_HEADER + page_shell(title, breadcrumb_html, body)
 
 
@@ -270,9 +270,9 @@ def overview_page(*, sections_html):
     """
     breadcrumb_html = '<div>morkit › <span class="path">tổng quan</span></div>'
     body = f"""<h1>morkit</h1>
-  <p class="lede">Marketplace của Mor — một plugin <code>morkit</code> consolidates tất cả:
-  spec workflow, brainstorm/execute, code review, doc generation.
-  Một namespace <code>/morkit:*</code> cho tất cả.</p>
+  <p class="lede">Plugin <code>morkit</code> của Mor — gói toàn bộ công cụ vào một chỗ:
+  viết spec, lên kế hoạch và chạy, review code, sinh tài liệu.
+  Tất cả gọi qua cùng một tiền tố <code>/morkit:*</code>.</p>
 
 {sections_html}
 """
@@ -293,7 +293,7 @@ def overview_page(*, sections_html):
   </div>
   {body}
   <div class="footer">
-    <a href="docs.html">Use cases →</a>
+    <a href="docs.html">Xem tình huống sử dụng →</a>
     <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
     <a href="https://github.com/mor-duongmh/claude-plugins/blob/main/README.md" target="_blank" rel="noopener">README</a>
   </div>

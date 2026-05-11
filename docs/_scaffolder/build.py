@@ -95,20 +95,21 @@ def related_for(kind: str, slug: str) -> list[tuple[str, str, str]]:
     if group == "misc":
         return out
 
+    kind_vn = {"skills": "skill", "commands": "command"}
     items = C.GROUPS[group]
     # Same-kind siblings first (exclude self)
     for sib in items.get(kind, []):
         if sib == slug:
             continue
         href = f"../{kind}/{sib}.html"
-        out.append((href, f"/morkit:{sib}" if kind == "commands" else sib, f"{C.GROUP_LABELS[group]} · {kind[:-1]}"))
+        out.append((href, f"/morkit:{sib}" if kind == "commands" else sib, f"{C.GROUP_LABELS[group]} · {kind_vn[kind]}"))
     # Cross-kind siblings if we have room
     cross_kind = "skills" if kind == "commands" else "commands"
     for sib in items.get(cross_kind, []):
         if len(out) >= 4:
             break
         href = f"../{cross_kind}/{sib}.html"
-        out.append((href, f"/morkit:{sib}" if cross_kind == "commands" else sib, f"{C.GROUP_LABELS[group]} · {cross_kind[:-1]}"))
+        out.append((href, f"/morkit:{sib}" if cross_kind == "commands" else sib, f"{C.GROUP_LABELS[group]} · {kind_vn[cross_kind]}"))
     return out[:6]
 
 
@@ -186,10 +187,10 @@ def render_overview() -> str:
         return f'<a href="commands/{slug}.html"><code>/morkit:{slug}</code></a>'
 
     groups_rows = [
-        ("Spec workflow",
+        ("Viết spec",
          ", ".join(link_cmd(s) for s in ["propose", "review", "archive"]),
-         "Scaffold proposal/design/tasks + review-checklist gate"),
-        ("Plan &amp; build",
+         "Tự sinh proposal, design, tasks và checklist để bạn duyệt trước khi cho code chạy."),
+        ("Lên kế hoạch và làm",
          ", ".join(link_skill(s) for s in [
             "brainstorming", "writing-plans", "executing-plans",
             "subagent-driven-development", "test-driven-development",
@@ -199,13 +200,13 @@ def render_overview() -> str:
             "requesting-code-review", "receiving-code-review",
             "writing-skills",
          ]),
-         "Brainstorm, viết plan, thực thi plan, TDD, debug, review"),
-        ("Code review",
+         "Suy nghĩ ý tưởng, viết kế hoạch, chạy kế hoạch từng bước, viết test trước, debug có hệ thống và xin review."),
+        ("Review code",
          ", ".join(link_cmd(s) for s in ["deep-review", "deep-review-doctor", "deep-review-post"]),
-         "Review code bằng 5 chuyên gia AI song song"),
-        ("Doc generation",
+         "Review code chuyên sâu bằng 5 chuyên gia AI chạy song song."),
+        ("Sinh tài liệu",
          ", ".join(link_cmd(s) for s in ["setup", "init", "update", "sync", "apply-sync", "doctor"]),
-         "Sinh SRS + API + DB doc cho ITO Japan offshore"),
+         "Tự sinh tài liệu dự án theo chuẩn ITO Japan offshore: SRS, API, schema DB, kiến trúc..."),
     ]
     groups_table_rows = "\n".join(
         f"      <tr><td><strong>{g}</strong></td><td>{items}</td><td>{desc}</td></tr>"
@@ -214,21 +215,21 @@ def render_overview() -> str:
 
     # Section 3 — Slash commands (15 dòng, link tới detail)
     cmd_rows = [
-        ("propose [mô tả]",        "Sinh đầy đủ proposal + design + tasks + review-checklist"),
-        ("review [tên]",           "Tạo lại review-checklist từ Google Doc"),
-        ("archive [tên]",          "Đóng change sau merge"),
-        ("brainstorm",             "<span class=\"tag deprecated\">Deprecated</span> Dùng skill <code>brainstorming</code>"),
-        ("write-plan",             "<span class=\"tag deprecated\">Deprecated</span> Dùng skill <code>writing-plans</code>"),
-        ("execute-plan",           "<span class=\"tag deprecated\">Deprecated</span> Dùng skill <code>executing-plans</code>"),
-        ("deep-review [target]",   "Review trên git diff hoặc PR (5 specialists song song)"),
-        ("deep-review-doctor",     "Health-check Deep Review installation"),
-        ("deep-review-post",       "Post report làm PR comment"),
-        ("setup",                  "Bootstrap Python venv (~30-60s, 1 lần)"),
-        ("init",                   "Sinh fresh SRS + API + DB từ ProjectModel JSON"),
-        ("update",                 "Apply change/plan vào doc"),
-        ("sync",                   "Scan codebase, đề xuất update"),
-        ("apply-sync",             "Apply đề xuất từ sync"),
-        ("doctor",                 "Health-check docs-hero install"),
+        ("propose [mô tả]",        "Sinh đầy đủ proposal, design, tasks và checklist trong một lần chạy."),
+        ("review [tên]",           "Tạo hoặc làm mới checklist duyệt thiết kế cho một change."),
+        ("archive [tên]",          "Đóng một change folder sau khi đã merge và deploy ổn."),
+        ("brainstorm",             "<span class=\"tag deprecated\">Đã thay thế</span> Dùng skill <code>brainstorming</code>."),
+        ("write-plan",             "<span class=\"tag deprecated\">Đã thay thế</span> Dùng skill <code>writing-plans</code>."),
+        ("execute-plan",           "<span class=\"tag deprecated\">Đã thay thế</span> Dùng skill <code>executing-plans</code>."),
+        ("deep-review [target]",   "Review chuyên sâu trên PR hoặc git diff (5 chuyên gia AI chạy song song)."),
+        ("deep-review-doctor",     "Kiểm tra cài đặt Deep Review đã đủ điều kiện chạy chưa."),
+        ("deep-review-post",       "Post báo cáo review lên PR làm comment."),
+        ("setup",                  "Dựng môi trường Python cho docs-hero (khoảng 30-60 giây, chạy 1 lần)."),
+        ("init",                   "Sinh bộ tài liệu mới (SRS, API, DB...) từ một file ProjectModel JSON."),
+        ("update",                 "Áp dụng một change hoặc plan đã chốt vào tài liệu hiện có."),
+        ("sync",                   "Đọc mã nguồn và đề xuất nội dung nên cập nhật vào tài liệu (chỉ đọc, không ghi)."),
+        ("apply-sync",             "Áp dụng các nội dung bạn đã tick trong file sync-proposal.md."),
+        ("doctor",                 "Kiểm tra cài đặt docs-hero xem có ổn không."),
     ]
     cmd_table_rows = "\n".join(
         f'      <tr><td><a href="commands/{slug.split()[0]}.html"><code>/morkit:{slug}</code></a></td><td>{purpose}</td></tr>'
@@ -236,77 +237,55 @@ def render_overview() -> str:
     )
 
     sections = f"""<h2>1. Cài đặt</h2>
-  <p>Yêu cầu: <a href="https://docs.anthropic.com/claude/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> và Node.js ≥ 18.</p>
+  <p>Cần có: <a href="https://docs.anthropic.com/claude/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> và Node.js từ 18 trở lên.</p>
   <pre><code>/plugin add marketplace github:mor-duongmh/claude-plugins
 /plugin install morkit@mor-duongmh</code></pre>
-  <p class="lede" style="font-size:14px;">Cài xong là dùng được luôn — không cần setup gì thêm trong từng project.</p>
+  <p class="lede" style="font-size:14px;">Cài xong là dùng được luôn — không cần làm gì thêm trong từng dự án.</p>
 
   <h2>2. morkit có những gì?</h2>
-  <p>Một plugin chứa 4 nhóm chức năng dưới namespace <code>/morkit:*</code>:</p>
+  <p>Một plugin gói 4 nhóm chức năng, tất cả gọi qua tiền tố <code>/morkit:*</code>:</p>
   <table>
     <thead><tr><th>Nhóm</th><th>Bao gồm</th><th>Để làm gì</th></tr></thead>
     <tbody>
 {groups_table_rows}
     </tbody>
   </table>
-  <p class="lede" style="font-size:14px;">Tổng cộng: <strong>22 skills + 9 specialist agents + 15 slash commands</strong> đều có prefix <code>/morkit:</code>.</p>
+  <p class="lede" style="font-size:14px;">Tổng cộng <strong>22 skill + 9 agent chuyên trách + 15 slash command</strong>, tất cả đều có tiền tố <code>/morkit:</code>.</p>
 
-  <h2>3. Slash command đầy đủ</h2>
-  <p>Bấm vào tên command để xem chi tiết, cách dùng và ví dụ.</p>
+  <h2>3. Danh sách slash command</h2>
+  <p>Bấm vào tên command để xem giải thích chi tiết, cách gọi và ví dụ.</p>
   <table>
-    <thead><tr><th>Command</th><th>Việc</th></tr></thead>
+    <thead><tr><th>Command</th><th>Để làm gì</th></tr></thead>
     <tbody>
 {cmd_table_rows}
     </tbody>
   </table>
 
-  <h2>4. Plan review gate (chốt chặn human-in-the-loop)</h2>
-  <p>Sau {link_cmd('propose')}, plugin sinh <code>morkit/output/spec/&lt;tên&gt;/review-checklist.md</code>
-  từ <a href="https://docs.google.com/document/d/184wY2N2WOUExmZrClvHCfcRCnSQsJYvav6gc6JwL6xc" target="_blank" rel="noopener">Google Doc canonical của Mor</a>.</p>
-
-  <p>Auto-detect variant (BE/FE × Feature/BugFix/Refactor). Override:</p>
-  <pre><code>/morkit:review --variant FE-BugFix
-/morkit:review --refresh</code></pre>
-
-  <p>Bạn mở file, tick từng mục, sửa dòng cuối:</p>
-  <pre><code>- Overall Decision: PENDING
-+ Overall Decision: OK</code></pre>
-
-  <p>→ {link_skill('executing-plans')} mở khoá.</p>
-
-  <div class="note">
-    <strong>Hai lớp bảo vệ song song</strong> (defense-in-depth):
-    <ol>
-      <li><strong>PreToolUse hook</strong> — Claude Code chặn tool call ngay từ harness</li>
-      <li><strong>Skill content</strong> — mỗi skill tự kiểm tra ở Step 0 trước khi làm việc</li>
-    </ol>
-  </div>
-
-  <h2>5. Companion tools (Context7 + RTK)</h2>
-  <p>Hai tool nâng chất lượng research và giảm token. Plugin xử lý lịch sự — không cài silent.</p>
+  <h2>4. Hai công cụ đi kèm (Context7 + RTK)</h2>
+  <p>Hai công cụ giúp agent trả lời chính xác hơn và tiết kiệm token. Plugin không cài lặng lẽ — sẽ hỏi bạn trước.</p>
   <table>
-    <thead><tr><th>Tool</th><th>Vai trò</th><th>Cách cài</th></tr></thead>
+    <thead><tr><th>Công cụ</th><th>Vai trò</th><th>Cách cài</th></tr></thead>
     <tbody>
       <tr>
         <td><a href="https://github.com/upstash/context7" target="_blank" rel="noopener">Context7</a></td>
-        <td>Trả docs/API version-specific cho library, agent không cần đoán</td>
-        <td><strong>Lazy</strong> — plugin tự <code>npx -y ctx7</code> khi cần. MCP optional.</td>
+        <td>Trả về tài liệu/API đúng phiên bản cho thư viện, agent không phải đoán.</td>
+        <td>Cài lười — plugin tự gọi <code>npx -y ctx7</code> khi cần.</td>
       </tr>
       <tr>
         <td><a href="https://github.com/rtk-ai/rtk" target="_blank" rel="noopener">RTK</a></td>
-        <td>Nén output bash, giảm 60-90% token</td>
-        <td><strong>Hỏi 1 lần</strong> session đầu — bạn chọn Yes/Skip/Don't ask again.</td>
+        <td>Nén output của lệnh bash, giảm 60-90% token.</td>
+        <td>Hỏi 1 lần ở phiên đầu — bạn chọn Cài / Bỏ qua / Đừng hỏi lại.</td>
       </tr>
     </tbody>
   </table>
-  <p class="lede" style="font-size:14px;">🎯 Context7 đã active trong 6 brainstorm/execute skills + 3 spec-workflow skill —
+  <p class="lede" style="font-size:14px;">Context7 đã được bật sẵn trong 6 skill nhóm Lên kế hoạch và 3 skill nhóm Viết spec —
   agent sẽ tự gọi Context7 thay vì đoán API.</p>
 
   <p>Cài RTK thủ công:</p>
   <pre><code>curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
 rtk init -g</code></pre>
 
-  <p>Cài Context7 dạng MCP (full features):</p>
+  <p>Cài Context7 dạng MCP (đầy đủ tính năng):</p>
   <pre><code>npx -y ctx7 setup</code></pre>
 """
     return T.overview_page(sections_html=sections)
