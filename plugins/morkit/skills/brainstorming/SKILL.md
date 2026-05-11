@@ -158,7 +158,7 @@ inputs: <list of files/links consulted>
 <unresolved threads>
 
 ## Next step
-<e.g. /morkit:propose <name>, /morkit:init SRS, etc.>
+<e.g. /morkit:propose <name> hoặc /morkit:init --inputs <dir>>
 ```
 
 During the session, do NOT persist intermediate snippets without asking.
@@ -168,7 +168,7 @@ Only the final design log is auto-offered at session end.
 
 Think freely. When insights crystallize, you might offer:
 
-- "This feels solid enough to start a change. Want me to run `/morkit:propose`?"
+- "This feels solid enough to start a change. Want me to run `/morkit:propose <name>` hoặc `/morkit:init`?"
 - Or keep exploring - no pressure to formalize
 
 ### When a change exists
@@ -337,7 +337,7 @@ crystallized), summarize and save the design log:
 
 **Next step**:
 - Run `/morkit:propose <name>` to create a change proposal
-- Run `/morkit:init` to generate SRS / API / DB docs
+- Run `/morkit:init --inputs <dir>` to generate SRS / API / DB docs
 - Keep exploring later — design log is saved
 ```
 
