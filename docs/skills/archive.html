@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>archive</h1>
   <p class="lede">Đóng một change folder sau khi PR đã merge và đã deploy ổn.</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Skill di chuyển thư mục change từ vùng active sang <code>archive/YYYY-MM/</code> theo tháng, và cập nhật <code>.meta.json</code> với trạng thái archived. Không xoá file — bạn vẫn có thể tra lại sau. Mục đích là giữ thư mục <code>morkit/output/spec/</code> chỉ chứa các change đang làm dở.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Sau khi đã merge và verify ở môi trường thật</li>
   <li>Khi muốn giữ thư mục morkit/output/spec/ gọn gàng</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Folder sẽ được di chuyển sang archive/YYYY-MM/, không bị xoá. Có thể tra lại sau này.</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <a class="related-card" href="../skills/propose.html"><div class="ttl">propose</div><div class="sub">Spec workflow · skill</div></a>
     <a class="related-card" href="../skills/review.html"><div class="ttl">review</div><div class="sub">Spec workflow · skill</div></a>

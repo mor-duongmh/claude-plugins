@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>propose</h1>
   <p class="lede">Mô tả ý tưởng bằng 1-2 câu → tự sinh đầy đủ 4 file: proposal, design, tasks và checklist review.</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Skill đọc mô tả ngắn của bạn, đặt tên change tự động, rồi sinh ra cả bộ artifact gồm proposal (lý do làm), design (cách làm), tasks (chia bước theo TDD) và review-checklist (để bạn duyệt). Tất cả nằm gọn trong một thư mục dưới <code>morkit/output/spec/&lt;tên-change&gt;/</code>. Không phụ thuộc OpenSpec hay CLI ngoài — plugin tự dựng artifact.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Khi muốn bắt đầu một thay đổi mới trong dự án</li>
   <li>Trước khi viết bất kỳ dòng code nào, để có spec rõ ràng</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Sau khi chạy, một thư mục mới sẽ được tạo trong morkit/output/spec/&lt;tên-change&gt;/ chứa 4 file sẵn sàng để bạn duyệt.</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <a class="related-card" href="../skills/review.html"><div class="ttl">review</div><div class="sub">Spec workflow · skill</div></a>
     <a class="related-card" href="../skills/archive.html"><div class="ttl">archive</div><div class="sub">Spec workflow · skill</div></a>

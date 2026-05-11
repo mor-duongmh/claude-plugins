@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>generate-design-guidelines</h1>
   <p class="lede">Sinh hoặc cập nhật tài liệu Design Principles, Patterns và các ADR (MADR format).</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Render <code>design-guidelines.md</code> gồm 3 phần: Design Principles, Patterns, ADRs theo chuẩn MADR. Khi <code>init</code>, mỗi ADR có file riêng tại <code>docs/adr/NNN-slug.md</code> để dễ tra cứu sau. Phân loại theo scope DPR/PTN/ADR. Skill này cố ý <em>không hỗ trợ</em> chế độ sync vì guidelines là quyết định của người, không nên auto-generate.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Khi cần một tài liệu thống nhất về nguyên tắc thiết kế</li>
   <li>Khi muốn ghi lại các quyết định kiến trúc theo MADR format</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Khi init, mỗi ADR sẽ có một file riêng tại docs/adr/NNN-slug.md. Skill này không hỗ trợ chế độ sync — guidelines do người viết.</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <a class="related-card" href="../skills/generate-srs.html"><div class="ttl">generate-srs</div><div class="sub">Doc generation · skill</div></a>
     <a class="related-card" href="../skills/generate-api-docs.html"><div class="ttl">generate-api-docs</div><div class="sub">Doc generation · skill</div></a>

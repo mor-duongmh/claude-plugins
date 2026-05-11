@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>generate-codebase-summary</h1>
   <p class="lede">Sinh hoặc cập nhật tài liệu tổng quan mã nguồn dạng README: tech stack, cấu trúc, gói, entry point.</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Render <code>codebase-summary.md</code> dạng README-style overview: tech stack, repo layout (file tree gọn), packages chính, entry points và LOC theo ngôn ngữ. Chế độ <code>sync</code> quét file tree + manifest (package.json, pyproject.toml, go.mod...) và đề xuất Thêm/Bỏ. Phù hợp khi onboard người mới muốn nắm dự án nhanh trong 5 phút.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Khi cần một bản tổng quan dự án dành cho người mới onboard</li>
   <li>Khi muốn ai đó hiểu nhanh dự án mà không cần đọc hết code</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Liệt kê công nghệ, bố cục thư mục, các package, entry point và số dòng code theo ngôn ngữ.</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <a class="related-card" href="../skills/generate-srs.html"><div class="ttl">generate-srs</div><div class="sub">Doc generation · skill</div></a>
     <a class="related-card" href="../skills/generate-api-docs.html"><div class="ttl">generate-api-docs</div><div class="sub">Doc generation · skill</div></a>

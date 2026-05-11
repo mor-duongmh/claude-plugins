@@ -139,6 +139,7 @@ def render_one(kind: str, slug: str) -> str:
     name = meta["name"] or slug
     description = meta["description"]
     lede = curated.get("lede") or description or f"{name}"
+    details = curated.get("details", "")
 
     deprecated = is_deprecated(description, curated)
 
@@ -165,6 +166,7 @@ def render_one(kind: str, slug: str) -> str:
         slug=slug,
         name=name,
         lede=html_escape(lede),
+        details=details,  # raw HTML allowed (contains <code> spans)
         group_label=group_label,
         deprecated=deprecated,
         when_bullets=[html_escape(b) for b in when_bullets],

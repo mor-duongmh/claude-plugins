@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>generate-db-design</h1>
   <p class="lede">Sinh hoặc cập nhật tài liệu thiết kế database, có sơ đồ ERD bằng Mermaid.</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Render <code>database-design.md</code> với mô tả bảng, cột, quan hệ, index và sơ đồ ERD nhúng bằng Mermaid. 3 chế độ: <code>init</code> sinh từ ProjectModel, <code>update</code> apply Delta, <code>sync</code> quét ORM model (TypeORM, Prisma, SQLAlchemy...) và đề xuất Thêm/Sửa/Bỏ theo bảng.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Khi cần tài liệu mô tả schema DB</li>
   <li>Khi muốn đồng bộ tài liệu với ORM model trong mã nguồn</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Sinh file database-design.md kèm ERD vẽ bằng Mermaid. Chế độ sync quét ORM và đề xuất Thêm/Sửa/Bỏ.</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <a class="related-card" href="../skills/generate-srs.html"><div class="ttl">generate-srs</div><div class="sub">Doc generation · skill</div></a>
     <a class="related-card" href="../skills/generate-api-docs.html"><div class="ttl">generate-api-docs</div><div class="sub">Doc generation · skill</div></a>

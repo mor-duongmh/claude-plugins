@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>verification-before-completion</h1>
   <p class="lede">Trước khi nói &quot;xong rồi&quot; hoặc commit, bắt buộc chạy lệnh kiểm tra thật và xem output thật.</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Skill ép một nguyên tắc: "evidence before assertions". Không được claim feature đã xong, bug đã fix, test đã pass cho tới khi chạy lệnh xác minh (build, test, lint, smoke run) và copy output thật ra. Mục tiêu là tránh báo cáo dối/hồ đồ — đặc biệt quan trọng khi làm AI-assisted dev.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Trước khi báo cáo &quot;đã làm xong&quot; hay &quot;đã sửa rồi&quot;</li>
   <li>Trước khi commit hoặc mở PR</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Bằng chứng có trước lời khẳng định. Phải có output thật mới được nói thành công.</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <a class="related-card" href="../skills/brainstorming.html"><div class="ttl">brainstorming</div><div class="sub">Plan &amp; build · skill</div></a>
     <a class="related-card" href="../skills/writing-plans.html"><div class="ttl">writing-plans</div><div class="sub">Plan &amp; build · skill</div></a>

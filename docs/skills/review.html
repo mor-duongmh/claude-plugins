@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>review</h1>
   <p class="lede">Sinh checklist để bạn duyệt thiết kế. Khi nào bạn ghi 'Overall Decision: OK', bước thực thi mới được mở khoá.</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Đây là chốt chặn human-in-the-loop của morkit. Skill tải checklist canonical từ Google Doc của Mor, tự phát hiện variant (BE/FE × Feature/BugFix/Refactor), và sinh file <code>review-checklist.md</code> trong change folder. Hai lớp bảo vệ song song: PreToolUse hook chặn ở mức harness, và mỗi skill thực thi tự kiểm tra ở Step 0.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Sau khi vừa chạy propose xong</li>
   <li>Khi muốn làm mới checklist với một biến thể khác (BE/FE × Feature/BugFix/Refactor)</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Bạn mở file review-checklist.md, tick các mục, đổi dòng cuối từ PENDING sang OK. Sau đó skill executing-plans mới chịu chạy.</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <a class="related-card" href="../skills/propose.html"><div class="ttl">propose</div><div class="sub">Spec workflow · skill</div></a>
     <a class="related-card" href="../skills/archive.html"><div class="ttl">archive</div><div class="sub">Spec workflow · skill</div></a>

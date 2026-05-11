@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>deep-review</h1>
   <p class="lede">Review code chuyên sâu bằng 5 chuyên gia AI chạy song song (rủi ro, bảo mật, pattern, kiểm thử, quy ước).</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Skill dispatch 5 specialist subagent song song: risk analyst (đánh giá rủi ro thay đổi), security auditor (vuln, secret leak, OWASP), pattern reviewer (anti-pattern, code smell), test reviewer (độ phủ, edge case), convention checker (CLAUDE.md, lint, style). Kết quả tổng hợp thành một báo cáo Markdown dạng bảng. Tôn trọng CLAUDE.md của project làm source of truth cao nhất.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Khi cần review chất lượng cao một PR hoặc git diff</li>
   <li>Trước khi merge một feature lớn</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Kết quả là một báo cáo dạng bảng Markdown gồm các phát hiện về rủi ro, bảo mật, pattern, độ phủ test và quy ước code.</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <a class="related-card" href="../commands/deep-review.html"><div class="ttl">/morkit:deep-review</div><div class="sub">Code review · command</div></a>
     <a class="related-card" href="../commands/deep-review-doctor.html"><div class="ttl">/morkit:deep-review-doctor</div><div class="sub">Code review · command</div></a>

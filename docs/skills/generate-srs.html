@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>generate-srs</h1>
   <p class="lede">Sinh hoặc cập nhật tài liệu yêu cầu phần mềm (SRS) theo chuẩn BrSE cho ITO Japan offshore.</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Render template SRS đầy đủ 13 section + 2 phụ lục: Doc Control, Overview, Business Flow (kèm UC detail), FR detail, Business Rules, Roles &amp; Permissions, NFR theo IPA-6 (kèm Security/PII), Data Items với retention, External Interfaces, Reports, Acceptance/UAT, Traceability, Open Q&amp;A, Constraints/Assumptions/Risks, Screen Index, Glossary. Chế độ <code>init</code> sinh từ ProjectModel JSON; <code>update</code> apply Delta vào doc đang có và giữ phần bạn sửa tay.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Khi dự án cần SRS theo chuẩn của khách Nhật</li>
   <li>Khi yêu cầu thay đổi và cần làm mới SRS</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Gồm 13 mục lớn và 2 phụ lục: Doc Control, tổng quan, luồng nghiệp vụ, FR/NFR, quyền, dữ liệu, UAT, traceability...</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <a class="related-card" href="../skills/generate-api-docs.html"><div class="ttl">generate-api-docs</div><div class="sub">Doc generation · skill</div></a>
     <a class="related-card" href="../skills/generate-db-design.html"><div class="ttl">generate-db-design</div><div class="sub">Doc generation · skill</div></a>

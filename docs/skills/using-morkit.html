@@ -152,14 +152,16 @@ td code { font-size: 12px; }
   <h1>using-morkit</h1>
   <p class="lede">Skill nền — tự chạy ở đầu mỗi cuộc hội thoại để Claude biết cách tìm và dùng các skill khác.</p>
 
-  
-  <h2>1. Khi nào dùng</h2>
+  <h2>1. Nhiệm vụ</h2>
+  <p>Skill này được Claude tự invoke ở đầu mọi phiên làm việc với morkit, trước khi trả lời bất kỳ câu hỏi nào (kể cả câu hỏi làm rõ). Nó establish cách Claude tìm và gọi các skill khác qua Skill tool, đảm bảo các overlay (như plan-review-gate) hoạt động đúng. Không gọi tay — chỉ là cơ chế nền.</p>
+
+  <h2>2. Khi nào dùng</h2>
   <ul>
   <li>Tự chạy mỗi khi bắt đầu một phiên mới — bạn không cần gọi tay</li>
   <li>Khi cần Claude hiểu cách điều phối các skill khác trong morkit</li>
   </ul>
 
-  <h2>2. Ví dụ</h2>
+  <h2>3. Ví dụ</h2>
   <div class="window">
     <div class="window-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -169,7 +171,7 @@ td code { font-size: 12px; }
   </div>
   <p class="lede" style="font-size:14px;">Bắt buộc chạy ở đầu mỗi phiên. Đây là điều kiện để các skill khác hoạt động đúng.</p>
 
-  <h2>3. Xem thêm</h2>
+  <h2>4. Xem thêm</h2>
   <div class="related-grid">
     <p class="lede" style="font-size:13px;">(Không có item liên quan trong cùng nhóm.)</p>
   </div>

@@ -196,13 +196,13 @@ def page_shell(title, breadcrumb_html, body_html):
 """
 
 
-def detail_page(*, kind, slug, name, lede, group_label, deprecated,
+def detail_page(*, kind, slug, name, lede, details, group_label, deprecated,
                 when_bullets, invocation, args, example_note, related_cards_html):
     """Render a skill or command detail page.
 
     `kind` controls section order:
-      - skill   →  Để làm gì · Khi nào dùng · Ví dụ · Liên quan
-      - command →  Để làm gì · Cách gọi · Khi nào dùng · Ví dụ · Liên quan
+      - skill   →  Nhiệm vụ · Khi nào dùng · Ví dụ · Xem thêm
+      - command →  Cách gọi · Khi nào dùng · Ví dụ · Xem thêm
     """
     tag_html = ""
     if deprecated:
@@ -223,12 +223,18 @@ def detail_page(*, kind, slug, name, lede, group_label, deprecated,
   </div>
   <p class="lede" style="font-size:14px;">{example_note}</p>"""
 
-    invocation_block = f"""<h2>1. Cách gọi</h2>
+    if kind == "command":
+        first_block = f"""<h2>1. Cách gọi</h2>
   <pre><code>{invocation} [tham số]</code></pre>
   <p class="lede" style="font-size:14px;">Slash command — gõ trực tiếp trong Claude Code.</p>
-""" if kind == "command" else ""
+"""
+    else:
+        # Skill — show "Nhiệm vụ" detail paragraph
+        first_block = f"""<h2>1. Nhiệm vụ</h2>
+  <p>{details}</p>
+""" if details else ""
 
-    when_idx = 2 if kind == "command" else 1
+    when_idx = 2 if (kind == "command" or details) else 1
     example_idx = when_idx + 1
     related_idx = example_idx + 1
 
@@ -236,7 +242,7 @@ def detail_page(*, kind, slug, name, lede, group_label, deprecated,
   <h1>{name}</h1>
   <p class="lede">{lede}</p>
 
-  {invocation_block}
+  {first_block}
   <h2>{when_idx}. Khi nào dùng</h2>
   <ul>
 {when_html}
