@@ -20,7 +20,7 @@ GROUPS = {
         "skills":   ["propose", "review", "archive"],
     },
     "plan-build": {
-        "commands": ["brainstorm", "write-plan", "execute-plan"],
+        "commands": ["brainstorming", "write-plan", "execute-plan"],
         "skills": [
             "brainstorming", "writing-plans", "executing-plans",
             "subagent-driven-development", "test-driven-development",
@@ -353,7 +353,7 @@ CURATED = {
         "example_note": "Đảm bảo frontmatter đúng định dạng, nội dung rõ ràng, có ví dụ đầy đủ và đã thử chạy thật.",
     },
 
-    "commands.brainstorm": {
+    "commands.brainstorming": {
         "lede": "Vào explore mode — agent là thinking partner free-form, không workflow cứng, không bao giờ viết code. Shortcut gọi skill brainstorming.",
         "when_to_use": [
             "Khi nhận yêu cầu chưa rõ phạm vi và muốn tư duy cùng AI",
@@ -361,7 +361,7 @@ CURATED = {
             "Khi cần khảo sát mã nguồn / kiến trúc trước khi đụng vào",
         ],
         "example_args": "tìm hiểu giúp tôi repo Notion-clone bao gồm các nhánh của nó",
-        "example_note": "Tương đương /morkit:brainstorming — cả 2 đều invoke skill brainstorming. Cuối phiên agent lưu design log vào morkit/output/specs/YYYY-MM-DD-<topic>-design.md.",
+        "example_note": "Command alias gọi thẳng skill brainstorming. Cuối phiên agent lưu design log vào morkit/output/specs/YYYY-MM-DD-<topic>-design.md để feed bước tiếp (propose, init, function list…).",
     },
     "commands.write-plan": {
         "lede": "Command cũ — đã được thay bằng skill morkit:writing-plans.",

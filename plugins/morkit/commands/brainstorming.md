@@ -1,8 +1,8 @@
 ---
-name: "morkit:brainstorm"
+name: "morkit:brainstorming"
 description: Enter explore mode - a thinking partner for exploring ideas, investigating problems, and clarifying requirements before creating a change proposal.
 category: Workflow
-tags: [spec, brainstorm, explore, thinking]
+tags: [spec, brainstorming, explore, thinking]
 ---
 
 Invoke the `brainstorming` skill using the Skill tool. Pass through any arguments the user provided.
