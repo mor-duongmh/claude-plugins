@@ -216,27 +216,57 @@ def render_overview() -> str:
         for g, items, desc in groups_rows
     )
 
-    # Section 3 — Commands (12 dòng, link tới detail).
-    # 3 command deprecated (brainstorm, write-plan, execute-plan) cố ý không liệt kê
-    # ở đây để không gây nhiễu cho người mới — chúng vẫn có trang detail riêng.
-    cmd_rows = [
-        ("propose [mô tả]",        "Sinh đầy đủ proposal, design, tasks và checklist trong một lần chạy."),
-        ("review [tên]",           "Tạo hoặc làm mới checklist duyệt thiết kế cho một change."),
-        ("archive [tên]",          "Đóng một change folder sau khi đã merge và deploy ổn."),
-        ("deep-review [target]",   "Review chuyên sâu trên PR hoặc git diff (5 chuyên gia AI chạy song song)."),
-        ("deep-review-doctor",     "Kiểm tra cài đặt Deep Review đã đủ điều kiện chạy chưa."),
-        ("deep-review-post",       "Post báo cáo review lên PR làm comment."),
-        ("setup",                  "Dựng môi trường Python cho docs-hero (khoảng 30-60 giây, chạy 1 lần)."),
-        ("init",                   "Sinh bộ tài liệu mới (SRS, API, DB...) từ một file ProjectModel JSON."),
-        ("update-doc",             "Áp dụng một change hoặc plan đã chốt vào tài liệu hiện có."),
-        ("sync",                   "Đọc mã nguồn và đề xuất nội dung nên cập nhật vào tài liệu (chỉ đọc, không ghi)."),
-        ("apply-sync",             "Áp dụng các nội dung bạn đã tick trong file sync-proposal.md."),
-        ("doctor",                 "Kiểm tra cài đặt docs-hero xem có ổn không."),
+    # Section 3 — Danh sách /morkit:* theo 4 nhóm (giống README).
+    # Mỗi row: (kind, slug, purpose). kind ∈ {"command", "skill"} — quyết định
+    # link đi tới commands/<slug>.html hay skills/<slug>.html. User cuối gọi cả
+    # 2 bằng cú pháp /morkit:<slug> giống nhau, không cần phân biệt.
+    #
+    # Plan & build nội bộ là skill (không có command tương ứng — 3 command cũ
+    # brainstorm/write-plan/execute-plan đều deprecated), nhưng vẫn liệt kê ở
+    # đây vì người dùng gọi /morkit:<name> như command.
+    sub_sections = [
+        ("Spec workflow", [
+            ("command", "propose [mô tả]", "Sinh đầy đủ proposal, design, tasks và checklist trong một lần chạy."),
+            ("command", "review [tên]",    "Tạo hoặc làm mới checklist duyệt thiết kế cho một change."),
+            ("command", "archive [tên]",   "Đóng một change folder sau khi đã merge và deploy ổn."),
+        ]),
+        ("Plan & build", [
+            ("skill", "brainstorming",               "Suy nghĩ ý tưởng và đọc codebase, không code."),
+            ("skill", "writing-plans",               "Viết plan nhiều bước từ ý tưởng đã chốt."),
+            ("skill", "executing-plans",             "Chạy plan từng bước (bị review-gate chặn cho tới khi human duyệt)."),
+            ("skill", "subagent-driven-development", "Chạy plan song song bằng nhiều subagent — nhanh hơn executing tuần tự."),
+            ("skill", "test-driven-development",     "TDD discipline — viết test trước, code sau, refactor cuối."),
+            ("skill", "systematic-debugging",        "Debug 5 bước có hệ thống — không đoán mò."),
+        ]),
+        ("Code review", [
+            ("command", "deep-review [target]", "Review chuyên sâu trên PR hoặc git diff (5 chuyên gia AI chạy song song)."),
+            ("command", "deep-review-doctor",   "Kiểm tra cài đặt Deep Review đã đủ điều kiện chạy chưa."),
+            ("command", "deep-review-post",     "Post báo cáo review lên PR làm comment."),
+        ]),
+        ("Doc generation", [
+            ("command", "setup",      "Dựng môi trường Python cho docs-hero (khoảng 30-60 giây, chạy 1 lần)."),
+            ("command", "init",       "Sinh bộ tài liệu mới (SRS, API, DB...) từ một file ProjectModel JSON."),
+            ("command", "update-doc", "Áp dụng một change hoặc plan đã chốt vào tài liệu hiện có."),
+            ("command", "sync",       "Đọc mã nguồn và đề xuất nội dung nên cập nhật vào tài liệu (chỉ đọc, không ghi)."),
+            ("command", "apply-sync", "Áp dụng các nội dung bạn đã tick trong file sync-proposal.md."),
+            ("command", "doctor",     "Kiểm tra cài đặt docs-hero xem có ổn không."),
+        ]),
     ]
-    cmd_table_rows = "\n".join(
-        f'      <tr><td><a href="commands/{slug.split()[0]}.html"><code>/morkit:{slug}</code></a></td><td>{purpose}</td></tr>'
-        for slug, purpose in cmd_rows
-    )
+
+    def render_sub_section(label, rows):
+        body = "\n".join(
+            f'      <tr><td><a href="{kind}s/{slug.split()[0]}.html"><code>/morkit:{slug}</code></a></td><td>{purpose}</td></tr>'
+            for kind, slug, purpose in rows
+        )
+        return f"""  <h3>{label}</h3>
+  <table>
+    <thead><tr><th>Command</th><th>Để làm gì</th></tr></thead>
+    <tbody>
+{body}
+    </tbody>
+  </table>"""
+
+    section3_blocks = "\n\n".join(render_sub_section(label, rows) for label, rows in sub_sections)
 
     sections = f"""<h2>1. Cài đặt</h2>
   <p>Cần có: <a href="https://docs.anthropic.com/claude/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> và Node.js từ 18 trở lên.</p>
@@ -256,12 +286,8 @@ def render_overview() -> str:
 
   <h2>3. Danh sách command</h2>
   <p>Bấm vào tên command để xem giải thích chi tiết, cách gọi và ví dụ.</p>
-  <table>
-    <thead><tr><th>Command</th><th>Để làm gì</th></tr></thead>
-    <tbody>
-{cmd_table_rows}
-    </tbody>
-  </table>
+
+{section3_blocks}
 
   <h2>4. Companion tools (Context7 + RTK)</h2>
   <p>Hai công cụ giúp agent trả lời chính xác hơn và tiết kiệm token. Plugin không cài lặng lẽ — sẽ hỏi bạn trước.</p>

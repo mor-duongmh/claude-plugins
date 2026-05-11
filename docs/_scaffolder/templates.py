@@ -64,6 +64,11 @@ h2 {
   font-weight: 600;
   padding-bottom: 8px; border-bottom: 1px solid var(--border);
 }
+h3 {
+  font-size: 12px; margin: 24px 0 8px;
+  font-weight: 600; color: var(--fg-muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
 .lede {
   font-size: 16px; color: var(--fg-muted); margin: 0 0 12px;
   line-height: 1.55;
