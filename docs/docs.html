@@ -453,7 +453,7 @@
           type="button"
         >
           <span class="tnum">1.</span> Brownfield onboarding — từ partial input → docs team-verified
-          <span class="tdesc">prep inputs → /morkit:init → plan gate → render + QA → team review → /morkit:update · 6 step</span>
+          <span class="tdesc">prep inputs → /morkit:init → plan gate → render + QA → team review → /morkit:update-doc · 6 step</span>
         </button>
         <button class="tab" role="tab" aria-selected="false" data-target="uc2" type="button">
           <span class="tnum">2.</span> Greenfield project — từ ý tưởng → bộ docs full
@@ -469,7 +469,7 @@
         </button>
         <button class="tab" role="tab" aria-selected="false" data-target="uc5" type="button">
           <span class="tnum">5.</span> Code review
-          <span class="tdesc">/morkit:review &lt;PR#&gt; · 5 subagent · comment trên PR</span>
+          <span class="tdesc">/morkit:deep-review &lt;PR#&gt; · 5 subagent · comment trên PR</span>
         </button>
       </nav>
 
@@ -482,7 +482,7 @@
             đôi khi có vài tài liệu rời rạc như README, brainstorm, design mockup) nhưng
             <i>thiếu SRS / API docs / DB design</i> chính thức. UC này hướng dẫn cách
             dùng <code class="mono">/morkit:init</code> để dựng bộ docs lần đầu, rồi
-            dùng <code class="mono">/morkit:update</code> để duy trì theo feedback của
+            dùng <code class="mono">/morkit:update-doc</code> để duy trì theo feedback của
             team. Demo trên repo Notion-clone (Next.js 15 · TipTap · Drizzle · Supabase).
           </p>
           <p class="callout">
@@ -753,10 +753,10 @@ Pre-flight check venv...  <span class="tok-ok">✓ ready</span>
           </div>
         </div>
 
-        <!-- Step 6 — Team review + /morkit:update -->
+        <!-- Step 6 — Team review + /morkit:update-doc -->
         <div class="phase">
           <h3 class="phase-title">
-            <span class="phase-num">STEP 6</span> Team review → cập nhật qua <code class="mono">/morkit:update</code>
+            <span class="phase-num">STEP 6</span> Team review → cập nhật qua <code class="mono">/morkit:update-doc</code>
             <span class="phase-desc">— feedback route đến diff engine · KHÔNG render lại từ đầu · manual edits preserved</span>
           </h3>
           <div class="term">
@@ -772,16 +772,16 @@ Pre-flight check venv...  <span class="tok-ok">✓ ready</span>
 # Lần đầu Claude render xong, docs CHƯA hoàn hảo. Team review
 # (PM / BE / FE / BrSE / DBA) sẽ phát hiện thiếu UC, sai contract,
 # index thiếu... Bạn KHÔNG chạy lại /morkit:init (sẽ ghi đè
-# manual edits). Thay vào đó dùng /morkit:update với diff engine
+# manual edits). Thay vào đó dùng /morkit:update-doc với diff engine
 # — chỉ patch phần cần đổi.
 # ──────────────────────────────────────────────────────────</span>
 
 <span class="label input">▶ Bạn làm (loop 3 việc)</span>
   1. Gửi <span class="tstr">docs/</span> cho team review (mỗi role 1 lane checklist)
   2. Mỗi feedback → viết 1 plan.md ngắn mô tả thay đổi cần áp lên docs
-  3. Áp dụng vào docs bằng <span class="tflag">/morkit:update --from-plan</span>
+  3. Áp dụng vào docs bằng <span class="tflag">/morkit:update-doc --from-plan</span>
 
-<span class="label output">▼ Pre-flight (mỗi lần chạy /morkit:update)</span>
+<span class="label output">▼ Pre-flight (mỗi lần chạy /morkit:update-doc)</span>
   test -d <span class="tstr">~/.claude/plugins/data/docs-hero/.venv</span>  <span class="tok-ok">✓</span>
   test -f <span class="tstr">./.docs-hero-meta.json</span>                  <span class="tok-ok">✓</span>  <span class="tcom">// sidecar từ STEP 5</span>
   <span class="tcom">// thiếu meta? → /morkit:init lại HOẶC /docs-hero:rebuild-meta</span>
@@ -793,9 +793,9 @@ Pre-flight check venv...  <span class="tok-ok">✓ ready</span>
 
 <hr class="sep"/>
 <span class="label input">▶ Apply từng plan.md vào docs</span>
-<span class="tprompt">$</span> <span class="tcmd">/morkit:update</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/pm-share-page.md</span>
-<span class="tprompt">$</span> <span class="tcmd">/morkit:update</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/be-delete-route.md</span>
-<span class="tprompt">$</span> <span class="tcmd">/morkit:update</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/dba-nfr-wording.md</span>
+<span class="tprompt">$</span> <span class="tcmd">/morkit:update-doc</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/pm-share-page.md</span>
+<span class="tprompt">$</span> <span class="tcmd">/morkit:update-doc</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/be-delete-route.md</span>
+<span class="tprompt">$</span> <span class="tcmd">/morkit:update-doc</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/dba-nfr-wording.md</span>
 
 <span class="label output">▼ Diff engine làm gì? (5 bước, atomic)</span>
   1. <span class="tcmd">parse_plan.py</span> → Delta JSON (ADD/UPDATE/DEPRECATE per entity)
@@ -817,7 +817,7 @@ Pre-flight check venv...  <span class="tok-ok">✓ ready</span>
 <span class="tcom"># Sẵn sàng dùng làm input cho:
 #   UC3 (feature)  — implement dựa trên SRS §3 + API contract
 #   UC4 (fix bug)  — DB design rõ → debug nhanh hơn
-#   UC5 (review)   — /morkit:review có context tốt từ docs/</span>
+#   UC5 (review)   — /morkit:deep-review có context tốt từ docs/</span>
             </div>
           </div>
         </div>
@@ -1092,7 +1092,7 @@ docs-plan.md viết ra .tmp/ · gate Proceed/Revise/Abort
         <div class="phase">
           <h3 class="phase-title">
             <span class="phase-num">STEP 5</span> 🚦 PM/BrSE/BA review SRS + screen-specs theo checklist
-            <span class="phase-desc">— chốt tầng business trước khi technical team build HLD · feedback → /morkit:update</span>
+            <span class="phase-desc">— chốt tầng business trước khi technical team build HLD · feedback → /morkit:update-doc</span>
           </h3>
           <div class="term">
             <div class="term-bar">
@@ -1106,14 +1106,14 @@ docs-plan.md viết ra .tmp/ · gate Proceed/Revise/Abort
 <span class="tcom"># ─ Tại sao bước này? ──────────────────────────────────────
 # SRS lần đầu render KHÔNG hoàn hảo — luôn cần PM/BrSE/BA fine-
 # tune. Nhưng KHÔNG re-run /morkit:init (sẽ ghi đè manual edits).
-# Dùng /morkit:update --from-plan với diff engine — chỉ patch
+# Dùng /morkit:update-doc --from-plan với diff engine — chỉ patch
 # phần đổi, manual edits preserved.
 # ──────────────────────────────────────────────────────────</span>
 
 <span class="label input">▶ Bạn làm (loop)</span>
   1. Gửi <span class="tstr">docs/srs.md</span> + <span class="tstr">docs/screen-specs/</span> cho PM/BrSE/BA
   2. Mỗi feedback → viết 1 plan.md ngắn vào .tmp/
-  3. Apply: <span class="tcmd">/morkit:update</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/&lt;feedback&gt;.md</span>
+  3. Apply: <span class="tcmd">/morkit:update-doc</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/&lt;feedback&gt;.md</span>
   4. Loop tới khi 3 lane đều OK
 
 <span class="label gate">▼ Checklist SRS &amp; screen-specs</span><span class="skill-chip gate">PM·BrSE·BA</span>
@@ -1135,14 +1135,14 @@ docs-plan.md viết ra .tmp/ · gate Proceed/Revise/Abort
 │ [ ] Edge case cover (offline · permission denied · ...) │
 ╰─────────────────────────────────────────────────────────╯
 
-<span class="label output">▼ Ví dụ feedback → apply qua /morkit:update</span>
+<span class="label output">▼ Ví dụ feedback → apply qua /morkit:update-doc</span>
   PM   · "Thiếu UC §3.7 'Bulk archive tasks'"
   BrSE · "NFR perf TTI cần threshold cụ thể: 1.8s p95"
   BA   · "SCREEN-TaskList thiếu empty state với CTA"
 
-<span class="tprompt">$</span> <span class="tcmd">/morkit:update</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/pm-bulk-archive.md</span>
-<span class="tprompt">$</span> <span class="tcmd">/morkit:update</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/brse-nfr-tti.md</span>
-<span class="tprompt">$</span> <span class="tcmd">/morkit:update</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/ba-empty-state.md</span>
+<span class="tprompt">$</span> <span class="tcmd">/morkit:update-doc</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/pm-bulk-archive.md</span>
+<span class="tprompt">$</span> <span class="tcmd">/morkit:update-doc</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/brse-nfr-tti.md</span>
+<span class="tprompt">$</span> <span class="tcmd">/morkit:update-doc</span> <span class="tflag">--from-plan</span> <span class="tstr">.tmp/ba-empty-state.md</span>
 
   <span class="tok-add">M</span> docs/srs.md                            <span class="tok-add">+28</span> <span class="tok-rm">−4</span>
   <span class="tok-add">M</span> docs/screen-specs/SCREEN-TaskList.md   <span class="tok-add">+12</span> <span class="tok-rm">−0</span>
@@ -1273,7 +1273,7 @@ docs-plan.md cho HLD — gaps thường gặp:
 
 <span class="label output">▼ Feedback loop</span>
   Mỗi role raise 1-3 feedback → bạn viết plan.md cho từng cái
-  → <span class="tcmd">/morkit:update</span> <span class="tflag">--from-plan</span> apply lần lượt
+  → <span class="tcmd">/morkit:update-doc</span> <span class="tflag">--from-plan</span> apply lần lượt
   → diff engine preserve BrSE/PM manual edits từ STEP 5
 
 🔁 Re-loop tới khi tất cả lane OK → ✅ <span class="tflag">Bộ docs greenfield ready</span>
@@ -1282,7 +1282,7 @@ docs-plan.md cho HLD — gaps thường gặp:
    1) <span class="tcmd">/morkit:propose</span> <span class="tstr">"feature-X"</span>        — create OpenSpec change
    2) review-checklist gate
    3) <span class="tcmd">/morkit:executing-plans</span> feature-X — TDD-driven implement
-   4) <span class="tcmd">/morkit:update</span> <span class="tflag">--from-plan</span>    — keep docs in sync
+   4) <span class="tcmd">/morkit:update-doc</span> <span class="tflag">--from-plan</span>    — keep docs in sync
 
 <span class="tcom"># Greenfield 2-3 ngày realtime nhưng tiết kiệm cả tháng rework
 # nếu skip docs đi thẳng vào code.</span>
@@ -1381,7 +1381,7 @@ docs-plan.md cho HLD — gaps thường gặp:
     └── specs/editor/spec.md (123 dòng — 8 Requirements, 17 Scenarios)
 
 🚦 <span class="tok-warn">GATE</span>: review-checklist.md có "<span class="tok-warn">Overall Decision: PENDING</span>".
-   Hãy đọc + tick các mục, đặt OK trước khi /morkit:apply.
+   Hãy đọc + tick các mục, đặt OK trước khi /morkit:executing-plans.
             </div>
           </div>
         </div>
@@ -1417,7 +1417,7 @@ docs-plan.md cho HLD — gaps thường gặp:
 <span class="tok-ok">Overall Decision: OK</span>
 ```
 <span class="tcom">> signed: duongmh @ 2026-05-10</span>
-<span class="tcom">> PreToolUse hook giờ đã cho phép /morkit:apply, /morkit:execute-plan, …</span>
+<span class="tcom">> PreToolUse hook giờ đã cho phép /morkit:executing-plans, /morkit:subagent-driven-development, …</span>
             </div>
           </div>
         </div>
@@ -1437,9 +1437,9 @@ docs-plan.md cho HLD — gaps thường gặp:
               <span class="term-title">claude-code · feature/editor-wire-v1</span>
             </div>
             <div class="term-body">
-<span class="label input">▶ INPUT</span><span class="skill-chip">/morkit:execute-plan</span><span class="skill-chip">test-driven-development</span>
+<span class="label input">▶ INPUT</span><span class="skill-chip">/morkit:executing-plans</span><span class="skill-chip">test-driven-development</span>
 <span class="tprompt">$</span> <span class="tcmd">git checkout -b feature/editor-wire-v1</span>
-<span class="tprompt">$</span> <span class="tcmd">/morkit:execute-plan</span> <span class="tstr">openspec/changes/editor-wire-v1/tasks.md</span>
+<span class="tprompt">$</span> <span class="tcmd">/morkit:executing-plans</span> <span class="tstr">openspec/changes/editor-wire-v1/tasks.md</span>
 <hr class="sep"/>
 <span class="label output">▼ OUTPUT (rút gọn — 11 groups)</span>
 ▶ <span class="tflag">Group 1/11</span> — Vitest + RTL setup
@@ -1490,11 +1490,11 @@ docs-plan.md cho HLD — gaps thường gặp:
                 ><span class="light"></span><span class="light"></span
                 ><span class="light"></span
               ></span>
-              <span class="term-title">claude-code · /morkit:review --diff</span>
+              <span class="term-title">claude-code · /morkit:deep-review --diff</span>
             </div>
             <div class="term-body">
-<span class="label input">▶ INPUT</span><span class="skill-chip">/morkit:review</span>
-<span class="tprompt">$</span> <span class="tcmd">/morkit:review</span> <span class="tflag">--diff</span>
+<span class="label input">▶ INPUT</span><span class="skill-chip">/morkit:deep-review</span>
+<span class="tprompt">$</span> <span class="tcmd">/morkit:deep-review</span> <span class="tflag">--diff</span>
 <hr class="sep"/>
 <span class="label output">▼ OUTPUT</span>
 [<span class="tflag">deep-review</span>] Building call graph (uvx code-review-graph)...
@@ -1713,7 +1713,7 @@ Tổng: 0 Critical · <span class="tok-warn">4 Major</span> · <span class="tok-
       <!-- ──────────── USE CASE 5 — REVIEW ──────────── -->
       <section id="uc5" class="panel" role="tabpanel">
         <div class="panel-head">
-          <h2>Code review — /morkit:review &lt;PR#&gt;</h2>
+          <h2>Code review — /morkit:deep-review &lt;PR#&gt;</h2>
           <p>
             Plugin <code class="mono">deep-review</code> spawn 5 specialist subagent
             song song (risk · security · pattern · tests · convention) trên diff. Đọc
@@ -1732,7 +1732,7 @@ Tổng: 0 Critical · <span class="tok-warn">4 Major</span> · <span class="tok-
         <div class="phase">
           <h3 class="phase-title">
             <span class="phase-num">PHASE 0</span> Checkout + invoke deep-review
-            <span class="phase-desc">— hoặc /morkit:review --diff trên local</span>
+            <span class="phase-desc">— hoặc /morkit:deep-review --diff trên local</span>
           </h3>
           <div class="term">
             <div class="term-bar">
@@ -1743,9 +1743,9 @@ Tổng: 0 Critical · <span class="tok-warn">4 Major</span> · <span class="tok-
               <span class="term-title">claude-code</span>
             </div>
             <div class="term-body">
-<span class="label input">▶ INPUT</span><span class="skill-chip">/morkit:review</span>
+<span class="label input">▶ INPUT</span><span class="skill-chip">/morkit:deep-review</span>
 <span class="tprompt">$</span> <span class="tcmd">gh pr checkout 1</span>
-<span class="tprompt">$</span> <span class="tcmd">/morkit:review</span> <span class="tnum">1</span>
+<span class="tprompt">$</span> <span class="tcmd">/morkit:deep-review</span> <span class="tnum">1</span>
 <hr class="sep"/>
 <span class="label output">▼ OUTPUT</span>
 [<span class="tflag">deep-review</span>] Fetching PR 1 metadata + diff...
