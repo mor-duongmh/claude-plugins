@@ -249,7 +249,7 @@ def detail_page(*, kind, slug, name, lede, details, group_label, deprecated,
     if kind == "command":
         first_block = f"""<h2>1. Cách gọi</h2>
   <pre><code>{invocation} [tham số]</code></pre>
-  <p class="lede" style="font-size:14px;">Slash command — gõ trực tiếp trong Claude Code.</p>
+  <p class="lede" style="font-size:14px;">Gõ trực tiếp trong Claude Code.</p>
 """
     else:
         # Skill — show "Nhiệm vụ" as bullet list (more scannable than paragraph)

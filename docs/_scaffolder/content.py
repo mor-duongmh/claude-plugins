@@ -123,7 +123,7 @@ CURATED = {
     },
 
     "commands.propose": {
-        "lede": "Slash command tương đương skill propose — gõ nhanh để tạo đầy đủ 4 file artifact.",
+        "lede": "Command tương đương skill propose — gõ nhanh để tạo đầy đủ 4 file artifact.",
         "when_to_use": [
             "Khi muốn tạo nhanh một change mới mà không cần invoke skill thủ công",
         ],
@@ -131,7 +131,7 @@ CURATED = {
         "example_note": "Một thư mục mới sẽ xuất hiện trong morkit/output/spec/ với tên tự đặt từ mô tả.",
     },
     "commands.review": {
-        "lede": "Slash command sinh hoặc làm mới checklist duyệt thiết kế cho một change đang có.",
+        "lede": "Command sinh hoặc làm mới checklist duyệt thiết kế cho một change đang có.",
         "when_to_use": [
             "Ngay sau khi gõ /morkit:propose xong",
             "Khi muốn ép một biến thể khác hoặc đồng bộ lại checklist mới nhất từ Google Doc",
@@ -140,7 +140,7 @@ CURATED = {
         "example_note": "Có thể thêm --refresh để tải lại nội dung mới nhất từ Google Doc canonical của Mor.",
     },
     "commands.archive": {
-        "lede": "Slash command đóng change folder sau khi đã merge.",
+        "lede": "Command đóng change folder sau khi đã merge.",
         "when_to_use": [
             "Sau khi PR đã merge và feature đã chạy ổn trên môi trường thật",
         ],
@@ -352,7 +352,7 @@ CURATED = {
     },
 
     "commands.brainstorm": {
-        "lede": "Slash command cũ — đã được thay bằng skill morkit:brainstorming.",
+        "lede": "Command cũ — đã được thay bằng skill morkit:brainstorming.",
         "deprecated": True,
         "when_to_use": [
             "Đừng dùng nữa — dùng skill morkit:brainstorming thay thế",
@@ -361,7 +361,7 @@ CURATED = {
         "example_note": "Sẽ bị gỡ ở bản major tiếp theo.",
     },
     "commands.write-plan": {
-        "lede": "Slash command cũ — đã được thay bằng skill morkit:writing-plans.",
+        "lede": "Command cũ — đã được thay bằng skill morkit:writing-plans.",
         "deprecated": True,
         "when_to_use": [
             "Đừng dùng nữa — dùng skill morkit:writing-plans thay thế",
@@ -370,7 +370,7 @@ CURATED = {
         "example_note": "Sẽ bị gỡ ở bản major tiếp theo.",
     },
     "commands.execute-plan": {
-        "lede": "Slash command cũ — đã được thay bằng skill morkit:executing-plans.",
+        "lede": "Command cũ — đã được thay bằng skill morkit:executing-plans.",
         "deprecated": True,
         "when_to_use": [
             "Đừng dùng nữa — dùng skill morkit:executing-plans thay thế",
@@ -398,7 +398,7 @@ CURATED = {
         "example_note": "Kết quả là một báo cáo dạng bảng Markdown gồm các phát hiện về rủi ro, bảo mật, pattern, độ phủ test và quy ước code.",
     },
     "commands.deep-review": {
-        "lede": "Slash command chạy review chuyên sâu trên PR hoặc git diff, kết quả là báo cáo Markdown dạng bảng.",
+        "lede": "Command chạy review chuyên sâu trên PR hoặc git diff, kết quả là báo cáo Markdown dạng bảng.",
         "when_to_use": [
             "Sau khi push branch, muốn tự review trước khi mời team xem",
             "Khi cần kiểm tra rủi ro, bảo mật và độ phủ test trên một PR cụ thể",

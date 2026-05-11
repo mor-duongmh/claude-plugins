@@ -215,14 +215,13 @@ def render_overview() -> str:
         for g, items, desc in groups_rows
     )
 
-    # Section 3 — Slash commands (15 dòng, link tới detail)
+    # Section 3 — Commands (12 dòng, link tới detail).
+    # 3 command deprecated (brainstorm, write-plan, execute-plan) cố ý không liệt kê
+    # ở đây để không gây nhiễu cho người mới — chúng vẫn có trang detail riêng.
     cmd_rows = [
         ("propose [mô tả]",        "Sinh đầy đủ proposal, design, tasks và checklist trong một lần chạy."),
         ("review [tên]",           "Tạo hoặc làm mới checklist duyệt thiết kế cho một change."),
         ("archive [tên]",          "Đóng một change folder sau khi đã merge và deploy ổn."),
-        ("brainstorm",             "<span class=\"tag deprecated\">Đã thay thế</span> Dùng skill <code>brainstorming</code>."),
-        ("write-plan",             "<span class=\"tag deprecated\">Đã thay thế</span> Dùng skill <code>writing-plans</code>."),
-        ("execute-plan",           "<span class=\"tag deprecated\">Đã thay thế</span> Dùng skill <code>executing-plans</code>."),
         ("deep-review [target]",   "Review chuyên sâu trên PR hoặc git diff (5 chuyên gia AI chạy song song)."),
         ("deep-review-doctor",     "Kiểm tra cài đặt Deep Review đã đủ điều kiện chạy chưa."),
         ("deep-review-post",       "Post báo cáo review lên PR làm comment."),
@@ -254,7 +253,7 @@ def render_overview() -> str:
   </table>
   <p class="lede" style="font-size:14px;">Tổng cộng <strong>22 skill + 9 agent chuyên trách + 15 slash command</strong>, tất cả đều có tiền tố <code>/morkit:</code>.</p>
 
-  <h2>3. Danh sách slash command</h2>
+  <h2>3. Danh sách command</h2>
   <p>Bấm vào tên command để xem giải thích chi tiết, cách gọi và ví dụ.</p>
   <table>
     <thead><tr><th>Command</th><th>Để làm gì</th></tr></thead>
