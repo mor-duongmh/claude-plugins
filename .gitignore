@@ -7,3 +7,8 @@ node_modules/
 .code-review-graph/
 __pycache__/
 *.pyc
+.claude
+plans
+CLAUDE.md
+release-manifest.json
+.repomixignore
