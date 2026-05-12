@@ -243,6 +243,27 @@
     font-size: 13.5px; color: var(--fg-muted); margin: 12px 0;
   }
 
+  /* ─── INSTALL STEPS ───────────────────────────────────── */
+  .steps { padding-left: 22px; margin: 12px 0 16px; }
+  .steps > li { margin: 0 0 14px; padding-left: 4px; line-height: 1.55; }
+  .steps > li::marker { color: var(--accent); font-weight: 600; }
+  .steps pre { margin: 8px 0 0; }
+  .steps p { margin: 4px 0 6px; }
+  .terminal {
+    background: var(--bg-code); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px; margin: 8px 0 0;
+    font-family: "Geist Mono","JetBrains Mono","Fira Code","SF Mono",Menlo,Consolas,monospace;
+    font-size: 12.5px; line-height: 1.7; color: var(--fg);
+    box-shadow: var(--shadow-1); overflow-x: auto;
+    white-space: pre;
+  }
+  .terminal .question { color: var(--fg); font-weight: 600; }
+  .terminal .spacer { display: block; height: 6px; }
+  .terminal .prompt { color: var(--accent); font-weight: 600; }
+  .terminal .muted { color: var(--fg-subtle); }
+  .terminal .choice { color: var(--fg); }
+  .terminal .choice.active { color: var(--accent); font-weight: 600; }
+
   /* ─── FOOTER ──────────────────────────────────────────── */
   .footer {
     margin-top: 56px; padding: 20px 0;
@@ -384,10 +405,37 @@
 
     <!-- ─────────────── §1 CÀI ĐẶT ─────────────── -->
     <h2 id="install">1. Cài đặt</h2>
-    <p>Cần có: <a href="https://docs.anthropic.com/claude/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> và Node.js từ 18 trở lên.</p>
-    <pre><code>/plugin add marketplace github:mor-duongmh/claude-plugins
+    <p>Yêu cầu: Node.js từ 18 trở lên.</p>
+    <ol class="steps">
+      <li>
+        Cài <a href="https://docs.anthropic.com/claude/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> nếu chưa có,
+        rồi login tài khoản theo hướng dẫn trong trang đó.
+      </li>
+      <li>
+        Mở terminal, chạy:
+        <pre><code>claude</code></pre>
+      </li>
+      <li>
+        Trong phiên Claude, nhập lần lượt 2 lệnh sau:
+        <pre><code>/plugin add marketplace github:mor-duongmh/claude-plugins
 /plugin install morkit@mor-duongmh</code></pre>
-    <p class="lede-small">Cài xong là dùng được luôn — không cần làm gì thêm trong từng dự án.</p>
+      </li>
+      <li>
+        Khi Claude hỏi chọn scope cài plugin, chọn <strong>Project Scope</strong> (mục số 2):
+        <div class="terminal"><span class="question">? Where should this plugin be installed?</span>
+
+  <span class="choice">1. User Scope</span>    <span class="muted">(available in all projects)</span>
+<span class="choice active">❯ 2. Project Scope</span> <span class="muted">(this project only)</span>   <span class="active">◀ chọn cái này</span>
+  <span class="choice">3. Local Scope</span>   <span class="muted">(only on this machine)</span>
+
+<span class="muted">  ↑/↓ di chuyển · Enter xác nhận</span></div>
+      </li>
+      <li>
+        Sau khi cài xong, chạy lệnh này để load skill ngay mà không cần restart:
+        <pre><code>/reload-plugins</code></pre>
+      </li>
+    </ol>
+    <p class="lede-small">Xong — gõ <code>/morkit:</code> sẽ thấy danh sách command hiện ra.</p>
 
     <!-- ─────────────── §2 TỔNG QUAN ─────────────── -->
     <h2 id="overview">2. morkit có những gì?</h2>
