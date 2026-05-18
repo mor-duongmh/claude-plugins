@@ -11,13 +11,17 @@
 #
 # Usage:
 #   sync-codex-fork.sh [--source <dir>] [--target <dir>] [--map <yaml>]
-#                      [--baseline <path>] [--dry-run]
+#                      [--baseline <path>] [--exclude <pattern>] [--dry-run]
 #
 # Defaults (cascade-aware):
 #   --source    ${MORKIT_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-<derived>}}/skills/
 #   --target    .../skills-codex/
 #   --map       .../codex/vocab-map.yaml
 #   --baseline  .../.codex/.drift-baseline
+#   --exclude   (repeatable) extra fnmatch-style patterns to skip; built-in
+#               defaults always apply: __pycache__, *.pyc, .DS_Store. Patterns
+#               match against the basename OR any path segment in the relpath
+#               (so '__pycache__' skips the whole dir).
 #
 # Per-file action matrix:
 #   in preserve list          → PRESERVE: cp src tgt (verbatim)
@@ -48,6 +52,10 @@ BASELINE="$PLUGIN_ROOT/.codex/.drift-baseline"
 HELPER_PY="$SCRIPT_DIR/lib/apply-vocab-map.py"
 DRY_RUN=0
 
+# Built-in excludes — build artifacts and editor cruft that should never reach
+# skills-codex/. User-supplied --exclude patterns append to this list.
+EXCLUDE_PATTERNS=('__pycache__' '*.pyc' '.DS_Store')
+
 # ---------------------------------------------------------------------------
 # Arg parsing
 # ---------------------------------------------------------------------------
@@ -57,6 +65,7 @@ while [[ $# -gt 0 ]]; do
         --target)   TARGET_DIR="$2"; shift 2 ;;
         --map)      VOCAB_MAP="$2"; shift 2 ;;
         --baseline) BASELINE="$2";  shift 2 ;;
+        --exclude)  EXCLUDE_PATTERNS+=("$2"); shift 2 ;;
         --dry-run)  DRY_RUN=1; shift ;;
         -h|--help)
             sed -n '2,30p' "$0"
@@ -184,12 +193,39 @@ _matches_any_glob() {
     return 1
 }
 
+# True if relpath should be skipped per EXCLUDE_PATTERNS. A pattern matches if
+# it fnmatches the basename OR any path segment (so `__pycache__` excludes the
+# whole directory subtree without needing `__pycache__/*`).
+_is_excluded() {
+    local rel="$1" base pat seg
+    base="$(basename "$rel")"
+    for pat in "${EXCLUDE_PATTERNS[@]}"; do
+        # shellcheck disable=SC2254
+        case "$base" in
+            $pat) return 0 ;;
+        esac
+        # Check each path segment for dir-style exclusions.
+        local IFS='/'
+        # shellcheck disable=SC2206
+        local segments=( $rel )
+        unset IFS
+        for seg in "${segments[@]}"; do
+            # shellcheck disable=SC2254
+            case "$seg" in
+                $pat) return 0 ;;
+            esac
+        done
+    done
+    return 1
+}
+
 # ---------------------------------------------------------------------------
 # Walk source tree, classify each file, act (or report in dry-run)
 # ---------------------------------------------------------------------------
 SWAPPED=0
 PRESERVED=0
 ASSETS=0
+EXCLUDED=0
 
 # Sorted file list — stable output + deterministic baseline.
 while IFS= read -r src; do
@@ -197,6 +233,14 @@ while IFS= read -r src; do
     rel="${src#"$SOURCE_DIR/"}"
     base="$(basename "$src")"
     tgt="$TARGET_DIR/$rel"
+
+    if _is_excluded "$rel"; then
+        EXCLUDED=$((EXCLUDED + 1))
+        if [[ "$DRY_RUN" -eq 1 ]]; then
+            printf '%-9s %s\n' "EXCLUDE" "$rel"
+        fi
+        continue
+    fi
 
     if _in_preserve "$rel"; then
         action="PRESERVE"
@@ -254,8 +298,8 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
     total=$((SWAPPED + PRESERVED + ASSETS))
     echo ""
     echo "Dry-run summary: $total files would be processed " \
-         "($SWAPPED SWAP, $PRESERVED PRESERVE, $ASSETS ASSET). " \
-         "No writes performed."
+         "($SWAPPED SWAP, $PRESERVED PRESERVE, $ASSETS ASSET, " \
+         "$EXCLUDED EXCLUDE). No writes performed."
     exit 0
 fi
 
@@ -303,6 +347,7 @@ mv "$BASELINE_TMP" "$BASELINE" || {
 # ---------------------------------------------------------------------------
 total=$((SWAPPED + PRESERVED + ASSETS))
 echo "Synced $total files ($SWAPPED swapped via vocab map, " \
-     "$PRESERVED preserved verbatim, $ASSETS assets passthrough)."
+     "$PRESERVED preserved verbatim, $ASSETS assets passthrough, " \
+     "$EXCLUDED excluded)."
 echo "  target:   $TARGET_DIR"
 echo "  baseline: $BASELINE"

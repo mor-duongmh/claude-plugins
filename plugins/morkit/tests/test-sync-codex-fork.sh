@@ -12,6 +12,8 @@
 #   5. Baseline format — every line is `<relpath>:<sha256>`, sorted
 #   6. Real-repo dry-run — sync against real plugins/morkit/skills/ as a smoke
 #                          test (dry-run only, no writes)
+#   7. Exclude — built-in defaults skip __pycache__/, *.pyc, .DS_Store;
+#                user --exclude flag adds more patterns
 #
 # All cases use mktemp -d fixtures — real skills/ is only read for case 6.
 
@@ -316,11 +318,68 @@ case_6_real_repo_dry_run() {
     rm -rf "$(dirname "$tmp_target")"
 }
 
+# ---------------------------------------------------------------------------
+# Case 7 — Exclude: defaults skip __pycache__/, *.pyc, .DS_Store. User-supplied
+# --exclude (repeatable) adds further patterns. Matched paths are absent from
+# target tree and absent from baseline.
+# ---------------------------------------------------------------------------
+case_7_exclude() {
+    local tmp; tmp="$(build_fixture)"
+    local target="$tmp/skills-codex"
+    local baseline="$tmp/.codex/.drift-baseline"
+
+    # Add fixture noise that exclusion should drop:
+    #   __pycache__/ subdir with .pyc
+    #   loose .pyc
+    #   .DS_Store
+    #   user-excluded *.tmp file
+    mkdir -p "$tmp/skills/sub/__pycache__"
+    printf 'compiled' > "$tmp/skills/sub/__pycache__/B.cpython-313.pyc"
+    printf 'loose'    > "$tmp/skills/sub/loose.pyc"
+    printf 'ds'       > "$tmp/skills/.DS_Store"
+    printf 'tmp'      > "$tmp/skills/scratch.tmp"
+
+    local stdout rc
+    stdout=$(bash "$SCRIPT" \
+        --source "$tmp/skills" \
+        --target "$target" \
+        --map    "$tmp/codex/vocab-map.yaml" \
+        --baseline "$baseline" \
+        --exclude '*.tmp' 2>&1)
+    rc=$?
+    assert_equal "$rc" "0" "7. sync with --exclude exits 0"
+
+    # Defaults skipped
+    assert_dir_not_exists "$target/sub/__pycache__" \
+        "7. __pycache__/ excluded by default"
+    assert_file_not_exists "$target/sub/loose.pyc" \
+        "7. *.pyc excluded by default"
+    assert_file_not_exists "$target/.DS_Store" \
+        "7. .DS_Store excluded by default"
+
+    # User exclude
+    assert_file_not_exists "$target/scratch.tmp" \
+        "7. user --exclude '*.tmp' honored"
+
+    # Baseline should not list excluded files
+    local baseline_data
+    baseline_data=$(grep -v '^[[:space:]]*\(#\|$\)' "$baseline" || true)
+    assert_not_contains "$baseline_data" "__pycache__" "7. baseline omits __pycache__"
+    assert_not_contains "$baseline_data" ".pyc" "7. baseline omits .pyc"
+    assert_not_contains "$baseline_data" ".DS_Store" "7. baseline omits .DS_Store"
+    assert_not_contains "$baseline_data" "scratch.tmp" "7. baseline omits user-excluded"
+
+    # Real files still present
+    assert_file_exists "$target/A.md" "7. A.md still synced"
+    rm -rf "$tmp"
+}
+
 case_1_preflight_missing_map
 case_2_dry_run
 case_3_full_sync
 case_4_idempotent
 case_5_baseline_format
 case_6_real_repo_dry_run
+case_7_exclude
 
 exit_with_status

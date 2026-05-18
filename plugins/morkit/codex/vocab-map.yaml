@@ -36,6 +36,18 @@ rules:
       Codex doesn't have native subagent. Maps to `codex exec` parallel processes
       or sequential skill chain. Phrasing: "delegate to a <name> specialist".
 
+  - id: agent-tool-bare
+    type: literal
+    pattern: 'Agent tool'
+    replacement: 'subagent dispatch'
+    apply_to: ['*.md']
+    note: |
+      Fallback for bare "Agent tool" mentions (e.g. "multiple Agent tool calls")
+      that the regex above didn't catch because no `subagent_type=` qualifier
+      followed. MUST run AFTER agent-tool-dispatch — that rule consumes the
+      specific form first, leaving only bare mentions for this one. Neutral
+      Codex-friendly phrasing.
+
   - id: todowrite-task-list
     type: literal
     pattern: 'TodoWrite'

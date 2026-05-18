@@ -10,11 +10,13 @@
 #
 # Usage:
 #   check-codex-drift.sh [--baseline <path>] [--source <path>] [--target <path>]
+#                        [--map <vocab-map.yaml>]
 #
 # Defaults (relative to plugin root inferred from script location):
 #   --baseline  plugins/morkit/.codex/.drift-baseline
 #   --source    plugins/morkit/skills/
 #   --target    plugins/morkit/skills-codex/
+#   --map       plugins/morkit/codex/vocab-map.yaml
 #
 # Baseline format (plain text, one entry per line, '#' lines ignored):
 #   <relpath-from-source>:<sha256-of-source-content-at-sync-time>
@@ -26,10 +28,11 @@
 #   hash diverged AND skills-    → WARN with file list + sync hint, exit 0
 #     codex/<rel> mtime < src
 #
-# Notes for Task 2 scope:
-#   - Vocab swap (Task 3 vocab-map.yaml) does not exist yet, so we hash raw
-#     source content. When Task 4 lands sync-codex-fork.sh, swap source → text
-#     before hashing inside the helper `_current_hash`.
+# Notes:
+#   - `_current_hash` pipes the source file through apply-vocab-map.py so a
+#     vocab-only diff (Task 3 rules) doesn't read as drift. If the helper exits
+#     3 (binary input), we fall back to hashing raw bytes — matches what
+#     sync-codex-fork.sh does on copy.
 #   - mtime comparison is portable: stat -f (BSD/macOS) with fallback to
 #     stat -c (GNU/Linux). Pattern borrowed from hooks/pre-tool-checklist-gate.sh.
 #
@@ -48,6 +51,8 @@ PLUGIN_ROOT="${MORKIT_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-$DEFAULT_PLUGIN_ROOT}}"
 BASELINE="$PLUGIN_ROOT/.codex/.drift-baseline"
 SOURCE_DIR="$PLUGIN_ROOT/skills"
 TARGET_DIR="$PLUGIN_ROOT/skills-codex"
+VOCAB_MAP="$PLUGIN_ROOT/codex/vocab-map.yaml"
+HELPER_PY="$SCRIPT_DIR/lib/apply-vocab-map.py"
 
 # ---------------------------------------------------------------------------
 # Args
@@ -57,6 +62,7 @@ while [[ $# -gt 0 ]]; do
         --baseline) BASELINE="$2"; shift 2 ;;
         --source)   SOURCE_DIR="$2"; shift 2 ;;
         --target)   TARGET_DIR="$2"; shift 2 ;;
+        --map)      VOCAB_MAP="$2"; shift 2 ;;
         -h|--help)
             sed -n '2,40p' "$0"
             exit 0
@@ -91,11 +97,44 @@ if ! command -v sha256sum >/dev/null 2>&1 && ! command -v shasum >/dev/null 2>&1
     exit 0
 fi
 
-# Hash of "current" source content. Task 2: raw bytes.
-# TODO(Task 4): when codex/vocab-map.yaml exists, pipe through the swap helper
-# before hashing so a vocab-only diff doesn't read as drift.
+# Hash of source content AFTER vocab-map swap (matches what sync-codex-fork.sh
+# would write to skills-codex/). If the helper or python3 are unavailable, or
+# the input is binary (exit 3), fall back to raw bytes — consistent with what
+# sync would copy verbatim in that case.
+_HAS_SWAP_TOOLS=0
+if command -v python3 >/dev/null 2>&1 \
+   && python3 -c 'import yaml' >/dev/null 2>&1 \
+   && [[ -f "$HELPER_PY" && -f "$VOCAB_MAP" ]]; then
+    _HAS_SWAP_TOOLS=1
+fi
+
 _current_hash() {
-    _sha256 "$1"
+    local src="$1"
+    if [[ "$_HAS_SWAP_TOOLS" -ne 1 ]]; then
+        _sha256 "$src"
+        return
+    fi
+    local tmp_out tmp_err rc
+    tmp_out="$(mktemp)" || { _sha256 "$src"; return; }
+    tmp_err="$(mktemp)" || { rm -f "$tmp_out"; _sha256 "$src"; return; }
+    python3 "$HELPER_PY" \
+        --map "$VOCAB_MAP" \
+        --input "$src" \
+        --output "$tmp_out" 2>"$tmp_err"
+    rc=$?
+    if [[ "$rc" -eq 0 ]]; then
+        _sha256 "$tmp_out"
+    elif [[ "$rc" -eq 3 ]]; then
+        # Binary — raw hash matches sync's verbatim copy
+        _sha256 "$src"
+    else
+        # Helper crashed unexpectedly — degrade to raw hash so we don't bail
+        # the whole CI, but mention it once on stderr.
+        echo "WARN: vocab-swap helper failed (exit $rc) for $src — using raw hash." >&2
+        cat "$tmp_err" >&2 2>/dev/null || true
+        _sha256 "$src"
+    fi
+    rm -f "$tmp_out" "$tmp_err"
 }
 
 # Look up baseline hash for a relative path. Empty if not found.
