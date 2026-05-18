@@ -1,0 +1,17 @@
+# drift-baseline — populated by `scripts/sync-codex-fork.sh` (Task 4).
+#
+# Purpose:
+#   Snapshot of SHA256 hashes for every skill in `plugins/morkit/skills/` at
+#   the moment the codex fork was last synced. `scripts/check-codex-drift.sh`
+#   compares current hashes against this baseline to warn (never fail) when
+#   `skills-codex/` is out of date.
+#
+# Format (one entry per line):
+#   <relpath-from-skills/>:<sha256>
+#
+# Examples (illustrative — actual entries appear after first sync):
+#   brainstorming/SKILL.md:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+#   writing-plans/SKILL.md:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+#
+# Lines starting with '#' and blank lines are ignored. Do not edit by hand —
+# always run the sync script so the hash matches the on-disk content.
