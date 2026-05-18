@@ -26,6 +26,25 @@ Chi tiết + Windows + hooks setup: [.codex/INSTALL.md](.codex/INSTALL.md).
 
 **Khác biệt giữa 2 platform**: skills + AGENTS.md hoạt động ngang nhau. Slash commands `/morkit:X`, hooks, và parallel subagents (deep-review) là native trong Claude Code, cần wire thủ công hoặc downgrade behavior trong Codex — xem bảng so sánh ở cuối INSTALL.md.
 
+## Claude Code vs Codex CLI
+
+| Aspect | Claude Code | Codex CLI |
+|---|---|---|
+| Install | `/plugin install morkit@mor-duongmh` | `git clone` + `bash install-codex.sh` |
+| Skills | `plugins/morkit/skills/` (CC vocab) | `plugins/morkit/skills-codex/` (vocab-translated) |
+| Commands | `plugins/morkit/commands/` (CC vocab) | `plugins/morkit/commands-codex/` (suffix-stripped) |
+| Hooks | `hooks/hooks.json` | `hooks/hooks-codex.json` (multi-tool gate matcher) |
+| Slash | Native `/morkit:X` | AGENTS.md bridge → reads `commands-codex/X.md` |
+| Doctor | `/plugin doctor` | `bash scripts/doctor-codex.sh` |
+
+### Sibling-folder approach (vì sao có `skills-codex/` + `commands-codex/`)
+
+Claude Code và Codex CLI dùng vocab + tool naming khác nhau (`Skill tool` vs skill discovery, `TodoWrite` vs to-do, `ExitPlanMode` vs plan-confirm...). Thay vì fork repo hoặc dùng template engine, plugin maintain hai cây song song: `skills/` + `commands/` là canonical cho Claude Code, còn `skills-codex/` + `commands-codex/` được sinh **deterministically** bởi `scripts/sync-codex-fork.sh` từ vocab map `codex/vocab-map.yaml`. Kết quả: zero impact lên người dùng Claude Code hiện tại; người dùng Codex thấy vocab native, không bị lộ Claude-only tokens.
+
+Tài liệu chi tiết cho Codex users: [`.codex/INSTALL.md`](.codex/INSTALL.md) (install + troubleshoot), [`AGENTS.md`](AGENTS.md) (slash-command bridge).
+
+**Cho contributors edit `skills/` hoặc `commands/`**: chạy `bash scripts/check-codex-drift.sh` trước khi commit để CI không cảnh báo. Nếu drift, chạy `bash scripts/sync-codex-fork.sh` để regenerate fork + baseline.
+
 ## Quy trình điển hình
 
 ```
@@ -132,7 +151,7 @@ cd plugins/morkit/tests
 bash run-all.sh
 ```
 
-10 test files, 137 assertions, cross-platform CI matrix (macOS + Ubuntu).
+20 test files (incl. Codex fork sync + E2E), cross-platform CI matrix (macOS + Ubuntu).
 
 ## License
 
