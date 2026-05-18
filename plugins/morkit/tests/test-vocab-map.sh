@@ -15,6 +15,13 @@
 #   9. Bare "Agent tool" (no subagent_type=) → "subagent dispatch"
 #  10. Ordering — "Agent tool with subagent_type=foo" still picks the regex
 #      rule (agent-tool-dispatch) over the bare literal (agent-tool-bare)
+#  11. Command suffix — "Invoke the `X` skill using the Skill tool." →
+#      "Invoke the `X` skill." (skill-invocation-suffix runs first, so
+#      skill-tool-invoke has nothing left to swap)
+#  12. Command suffix — same but with "via" instead of "using"
+#  13. Bold form — "Use the **Skill tool** to invoke X" →
+#      "Use skill discovery to invoke X" (skill-tool-bold first, then
+#      skill-tool-invoke is a no-op because "Skill tool" already gone)
 #
 # Dependencies: python3 + PyYAML (already a hard dep elsewhere in plugin).
 
@@ -265,6 +272,83 @@ PY
     assert_equal "$result" "OK" "10. regex rule wins over bare literal when qualifier present"
 }
 
+# ---------------------------------------------------------------------------
+# Case 11 — command-file phrase: "Invoke the `X` skill using the Skill tool."
+# must become "Invoke the `X` skill." The skill-invocation-suffix rule strips
+# the trailing " using the Skill tool" so the bare-noun cleanup is unneeded
+# and skill-tool-invoke has nothing left to match.
+# ---------------------------------------------------------------------------
+case_11_skill_suffix_using() {
+    local result
+    result=$(python3 <<PY 2>/dev/null
+import yaml, re
+data = yaml.safe_load(open("$YAML"))
+text = "Invoke the \`propose\` skill using the Skill tool. Pass through any arguments."
+expected = "Invoke the \`propose\` skill. Pass through any arguments."
+out = text
+for r in data["rules"]:
+    if r["type"] == "literal":
+        out = out.replace(r["pattern"], r["replacement"])
+    else:
+        repl = re.sub(r"\\\$(\d+)", r"\\\\\1", r["replacement"])
+        out = re.sub(r["pattern"], repl, out)
+print("OK" if out == expected else f"MISMATCH:{out!r}")
+PY
+)
+    assert_equal "$result" "OK" "11. '... skill using the Skill tool.' → '... skill.'"
+}
+
+# ---------------------------------------------------------------------------
+# Case 12 — same as 11 but with "via" instead of "using". The regex alternation
+# (?:using|via) inside skill-invocation-suffix MUST handle both.
+# ---------------------------------------------------------------------------
+case_12_skill_suffix_via() {
+    local result
+    result=$(python3 <<PY 2>/dev/null
+import yaml, re
+data = yaml.safe_load(open("$YAML"))
+text = "Invoke the \`deep-review\` skill via the Skill tool. Pass through args."
+expected = "Invoke the \`deep-review\` skill. Pass through args."
+out = text
+for r in data["rules"]:
+    if r["type"] == "literal":
+        out = out.replace(r["pattern"], r["replacement"])
+    else:
+        repl = re.sub(r"\\\$(\d+)", r"\\\\\1", r["replacement"])
+        out = re.sub(r["pattern"], repl, out)
+print("OK" if out == expected else f"MISMATCH:{out!r}")
+PY
+)
+    assert_equal "$result" "OK" "12. '... skill via the Skill tool.' → '... skill.'"
+}
+
+# ---------------------------------------------------------------------------
+# Case 13 — bolded form: "Use the **Skill tool** to invoke X" must become
+# "Use skill discovery to invoke X". skill-tool-bold consumes "the **Skill
+# tool**" as a single unit, leaving "Use skill discovery to invoke X".
+# Without this rule, skill-tool-invoke would only replace "Skill tool" and
+# leave the asterisks behind.
+# ---------------------------------------------------------------------------
+case_13_skill_tool_bold() {
+    local result
+    result=$(python3 <<PY 2>/dev/null
+import yaml, re
+data = yaml.safe_load(open("$YAML"))
+text = "Use the **Skill tool** to invoke \`docs-hero-orchestrator\` with mode init."
+expected = "Use skill discovery to invoke \`docs-hero-orchestrator\` with mode init."
+out = text
+for r in data["rules"]:
+    if r["type"] == "literal":
+        out = out.replace(r["pattern"], r["replacement"])
+    else:
+        repl = re.sub(r"\\\$(\d+)", r"\\\\\1", r["replacement"])
+        out = re.sub(r["pattern"], repl, out)
+print("OK" if out == expected else f"MISMATCH:{out!r}")
+PY
+)
+    assert_equal "$result" "OK" "13. 'Use the **Skill tool** to invoke X' → 'Use skill discovery to invoke X'"
+}
+
 case_1_parses
 case_2_schema
 case_3_unique_ids
@@ -275,5 +359,8 @@ case_7_preserve_paths_exist
 case_8_regex_optional_prefix
 case_9_agent_tool_bare
 case_10_ordering_regex_wins
+case_11_skill_suffix_using
+case_12_skill_suffix_via
+case_13_skill_tool_bold
 
 exit_with_status

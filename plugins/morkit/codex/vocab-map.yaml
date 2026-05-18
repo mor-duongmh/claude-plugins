@@ -18,6 +18,35 @@
 # Adding a rule? Bump the test fixture in tests/test-vocab-map.sh too.
 
 rules:
+  - id: skill-invocation-suffix
+    type: regex
+    pattern: ' (?:using|via) the Skill tool'
+    replacement: ''
+    apply_to: ['*.md']
+    note: |
+      Strips the awkward " using the Skill tool" / " via the Skill tool"
+      suffix that appears in commands/*.md after a "skill" noun
+      (e.g. "Invoke the `propose` skill using the Skill tool."). Without
+      this rule, skill-tool-invoke alone would produce the double-noun
+      "skill using skill discovery" which reads worse than the source.
+
+      MUST run BEFORE skill-tool-invoke so the longer phrase is consumed
+      first; otherwise skill-tool-invoke matches "Skill tool" mid-string
+      and the suffix-cleanup pattern no longer applies.
+
+  - id: skill-tool-bold
+    type: regex
+    pattern: 'the \*\*Skill tool\*\*'
+    replacement: 'skill discovery'
+    apply_to: ['*.md']
+    note: |
+      Handles bolded form "Use the **Skill tool** to invoke X" (seen in
+      commands/init.md). The generic skill-tool-invoke regex doesn't
+      strip the surrounding asterisks, so swap the bolded phrase as a
+      single unit first.
+
+      MUST run BEFORE skill-tool-invoke.
+
   - id: skill-tool-invoke
     type: regex
     pattern: '(Use the )?Skill tool( to invoke)?'
