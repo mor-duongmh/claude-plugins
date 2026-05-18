@@ -12,6 +12,9 @@
 #   6. Apply ALL rules to fixture text; assert exact swapped output
 #   7. Every path in preserve actually exists under skills/
 #   8. Regex edge — pattern matches "Skill tool" alone (no "Use the " prefix)
+#   9. Bare "Agent tool" (no subagent_type=) → "subagent dispatch"
+#  10. Ordering — "Agent tool with subagent_type=foo" still picks the regex
+#      rule (agent-tool-dispatch) over the bare literal (agent-tool-bare)
 #
 # Dependencies: python3 + PyYAML (already a hard dep elsewhere in plugin).
 
@@ -211,6 +214,57 @@ PY
     assert_equal "$result" "OK" "8. regex matches bare 'Skill tool' (optional prefix)"
 }
 
+# ---------------------------------------------------------------------------
+# Case 9 — bare "Agent tool" (no subagent_type=) → "subagent dispatch".
+# This covers the agent-tool-bare literal rule added in Task 5. Applies all
+# rules in declared order to reproduce realistic sync behavior.
+# ---------------------------------------------------------------------------
+case_9_agent_tool_bare() {
+    local result
+    result=$(python3 <<PY 2>/dev/null
+import yaml, re
+data = yaml.safe_load(open("$YAML"))
+text = "Make multiple Agent tool calls in one message."
+expected = "Make multiple subagent dispatch calls in one message."
+out = text
+for r in data["rules"]:
+    if r["type"] == "literal":
+        out = out.replace(r["pattern"], r["replacement"])
+    else:
+        repl = re.sub(r"\\\$(\d+)", r"\\\\\1", r["replacement"])
+        out = re.sub(r["pattern"], repl, out)
+print("OK" if out == expected else f"MISMATCH:{out!r}")
+PY
+)
+    assert_equal "$result" "OK" "9. bare 'Agent tool' → 'subagent dispatch'"
+}
+
+# ---------------------------------------------------------------------------
+# Case 10 — ordering regression guard: "Agent tool with subagent_type=foo"
+# MUST be consumed by the regex rule (agent-tool-dispatch) BEFORE the bare
+# literal (agent-tool-bare) can run. If the literal fired first, the output
+# would be "subagent dispatch with subagent_type=foo" — wrong.
+# ---------------------------------------------------------------------------
+case_10_ordering_regex_wins() {
+    local result
+    result=$(python3 <<PY 2>/dev/null
+import yaml, re
+data = yaml.safe_load(open("$YAML"))
+text = "Use the Agent tool with subagent_type=tester to verify."
+expected = "delegate to a tester specialist to verify."
+out = text
+for r in data["rules"]:
+    if r["type"] == "literal":
+        out = out.replace(r["pattern"], r["replacement"])
+    else:
+        repl = re.sub(r"\\\$(\d+)", r"\\\\\1", r["replacement"])
+        out = re.sub(r["pattern"], repl, out)
+print("OK" if out == expected else f"MISMATCH:{out!r}")
+PY
+)
+    assert_equal "$result" "OK" "10. regex rule wins over bare literal when qualifier present"
+}
+
 case_1_parses
 case_2_schema
 case_3_unique_ids
@@ -219,5 +273,7 @@ case_5_preserve_list
 case_6_apply_fixture
 case_7_preserve_paths_exist
 case_8_regex_optional_prefix
+case_9_agent_tool_bare
+case_10_ordering_regex_wins
 
 exit_with_status

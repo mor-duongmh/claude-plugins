@@ -19,7 +19,6 @@
 #
 # Lines starting with '#' and blank lines are ignored. Do not edit by hand —
 # always run the sync script so the hash matches the on-disk content.
-.DS_Store:6bdbfcadedc2ffc1ba96e93a6cf5d76e2d41ea9817194b5aee6290421525a214
 archive/SKILL.md:8cf88d64e878c28256885389098de76e1b64c6078674dd5ca64006207265a46b
 brainstorming/SKILL.md:a092f057395e16e5fa85afcdea198c3dfcb4f01f5c4d03c08e3fa45a61db119c
 deep-review/SKILL.md:2bcdfde622c92187c8855d4c7948b030bcdaceb2ac0461712ba49113e3ff588e

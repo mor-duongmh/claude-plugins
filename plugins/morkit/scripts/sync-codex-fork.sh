@@ -323,9 +323,15 @@ BASELINE_TMP="$(mktemp "${BASELINE}.XXXXXX")" || {
 EOF
     fi
     # Data — every file we just wrote into target.
+    # Apply the same exclude filter as the source walk so runtime artifacts
+    # (e.g., .DS_Store, __pycache__/, .claude-flow/data/*) that may appear in
+    # the target tree between syncs don't leak into the baseline.
     while IFS= read -r tgt; do
         [[ -z "$tgt" ]] && continue
         rel="${tgt#"$TARGET_DIR/"}"
+        if _is_excluded "$rel"; then
+            continue
+        fi
         # Reject relpaths containing ':' (would break baseline parser)
         if [[ "$rel" == *:* ]]; then
             echo "ERROR: refusing to write baseline — relpath contains ':' ($rel)" >&2
