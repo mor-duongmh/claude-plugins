@@ -59,6 +59,12 @@ done
 # Regenerate into a tmp dir using a /dev/null baseline (we don't want to touch
 # .codex/.drift-baseline). If diff reports any difference, the committed
 # skills-codex/ is stale relative to skills/ — sync wasn't run.
+#
+# Exception — `--exclude SKILL.md` is NOT applied broadly; we only exempt the
+# two files that carry a deliberate Codex-only manual edit (R1 fix: exporting
+# MORKIT_CURRENT_CHANGE so pre-tool-checklist-gate.sh engages on apply_patch /
+# Edit / Write under Codex). Those files are validated by Case 8 instead. All
+# other SKILL.md files must still regenerate identically.
 tmp_skills="$(mktemp -d)"
 bash "$SYNC" \
     --source "$TEST_PLUGIN_ROOT/skills" \
@@ -66,16 +72,23 @@ bash "$SYNC" \
     --baseline /dev/null \
     >/dev/null 2>&1 || true
 
-if diff -r "$TEST_PLUGIN_ROOT/skills-codex" "$tmp_skills" \
-        --brief --exclude='.DS_Store' >/dev/null 2>&1; then
-    _pass "1. skills-codex/ regenerates identically from skills/"
+# diff -r doesn't support per-path excludes, so we filter the brief output
+# instead. Lines mentioning the two preserved-manual-edit files are dropped
+# before checking for any remaining diff signal.
+diff_raw="$(diff -r "$TEST_PLUGIN_ROOT/skills-codex" "$tmp_skills" \
+    --brief --exclude='.DS_Store' 2>&1 || true)"
+diff_filtered="$(printf '%s\n' "$diff_raw" \
+    | grep -v 'executing-plans/SKILL.md' \
+    | grep -v 'subagent-driven-development/SKILL.md' \
+    | sed '/^$/d')"
+
+if [[ -z "$diff_filtered" ]]; then
+    _pass "1. skills-codex/ regenerates identically from skills/ (modulo 2 preserved manual edits, checked in Case 8)"
 else
-    diff_out="$(diff -r "$TEST_PLUGIN_ROOT/skills-codex" "$tmp_skills" \
-        --brief --exclude='.DS_Store' 2>&1 | head -10)"
     _fail "1. regenerated skills-codex/ differs from committed (drift detected)
         run: bash scripts/sync-codex-fork.sh
         diff sample:
-$diff_out"
+$(printf '%s\n' "$diff_filtered" | head -10)"
 fi
 rm -rf "$tmp_skills"
 
@@ -208,5 +221,30 @@ else
 $(printf '%s\n' "$doctor_out" | head -10)"
 fi
 rm -rf "$sandbox"
+
+# -----------------------------------------------------------------------------
+# Case 8 — R1 fix: executing-plans skills export MORKIT_CURRENT_CHANGE
+# -----------------------------------------------------------------------------
+# pre-tool-checklist-gate.sh narrows the Codex matcher (apply_patch|Edit|Write)
+# by checking MORKIT_CURRENT_CHANGE — if unset, the gate fails open. The
+# executing-plans + subagent-driven-development skills are responsible for
+# exporting it before any file mutation. If either skill stops mentioning the
+# env var, the gate becomes structurally inert under Codex (R1 regression).
+exec_skill="$TEST_PLUGIN_ROOT/skills-codex/executing-plans/SKILL.md"
+sub_skill="$TEST_PLUGIN_ROOT/skills-codex/subagent-driven-development/SKILL.md"
+missing=()
+if ! grep -q 'MORKIT_CURRENT_CHANGE' "$exec_skill" 2>/dev/null; then
+    missing+=("executing-plans/SKILL.md")
+fi
+if ! grep -q 'MORKIT_CURRENT_CHANGE' "$sub_skill" 2>/dev/null; then
+    missing+=("subagent-driven-development/SKILL.md")
+fi
+if [[ ${#missing[@]} -eq 0 ]]; then
+    _pass "8. Codex executing-plans skills export MORKIT_CURRENT_CHANGE (gate engages)"
+else
+    _fail "8. R1 regression — MORKIT_CURRENT_CHANGE missing from: ${missing[*]}
+        Without it, pre-tool-checklist-gate.sh fails open on apply_patch/Edit/Write
+        under Codex and the checklist gate is structurally inert."
+fi
 
 exit_with_status

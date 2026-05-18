@@ -5,6 +5,44 @@ description: Use when you have a written implementation plan to execute in a sep
 
 # Executing Plans
 
+<!-- PRESERVED MANUAL EDIT — Codex-only insertion (R1 fix).
+     Do NOT delete on re-sync. If re-running scripts/sync-codex-fork.sh, the
+     regenerated file will lose this block; re-apply it manually afterwards.
+     The Claude-path skill in skills/ does not need this — its gate fires on
+     a skill-dispatch matcher, not on file-mutation tools, so it doesn't need
+     MORKIT_CURRENT_CHANGE. See .codex/.drift-baseline for the post-edit
+     hash. -->
+
+## Pre-flight: export MORKIT_CURRENT_CHANGE so the gate engages
+
+The plugin's PreToolUse hook (`hooks/pre-tool-checklist-gate.sh`) blocks
+`apply_patch` / `Edit` / `Write` until the active change's
+`review-checklist.md` has `Overall Decision: OK`. In Codex there's no `Skill`
+tool, so the hook narrows by env var: **if `MORKIT_CURRENT_CHANGE` is unset,
+the gate fails open** and your file edits proceed unguarded.
+
+**BEFORE issuing any `apply_patch` / `Edit` / `Write`** in this skill, run the
+snippet below in your session so the gate has the change name to look up:
+
+```bash
+# Detect the active change (most recently modified non-archive dir under
+# morkit/output/spec/, with MORKIT_ROOT override honored). Export the basename
+# so pre-tool-checklist-gate.sh can resolve <PRIMARY>/$MORKIT_CURRENT_CHANGE.
+CHANGE_DIR=$(find "${MORKIT_ROOT:-morkit/output/spec}" \
+                  -mindepth 1 -maxdepth 1 -type d ! -name archive -print0 \
+                  2>/dev/null \
+    | xargs -0 -I{} sh -c \
+        'stat -f "%m %N" "$1" 2>/dev/null || stat -c "%Y %n" "$1"' _ {} \
+    | sort -rn | head -1 | sed 's/^[0-9]* //')
+
+if [[ -n "$CHANGE_DIR" ]]; then
+    export MORKIT_CURRENT_CHANGE="$(basename "$CHANGE_DIR")"
+fi
+```
+
+If `MORKIT_CURRENT_CHANGE` is already set (e.g. exported by the user or a
+parent shell) leave it alone — the snippet only auto-detects when unset.
+
 ## Overview
 
 Load plan, review critically, execute all tasks, report when complete.
