@@ -1,8 +1,10 @@
-# morkit — Mor's all-in-one Claude Code toolkit
+# morkit — Mor's all-in-one toolkit (Claude Code + Codex)
 
-> Một plugin, một namespace `/morkit:*` — từ brainstorm đến code review, từ scaffold đến doc generation.
+> Một plugin, một namespace `/morkit:*` — từ brainstorm đến code review, từ scaffold đến doc generation. Hỗ trợ **Claude Code** (native plugin) và **OpenAI Codex CLI** (qua skill discovery + AGENTS.md bridge).
 
 ## Cài đặt
+
+### Claude Code
 
 ```
 /plugin add marketplace github:mor-duongmh/claude-plugins
@@ -10,6 +12,19 @@
 ```
 
 Cài xong là dùng được — không cần setup gì thêm trong project.
+
+### Codex CLI
+
+```bash
+git clone https://github.com/mor-duongmh/claude-plugins.git ~/.codex/morkit-source
+bash ~/.codex/morkit-source/plugins/morkit/scripts/install-codex.sh
+```
+
+Sau đó restart Codex. Verify với `bash ~/.codex/morkit-source/plugins/morkit/scripts/doctor-codex.sh`.
+
+Chi tiết + Windows + hooks setup: [.codex/INSTALL.md](.codex/INSTALL.md).
+
+**Khác biệt giữa 2 platform**: skills + AGENTS.md hoạt động ngang nhau. Slash commands `/morkit:X`, hooks, và parallel subagents (deep-review) là native trong Claude Code, cần wire thủ công hoặc downgrade behavior trong Codex — xem bảng so sánh ở cuối INSTALL.md.
 
 ## Quy trình điển hình
 
