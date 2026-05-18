@@ -48,7 +48,14 @@ echo "[2] Skill discovery ($SKILL_LINK)"
 if [ -L "$SKILL_LINK" ]; then
     TARGET="$(readlink "$SKILL_LINK")"
     if [ -d "$SKILL_LINK" ]; then
-        ok "symlink -> $TARGET"
+        # Codex install must point at skills-codex/ (Codex vocab), not the
+        # raw skills/ (Claude vocab). Verify the basename of the target.
+        TARGET_BASE="$(basename "$TARGET")"
+        if [ "$TARGET_BASE" = "skills-codex" ]; then
+            ok "symlink -> $TARGET (skills-codex/)"
+        else
+            warn "symlink -> $TARGET (expected target: skills-codex/, got: $TARGET_BASE/). Re-run install-codex.sh to repoint."
+        fi
     else
         fail "symlink dangling -> $TARGET"
     fi
@@ -133,11 +140,20 @@ else
     warn "codex CLI missing — skipping hooks feature check"
 fi
 
-if [ -f "$HOOKS_JSON" ]; then
-    if grep -q "morkit" "$HOOKS_JSON" 2>/dev/null; then
-        ok "$HOOKS_JSON references morkit"
+if [ -L "$HOOKS_JSON" ]; then
+    HOOKS_TARGET="$(readlink "$HOOKS_JSON")"
+    if [ "$(basename "$HOOKS_TARGET")" = "hooks-codex.json" ]; then
+        ok "$HOOKS_JSON -> $HOOKS_TARGET (hooks-codex.json)"
     else
-        warn "$HOOKS_JSON exists but doesn't reference morkit"
+        warn "$HOOKS_JSON -> $HOOKS_TARGET (expected hooks-codex.json — re-run install-codex.sh --with-hooks)"
+    fi
+elif [ -f "$HOOKS_JSON" ]; then
+    # Regular file (copy or manual). Check either explicit morkit reference
+    # or the multi-tool PreToolUse matcher that ships in hooks-codex.json.
+    if grep -qE "morkit|MORKIT_PLUGIN_ROOT|apply_patch\|Edit\|Write" "$HOOKS_JSON" 2>/dev/null; then
+        ok "$HOOKS_JSON references morkit (hooks-codex.json content detected)"
+    else
+        warn "$HOOKS_JSON exists but doesn't reference morkit hooks-codex.json"
     fi
     if command -v python3 >/dev/null 2>&1; then
         if python3 -c "import json,sys; json.load(open('$HOOKS_JSON'))" 2>/dev/null; then
@@ -150,9 +166,45 @@ else
     warn "$HOOKS_JSON not present — hooks disabled (this is fine if you don't need them)"
 fi
 
+# --- commands-codex/ presence (read-only check; no symlink) ---
+echo
+echo "[6] commands-codex/ (slash-command bridge source)"
+COMMANDS_DIR="$PLUGIN_ROOT/commands-codex"
+if [ -d "$COMMANDS_DIR" ]; then
+    CMD_COUNT=$(find "$COMMANDS_DIR" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$CMD_COUNT" -ge 10 ]; then
+        ok "$CMD_COUNT command files in commands-codex/"
+    elif [ "$CMD_COUNT" -gt 0 ]; then
+        warn "only $CMD_COUNT command files in commands-codex/ (expected ≥ 10)"
+    else
+        warn "commands-codex/ empty — re-run sync-codex-fork.sh"
+    fi
+else
+    fail "commands-codex/ missing — run: bash $PLUGIN_ROOT/scripts/sync-codex-fork.sh"
+fi
+
+# --- drift check (informational — never fails the doctor) ---
+echo
+echo "[7] Drift check (skills/ vs skills-codex/ baseline)"
+DRIFT_SCRIPT="$PLUGIN_ROOT/scripts/check-codex-drift.sh"
+if [ -x "$DRIFT_SCRIPT" ] || [ -f "$DRIFT_SCRIPT" ]; then
+    DRIFT_OUT="$(bash "$DRIFT_SCRIPT" 2>&1 || true)"
+    # Show a trimmed snippet so doctor output stays readable.
+    echo "$DRIFT_OUT" | sed 's/^/    /' | head -10
+    # Match WARN/INFO lines that indicate drift (avoid false match on the
+    # success line "no drift detected").
+    if echo "$DRIFT_OUT" | grep -qiE "^(WARN|INFO):.*drift|out of sync|files? diverged|stale"; then
+        warn "drift detected — re-run sync-codex-fork.sh to refresh skills-codex/"
+    else
+        ok "no drift detected"
+    fi
+else
+    warn "check-codex-drift.sh missing — drift detection unavailable"
+fi
+
 # --- deep-review prerequisites ---
 echo
-echo "[6] Deep-review prerequisites"
+echo "[8] Deep-review prerequisites"
 [ -x "$PLUGIN_ROOT/scripts/codex-deep-review.sh" ] && ok "codex-deep-review.sh executable" || warn "codex-deep-review.sh not executable (chmod +x)"
 [ -f "$PLUGIN_ROOT/scripts/codex-deep-review-aggregate.py" ] && ok "aggregator present" || fail "aggregator missing"
 if command -v git >/dev/null 2>&1; then ok "git available"; else fail "git missing"; fi

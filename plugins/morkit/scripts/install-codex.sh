@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # install-codex.sh — one-command morkit installer for Codex CLI.
 #
-# Symlinks morkit skills + AGENTS.md into Codex's discovery paths.
-# Optionally enables codex_hooks feature and writes ~/.codex/hooks.json.
+# Symlinks morkit skills-codex/ + AGENTS.md into Codex's discovery paths.
+# Optionally enables codex_hooks feature and links ~/.codex/hooks.json
+# to plugin's hooks-codex.json (so upstream changes propagate via git pull).
 #
 # Usage:
 #   bash plugins/morkit/scripts/install-codex.sh              # interactive
@@ -105,6 +106,12 @@ uninstall() {
     else
         echo "skip: $AGENTS_LINK (not a morkit symlink — manual cleanup if needed)"
     fi
+    local hooks_json="$CODEX_HOME/hooks.json"
+    if is_morkit_symlink "$hooks_json"; then
+        rm "$hooks_json" && echo "removed: $hooks_json"
+    else
+        [ -e "$hooks_json" ] && echo "skip: $hooks_json (not a morkit symlink — manual cleanup if needed)"
+    fi
     local rc; rc="$(detect_shell_rc)"
     if [ -n "$rc" ] && [ -f "$rc" ]; then
         remove_rc_block "$rc"
@@ -130,8 +137,12 @@ CODEX_VER="$(codex --version 2>&1 | awk '{print $NF}' | head -1)"
 echo "codex CLI: $CODEX_VER"
 
 # --- prerequisite: source files exist ---
-if [ ! -d "$PLUGIN_ROOT/skills" ]; then
-    echo "FAIL: $PLUGIN_ROOT/skills not found. Are you running from the morkit repo?" >&2
+# Codex install targets the Codex-vocab fork (skills-codex/), not the raw
+# Claude tree (skills/). If skills-codex/ is missing, the user likely hasn't
+# run sync yet — give a precise next step instead of a generic "not found".
+if [ ! -d "$PLUGIN_ROOT/skills-codex" ]; then
+    echo "FAIL: $PLUGIN_ROOT/skills-codex/ not found." >&2
+    echo "      Run sync first: bash $PLUGIN_ROOT/scripts/sync-codex-fork.sh" >&2
     exit 1
 fi
 if [ ! -f "$PLUGIN_ROOT/AGENTS.md" ]; then
@@ -141,23 +152,36 @@ fi
 
 mkdir -p "$AGENTS_HOME/skills" "$CODEX_HOME"
 
-# --- step 1: skills symlink ---
+# --- step 1: skills symlink (targets skills-codex/, not skills/) ---
+SKILL_TARGET="$PLUGIN_ROOT/skills-codex"
 echo
-echo "[1/4] Skill discovery symlink"
+echo "[1/4] Skill discovery symlink (target: skills-codex/)"
 if is_morkit_symlink "$SKILL_LINK"; then
-    echo "  already linked: $SKILL_LINK -> $(readlink "$SKILL_LINK")"
+    CURRENT="$(readlink "$SKILL_LINK")"
+    if [ "$CURRENT" = "$SKILL_TARGET" ]; then
+        echo "  already linked: $SKILL_LINK -> $CURRENT"
+    else
+        echo "  WARN: $SKILL_LINK points to $CURRENT (expected $SKILL_TARGET)."
+        if confirm "  Repoint to $SKILL_TARGET?"; then
+            rm "$SKILL_LINK"
+            ln -s "$SKILL_TARGET" "$SKILL_LINK"
+            echo "  re-linked: $SKILL_LINK -> $SKILL_TARGET"
+        else
+            echo "  skipped — Codex will discover stale skill tree."
+        fi
+    fi
 elif [ -e "$SKILL_LINK" ] || [ -L "$SKILL_LINK" ]; then
     echo "  WARN: $SKILL_LINK exists but does not point to this morkit checkout."
-    if confirm "  Replace with symlink to $PLUGIN_ROOT/skills?"; then
+    if confirm "  Replace with symlink to $SKILL_TARGET?"; then
         rm -rf "$SKILL_LINK"
-        ln -s "$PLUGIN_ROOT/skills" "$SKILL_LINK"
-        echo "  linked: $SKILL_LINK -> $PLUGIN_ROOT/skills"
+        ln -s "$SKILL_TARGET" "$SKILL_LINK"
+        echo "  linked: $SKILL_LINK -> $SKILL_TARGET"
     else
         echo "  skipped — Codex will not see morkit skills."
     fi
 else
-    if confirm "  Create symlink $SKILL_LINK -> $PLUGIN_ROOT/skills?"; then
-        ln -s "$PLUGIN_ROOT/skills" "$SKILL_LINK"
+    if confirm "  Create symlink $SKILL_LINK -> $SKILL_TARGET?"; then
+        ln -s "$SKILL_TARGET" "$SKILL_LINK"
         echo "  linked: $SKILL_LINK"
     else
         echo "  skipped."
@@ -238,30 +262,22 @@ else
     fi
 
     HOOKS_JSON="$CODEX_HOME/hooks.json"
-    HOOK_TARGET="$PLUGIN_ROOT/hooks/session-start.sh"
-    if [ ! -x "$HOOK_TARGET" ] && [ ! -f "$HOOK_TARGET" ]; then
-        echo "  WARN: no morkit hook script at $HOOK_TARGET; skipping hooks.json."
+    HOOKS_SRC="$PLUGIN_ROOT/hooks/hooks-codex.json"
+    if [ ! -f "$HOOKS_SRC" ]; then
+        echo "  WARN: $HOOKS_SRC missing; skipping hooks.json. (Run sync-codex-fork.sh?)"
+    elif is_morkit_symlink "$HOOKS_JSON"; then
+        echo "  already linked: $HOOKS_JSON -> $(readlink "$HOOKS_JSON")"
     elif [ -f "$HOOKS_JSON" ] && grep -q "morkit" "$HOOKS_JSON" 2>/dev/null; then
         echo "  $HOOKS_JSON already references morkit — leaving alone."
-    elif [ -f "$HOOKS_JSON" ]; then
+    elif [ -e "$HOOKS_JSON" ] || [ -L "$HOOKS_JSON" ]; then
         echo "  WARN: $HOOKS_JSON exists; refusing to overwrite. Add morkit hook manually."
     else
-        cat > "$HOOKS_JSON" <<JSON
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup|resume|clear",
-        "hooks": [{
-          "type": "command",
-          "command": "bash $HOOK_TARGET"
-        }]
-      }
-    ]
-  }
-}
-JSON
-        echo "  wrote: $HOOKS_JSON"
+        # Symlink (preferred over copy: upstream changes propagate via git
+        # pull, no drift between installed config and source of truth).
+        # Cross-platform note: on Windows / FAT filesystems where symlinks
+        # don't work, swap this for `cp` and re-run install after upgrades.
+        ln -s "$HOOKS_SRC" "$HOOKS_JSON"
+        echo "  linked: $HOOKS_JSON -> $HOOKS_SRC"
     fi
 fi
 
