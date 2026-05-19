@@ -2,16 +2,19 @@
 # test-codex-marketplace.sh — verify Codex plugin manifest (plugin.json) + CC marketplace.json
 # dual-discoverability without duplicate plugin registration.
 #
-# Background: previous implementation added .agents/plugins/marketplace.json (Codex schema)
-# alongside .claude-plugin/marketplace.json (CC schema). Codex CLI read BOTH and registered
-# the morkit plugin twice → duplicate entries in picker. Fix: keep only CC marketplace.json
-# (Codex parses it gracefully) + plugin.json (tells Codex skills/hooks paths).
+# Background: Codex CLI requires .agents/plugins/marketplace.json with its own schema
+# (source/policy as objects) to discover marketplace plugins. CC uses
+# .claude-plugin/marketplace.json with a different schema. The duplicate-picker issue
+# was caused by Codex walking BOTH skills/ folders inside a shared plugin install, fixed
+# in PR #32 by splitting into separate plugin folders (morkit + morkit-codex). The Codex
+# marketplace.json must list ONLY morkit-codex (not morkit) so Codex never sees the CC
+# variant. CC marketplace.json may list both plugins; CC ignores morkit-codex if discovered.
 #
 # Coverage:
 #   1. plugin.json exists + valid JSON + required fields
 #   2. plugin.json paths (skills, hooks) resolve to real files/dirs
-#   3. .agents/plugins/marketplace.json is NOT present (would cause duplicate)
-#   4. CC marketplace.json present + parseable (Codex relies on it for plugin entry)
+#   3. .agents/plugins/marketplace.json present + valid Codex schema, lists morkit-codex only
+#   4. CC marketplace.json present + parseable
 #   5. README + INSTALL.md mention the `codex plugin marketplace add` command
 
 set -uo pipefail
@@ -77,12 +80,40 @@ else
     _fail "hooks path missing: $HOOKS_PATH (resolved: $PLUGIN_ROOT/${HOOKS_PATH#./})"
 fi
 
-# --- Case 3: NO Codex-specific marketplace.json (would cause duplicate) ---
-_case "no duplicate Codex marketplace.json at .agents/plugins/"
-if [[ ! -f "$CODEX_MARKETPLACE" ]]; then
-    _pass "absent (correct — would otherwise cause picker duplicates with CC marketplace.json)"
+# --- Case 3: Codex marketplace.json present + valid + only lists morkit-codex ---
+_case "Codex marketplace.json at .agents/plugins/"
+if [[ -f "$CODEX_MARKETPLACE" ]]; then
+    _pass "file exists at $CODEX_MARKETPLACE"
 else
-    _fail "present at $CODEX_MARKETPLACE — Codex would read BOTH this and CC marketplace.json, registering morkit twice"
+    _fail "missing: $CODEX_MARKETPLACE — Codex marketplace discovery requires this file"
+fi
+
+if python3 -c "import json; json.load(open('$CODEX_MARKETPLACE'))" 2>/dev/null; then
+    _pass "valid JSON"
+else
+    _fail "invalid JSON"
+fi
+
+# Must list ONLY morkit-codex (not morkit — listing the CC variant would expose CC-only
+# files to Codex and cause confusion). Source must be Codex object schema.
+if python3 -c "
+import json, sys
+d = json.load(open('$CODEX_MARKETPLACE'))
+plugins = d.get('plugins', [])
+names = sorted(p.get('name','') for p in plugins)
+if names != ['morkit-codex']:
+    print(f'  expected [morkit-codex], got {names}', file=sys.stderr)
+    sys.exit(1)
+# source must be object, not string (Codex schema requirement)
+src = plugins[0].get('source')
+if not isinstance(src, dict) or 'path' not in src:
+    print(f'  source must be object with path field, got: {src!r}', file=sys.stderr)
+    sys.exit(1)
+sys.exit(0)
+" 2>/dev/null; then
+    _pass "lists ONLY morkit-codex with Codex object-schema source"
+else
+    _fail "wrong plugins list or invalid source schema"
 fi
 
 # --- Case 4: CC marketplace.json (used by both CC and Codex) ---
