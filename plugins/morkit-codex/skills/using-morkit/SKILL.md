@@ -1,6 +1,6 @@
 ---
 name: using-morkit
-description: Use when starting any conversation - establishes how to find and use skills, requiring skill discovery invocation before ANY response including clarifying questions
+description: 'Use when starting any conversation, OR when the user types a `/morkit:<name>` slash-command pattern (e.g. `/morkit:init`, `/morkit:propose`, `/morkit:setup`) - establishes skill discovery rules and the slash-command bridge for platforms without native slash discovery'
 ---
 
 <SUBAGENT-STOP>
@@ -38,6 +38,23 @@ If CLAUDE.md, GEMINI.md, or AGENTS.md says "don't use TDD" and a skill says "alw
 ## Platform Adaptation
 
 Skills use Claude Code tool names. Non-CC platforms: see `references/copilot-tools.md` (Copilot CLI), `references/codex-tools.md` (Codex) for tool equivalents. Gemini CLI users get the tool mapping loaded automatically via GEMINI.md.
+
+## Slash Command Pattern (`/morkit:<name>`)
+
+morkit ships a set of named workflows as files under `commands/<name>.md`. When the user types `/morkit:<name>` (slash + plugin namespace + command), they're requesting one of these workflows.
+
+**On Claude Code** — slash commands are auto-discovered from `commands/`; the platform invokes them natively. No manual resolution needed.
+
+**On platforms without native slash discovery (Codex CLI, Copilot CLI, etc.)** — treat the slash as a request and resolve manually:
+
+1. Extract `<name>` from the `/morkit:<name>` text in the user's message
+2. Read `${MORKIT_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/commands/<name>.md` (cascade — first env var that's set wins). Fallback path if neither is set: `~/.codex/morkit-source/plugins/morkit-codex/commands/<name>.md`
+3. Follow the instructions in that file (most just wrap a skill of the same name)
+4. If `commands/<name>.md` doesn't exist, fallback: invoke the skill named `<name>` directly via skill discovery
+
+Available command names (as of v1.x): `init`, `setup`, `propose`, `review`, `archive`, `brainstorming`, `write-plan`, `execute-plan`, `deep-review`, `deep-review-doctor`, `deep-review-post`, `doctor`, `sync`, `apply-sync`, `update-doc`.
+
+> Do NOT guess what `/morkit:<name>` means without reading the file — the workflows have specific pre-flight checks, argument parsing, and AskUserQuestion prompts that the wrapper file encodes.
 
 # Using Skills
 
