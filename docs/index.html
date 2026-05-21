@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>morkit — docs hub</title>
+  <title>morkit — trung tâm tài liệu</title>
   <style>
     :root {
       --bg: #ffffff;
@@ -643,11 +643,11 @@
     <div class="topnav-inner">
       <a href="index.html" class="brand">
         <span class="dot-mark"></span>
-        morkit <span class="sub">/ docs</span>
+        morkit <span class="sub">/ tài liệu</span>
       </a>
       <div class="topnav-center"></div>
       <div class="nav-actions">
-        <a href="docs.html">Use cases</a>
+        <a href="docs.html">Trường hợp sử dụng (Use cases)</a>
         <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener"
           class="primary">GitHub</a>
         <button id="themeBtn" class="toggle" type="button" title="Đổi sáng/tối">☾ / ☀</button>
@@ -666,23 +666,23 @@
         <a href="#overview" data-sec="overview">Tổng quan</a>
       </div>
       <div class="sb-group">
-        <div class="sb-group-title">Command</div>
-        <a href="#spec" data-sec="spec">Spec workflow</a>
-        <a href="#plan" data-sec="plan">Plan & build</a>
-        <a href="#review" data-sec="review">Code review</a>
-        <a href="#docs" data-sec="docs">Doc generation</a>
+        <div class="sb-group-title">Lệnh (Command)</div>
+        <a href="#spec" data-sec="spec">Quy trình đặc tả (Spec workflow)</a>
+        <a href="#plan" data-sec="plan">Lập kế hoạch & Phát triển (Plan & build)</a>
+        <a href="#review" data-sec="review">Đánh giá mã nguồn (Code review)</a>
+        <a href="#docs" data-sec="docs">Tự động sinh tài liệu (Doc generation)</a>
       </div>
       <div class="sb-group">
-        <div class="sb-group-title">Agent</div>
-        <a href="#agents" data-sec="agents">9 agent chuyên trách</a>
+        <div class="sb-group-title">Tác nhân (Agent)</div>
+        <a href="#agents" data-sec="agents">9 tác nhân chuyên trách</a>
       </div>
       <div class="sb-group">
-        <div class="sb-group-title">Companion</div>
+        <div class="sb-group-title">Công cụ hỗ trợ (Companion)</div>
         <a href="#companion" data-sec="companion">Context7 + RTK</a>
       </div>
       <div class="sb-group">
         <div class="sb-group-title">Tham khảo</div>
-        <a href="docs.html">Use cases →</a>
+        <a href="docs.html">Trường hợp sử dụng (Use cases) →</a>
         <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub →</a>
         <a href="https://github.com/mor-duongmh/claude-plugins/blob/main/README.md" target="_blank"
           rel="noopener">README →</a>
@@ -693,16 +693,16 @@
     <main class="main">
 
       <section class="hero">
-        <span class="eyebrow">Docs · Tổng quan</span>
+        <span class="eyebrow">Tài liệu · Tổng quan</span>
         <h1>morkit</h1>
         <p class="lede">
-          Plugin <code>morkit</code> của Mor — gói toàn bộ công cụ vào một chỗ:
-          viết spec, lên kế hoạch và chạy, review code, sinh tài liệu.
-          Tất cả gọi qua cùng một tiền tố <code>/morkit:*</code>.
+          Plugin <code>morkit</code> của Mor — tích hợp toàn bộ công cụ phát triển vào một nơi duy nhất:
+          từ đặc tả yêu cầu (spec), lập kế hoạch và thực thi kế hoạch (plan & build), đánh giá mã nguồn (code review) đến tự động sinh tài liệu (doc generation).
+          Tất cả có thể gọi trực tiếp qua tiền tố lệnh <code>/morkit:*</code>.
         </p>
         <p class="lede-small">
-          <strong>15 command · 9 agent · 26 skill</strong>, gói trong một plugin.
-          Chọn lối vào bên dưới hoặc dùng sidebar.
+          Gói gọn <strong>15 lệnh (command) · 9 tác nhân (agent) · 26 kỹ năng (skill)</strong> trong một plugin duy nhất.
+          Chọn lối vào bên dưới hoặc sử dụng thanh điều hướng (sidebar).
         </p>
       </section>
 
@@ -711,398 +711,388 @@
         <a class="card" href="#install">
           <div class="card-label">Bắt đầu</div>
           <div class="card-title">Cài đặt 2 lệnh</div>
-          <p class="card-desc">Thêm marketplace + install plugin. Xong là dùng được, không setup thêm trong từng dự án.
-          </p>
-          <span class="card-arrow">Xem cách cài →</span>
+          <p class="card-desc">Thêm chợ ứng dụng (marketplace) + cài đặt plugin. Xong là sử dụng được ngay, không cần cấu hình thêm trong từng dự án riêng lẻ.</p>
+          <span class="card-arrow">Xem cách cài đặt →</span>
         </a>
         <a class="card" href="#spec">
-          <div class="card-label">Spec workflow</div>
-          <div class="card-title">3 command chuẩn hoá spec</div>
-          <p class="card-desc"><code>propose</code> · <code>review</code> · <code>archive</code> — sinh
-            proposal/design/tasks/checklist trong một lần chạy.</p>
-          <span class="card-arrow">Xem command →</span>
+          <div class="card-label">Quy trình đặc tả (Spec workflow)</div>
+          <div class="card-title">3 lệnh chuẩn hóa đặc tả</div>
+          <p class="card-desc"><code>propose</code> · <code>review</code> · <code>archive</code> — tự động sinh đề xuất (proposal), thiết kế (design), danh sách việc (tasks) và danh sách kiểm tra (checklist) trong một lần chạy duy nhất.</p>
+          <span class="card-arrow">Xem danh sách lệnh →</span>
         </a>
         <a class="card" href="#plan">
-          <div class="card-label">Plan &amp; build</div>
+          <div class="card-label">Kế hoạch &amp; Phát triển (Plan &amp; build)</div>
           <div class="card-title">Brainstorm → plan → run</div>
-          <p class="card-desc">8 skill: brainstorming, writing-plans, executing-plans, TDD, debug có hệ thống, worktree.
-          </p>
-          <span class="card-arrow">Xem skill →</span>
+          <p class="card-desc">8 kỹ năng chuyên sâu: lên ý tưởng (brainstorming), lập kế hoạch (writing-plans), thực thi kế hoạch (executing-plans), phát triển hướng kiểm thử (TDD), gỡ lỗi hệ thống và quản lý worktree.</p>
+          <span class="card-arrow">Xem danh sách kỹ năng →</span>
         </a>
         <a class="card" href="#review">
-          <div class="card-label">Code review</div>
-          <div class="card-title">Deep multi-agent review</div>
-          <p class="card-desc">5 agent AI chạy song song trên PR/git diff: risk · security · pattern · test ·
-            convention.</p>
-          <span class="card-arrow">Xem deep-review →</span>
+          <div class="card-label">Đánh giá mã nguồn (Code review)</div>
+          <div class="card-title">Đánh giá đa tác nhân chuyên sâu</div>
+          <p class="card-desc">Hệ thống 5 tác nhân (agent) AI chuyên biệt chạy song song phân tích PR/git diff: đánh giá rủi ro (risk), bảo mật (security), thiết kế (pattern), kiểm thử (test) và quy chuẩn mã nguồn (convention).</p>
+          <span class="card-arrow">Xem cơ chế đánh giá chuyên sâu →</span>
         </a>
         <a class="card" href="#docs">
-          <div class="card-label">Doc generation</div>
-          <div class="card-title">SRS · API · DB · arch</div>
-          <p class="card-desc">Sinh full bộ tài liệu theo chuẩn BrSE ITO Japan + arc42-lite + Conventional Commits +
-            MADR.</p>
-          <span class="card-arrow">Xem docs-hero →</span>
+          <div class="card-label">Tự động sinh tài liệu</div>
+          <div class="card-title">SRS · API · DB · Kiến trúc (arch)</div>
+          <p class="card-desc">Tự động sinh trọn bộ tài liệu dự án theo chuẩn BrSE ITO Nhật Bản, cấu trúc kiến trúc tối giản arc42-lite, viết commit theo Conventional Commits và nhật ký kiến trúc MADR.</p>
+          <span class="card-arrow">Xem tác nhân docs-hero →</span>
         </a>
         <a class="card" href="#companion">
-          <div class="card-label">Companion</div>
+          <div class="card-label">Công cụ bổ trợ (Companion)</div>
           <div class="card-title">Context7 + RTK</div>
-          <p class="card-desc">Context7 trả API docs đúng version · RTK nén output bash giảm 60-90% token.</p>
-          <span class="card-arrow">Xem tool →</span>
+          <p class="card-desc">Context7 tra cứu tài liệu thư viện/API chuẩn xác theo phiên bản sử dụng. RTK tối ưu và nén dữ liệu đầu ra dòng lệnh giúp tiết kiệm 60-90% lượng token.</p>
+          <span class="card-arrow">Xem chi tiết công cụ →</span>
         </a>
       </div>
 
       <!-- ─────────────── §1 CÀI ĐẶT ─────────────── -->
       <h2 id="install">1. Cài đặt</h2>
-      <p>Yêu cầu: Node.js từ 18 trở lên.</p>
+      <p>Yêu cầu hệ thống: Node.js phiên bản 18 trở lên.</p>
       <ol class="steps">
         <li>
-          Cài <a href="https://docs.anthropic.com/claude/docs/claude-code" target="_blank" rel="noopener">Claude
-            Code</a> nếu chưa có,
-          rồi login tài khoản theo hướng dẫn trong trang đó.
+          Cài đặt <a href="https://docs.anthropic.com/claude/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> nếu hệ thống của bạn chưa cài,
+          sau đó đăng nhập tài khoản theo hướng dẫn chính thức từ trang tài liệu đó.
         </li>
         <li>
-          Mở terminal, chạy:
+          Khởi chạy dòng lệnh bằng cách mở terminal và gõ:
           <pre><code>claude</code></pre>
         </li>
         <li>
-          Trong phiên Claude, nhập lần lượt 2 lệnh sau:
+          Trong phiên làm việc của Claude, hãy nhập lần lượt 2 lệnh sau để cấu hình nguồn cài đặt:
           <pre><code>/plugin add marketplace github:mor-duongmh/claude-plugins
 /plugin install morkit@mor-duongmh</code></pre>
         </li>
         <li>
-          Khi Claude hỏi chọn scope cài plugin, chọn <strong>Project Scope</strong> (mục số 2):
+          Khi Claude hiển thị lời nhắc lựa chọn phạm vi (scope) cài đặt plugin, vui lòng chọn <strong>Project Scope</strong> (lựa chọn thứ 2):
           <div class="terminal"><span class="question">? Where should this plugin be installed?</span>
 
-            <span class="choice">1. User Scope</span> <span class="muted">(available in all projects)</span>
-            <span class="choice active">❯ 2. Project Scope</span> <span class="muted">(this project only)</span> <span
+            <span class="choice">1. User Scope</span> <span class="muted">(khả dụng trong mọi dự án)</span>
+            <span class="choice active">❯ 2. Project Scope</span> <span class="muted">(chỉ dành riêng cho dự án này)</span> <span
               class="active">◀ chọn cái này</span>
-            <span class="choice">3. Local Scope</span> <span class="muted">(only on this machine)</span>
+            <span class="choice">3. Local Scope</span> <span class="muted">(chỉ trên máy tính này)</span>
 
             <span class="muted"> ↑/↓ di chuyển · Enter xác nhận</span>
           </div>
         </li>
         <li>
-          Sau khi cài xong, chạy lệnh này để load skill ngay mà không cần restart:
+          Sau khi quá trình cài đặt hoàn tất, chạy lệnh dưới đây để tải trực tiếp các kỹ năng (skill) mới mà không cần khởi động lại:
           <pre><code>/reload-plugins</code></pre>
         </li>
       </ol>
-      <p class="lede-small">Xong — gõ <code>/morkit:</code> sẽ thấy danh sách command hiện ra.</p>
+      <p class="lede-small">Hoàn tất — gõ <code>/morkit:</code> sẽ thấy danh sách các lệnh (command) sẵn có.</p>
 
       <!-- ─────────────── §2 CẬP NHẬT ─────────────── -->
       <h2 id="update">2. Cập nhật plugin</h2>
-      <p>Có 2 cách — dùng cách nào cũng được:</p>
+      <p>Bạn có thể lựa chọn 1 trong 2 phương thức cập nhật dưới đây:</p>
 
-      <h3>Cách 1 — Bật auto-update (1 lần, sau đó tự cập nhật)</h3>
+      <h3>Cách 1 — Bật tự động cập nhật (Chỉ cần thiết lập 1 lần)</h3>
       <ol class="steps">
         <li>
-          Mở menu plugin:
+          Mở bảng điều khiển quản lý plugin:
           <pre><code>/plugin</code></pre>
         </li>
-        <li>Sang tab <strong>Marketplaces</strong> → chọn <code>mor-duongmh</code>.</li>
-        <li>Bật <strong>Enable auto-update</strong>.</li>
+        <li>Chuyển hướng sang thẻ <strong>Marketplaces</strong> → nhấp chọn nguồn <code>mor-duongmh</code>.</li>
+        <li>Bật tùy chọn <strong>Enable auto-update</strong> để kích hoạt tính năng tự động cập nhật.</li>
       </ol>
-      <p class="lede-small">Từ đó mỗi lần khởi động Claude sẽ tự kiểm tra version mới và cài lên — không phải làm gì thêm.</p>
+      <p class="lede-small">Từ các phiên làm việc sau, mỗi khi khởi động Claude, hệ thống sẽ tự động quét, tải và cập nhật phiên bản mới nhất hoàn toàn tự động.</p>
 
-      <h3>Cách 2 — Cập nhật thủ công qua menu</h3>
+      <h3>Cách 2 — Cập nhật thủ công trực tiếp từ menu điều hướng</h3>
       <ol class="steps">
         <li>
-          Mở menu plugin:
+          Mở bảng điều khiển quản lý plugin:
           <pre><code>/plugins</code></pre>
         </li>
-        <li>Sang tab <strong>Installed</strong>.</li>
-        <li>Scroll xuống tìm <code>morkit</code> → bấm chọn.</li>
-        <li>Chọn <strong>Update now</strong> — Claude pull bản mới về ngay.</li>
+        <li>Chuyển hướng sang thẻ <strong>Installed</strong> (Danh sách plugin đã cài đặt).</li>
+        <li>Cuộn danh sách để tìm plugin <code>morkit</code> → nhấp chọn plugin.</li>
+        <li>Chọn <strong>Update now</strong> để Claude trực tiếp tải phiên bản mới nhất về hệ thống.</li>
       </ol>
       <p class="lede-small">
-        Sau khi update xong, chạy <code>/reload-plugins</code> để áp dụng ngay mà không cần restart Claude.
+        Sau khi hoàn tất quá trình tải, hãy chạy lệnh <code>/reload-plugins</code> để kích hoạt và áp dụng ngay các thay đổi mới mà không cần khởi động lại.
       </p>
       <div class="note">
-        Cấu hình plugin (Project Scope) không mất khi update — chỉ thay nội dung plugin.
+        Lưu ý: Tất cả cấu hình riêng biệt của plugin (trong Project Scope) đều được bảo toàn nguyên vẹn sau khi cập nhật — quá trình này chỉ thay thế nội dung mã nguồn của plugin.
       </div>
 
       <!-- ─────────────── §3 TỔNG QUAN ─────────────── -->
       <h2 id="overview">3. morkit có những gì?</h2>
-      <p>Một plugin gói 4 nhóm chức năng, tất cả gọi qua tiền tố <code>/morkit:*</code>:</p>
+      <p>Một plugin tích hợp trọn bộ 4 nhóm chức năng cao cấp, tất cả có thể được kích hoạt thông qua tiền tố lệnh <code>/morkit:*</code>:</p>
       <table>
         <thead>
           <tr>
-            <th>Nhóm</th>
-            <th>Bao gồm</th>
-            <th>Để làm gì</th>
+            <th>Nhóm chức năng</th>
+            <th>Bao gồm các lệnh/kỹ năng</th>
+            <th>Công dụng chính</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Spec workflow</strong></td>
+            <td><strong>Quy trình đặc tả (Spec workflow)</strong></td>
             <td><a href="commands/propose.html"><code>/morkit:propose</code></a>, <a
                 href="commands/review.html"><code>/morkit:review</code></a>, <a
                 href="commands/archive.html"><code>/morkit:archive</code></a></td>
-            <td>Tự sinh proposal, design, tasks và checklist để bạn duyệt trước khi cho code chạy.</td>
+            <td>Tự động sinh đề xuất (proposal), kiến trúc thiết kế (design), danh sách công việc (tasks) và danh sách kiểm tra (checklist) để người dùng phê duyệt trước khi bắt đầu viết mã nguồn.</td>
           </tr>
           <tr>
-            <td><strong>Plan &amp; build</strong></td>
+            <td><strong>Lập kế hoạch &amp; Phát triển (Plan &amp; build)</strong></td>
             <td><a href="skills/brainstorming.html"><code>brainstorming</code></a>, <a
                 href="skills/writing-plans.html"><code>writing-plans</code></a>, <a
                 href="skills/executing-plans.html"><code>executing-plans</code></a>, <a
                 href="skills/subagent-driven-development.html"><code>subagent-driven-development</code></a>, <a
                 href="skills/test-driven-development.html"><code>test-driven-development</code></a>, <a
                 href="skills/systematic-debugging.html"><code>systematic-debugging</code></a></td>
-            <td>Suy nghĩ ý tưởng, viết plan, chạy plan từng bước, viết test trước, debug có hệ thống.</td>
+            <td>Động não phát triển ý tưởng, lập kế hoạch chi tiết nhiều bước, thực thi từng phần kế hoạch, viết kiểm thử trước (TDD), gỡ lỗi (debug) có hệ thống chặt chẽ.</td>
           </tr>
           <tr>
-            <td><strong>Code review</strong></td>
+            <td><strong>Đánh giá mã nguồn (Code review)</strong></td>
             <td><a href="commands/deep-review.html"><code>/morkit:deep-review</code></a>, <a
                 href="commands/deep-review-doctor.html"><code>/morkit:deep-review-doctor</code></a>, <a
                 href="commands/deep-review-post.html"><code>/morkit:deep-review-post</code></a></td>
-            <td>Review code chuyên sâu bằng 5 agent AI chạy song song.</td>
+            <td>Thực hiện đánh giá mã nguồn chuyên sâu bằng hệ thống 5 tác nhân (agent) AI chuyên biệt phân tích song song.</td>
           </tr>
           <tr>
-            <td><strong>Doc generation</strong></td>
+            <td><strong>Tự động sinh tài liệu (Doc generation)</strong></td>
             <td><a href="commands/setup.html"><code>/morkit:setup</code></a>, <a
                 href="commands/init.html"><code>/morkit:init</code></a>, <a
                 href="commands/update-doc.html"><code>/morkit:update-doc</code></a>, <a
                 href="commands/sync.html"><code>/morkit:sync</code></a>, <a
                 href="commands/apply-sync.html"><code>/morkit:apply-sync</code></a>, <a
                 href="commands/doctor.html"><code>/morkit:doctor</code></a></td>
-            <td>Tự sinh tài liệu dự án theo chuẩn ITO Japan offshore: SRS, API, schema DB, kiến trúc...</td>
+            <td>Tự động hóa hoàn toàn việc sinh tài liệu dự án chuẩn BrSE ITO Nhật Bản: đặc tả yêu cầu (SRS), tài liệu API, schema cơ sở dữ liệu, sơ đồ kiến trúc hệ thống...</td>
           </tr>
         </tbody>
       </table>
-      <p class="lede-small">Tổng cộng <strong>26 skill + 9 agent chuyên trách + 15 slash command</strong>, tất cả đều có
-        tiền tố <code>/morkit:</code>.</p>
+      <p class="lede-small">Tổng cộng bao gồm <strong>26 kỹ năng chuyên biệt (skill) + 9 tác nhân thông minh (agent) + 15 lệnh tắt (slash command)</strong>, tất cả đều được tích hợp tiền tố <code>/morkit:</code>.</p>
 
       <!-- ─────────────── §3 COMMAND TABLES ─────────────── -->
-      <h2 id="commands">4. Danh sách command</h2>
-      <p>Bấm vào tên command để xem giải thích chi tiết, cách gọi và ví dụ.</p>
+      <h2 id="commands">4. Danh sách các lệnh (command)</h2>
+      <p>Nhấp chọn trực tiếp vào tên lệnh để xem tài liệu hướng dẫn chi tiết, cú pháp và các ví dụ thực tế.</p>
 
-      <h3 id="spec">Spec workflow</h3>
+      <h3 id="spec">Quy trình đặc tả (Spec workflow)</h3>
       <table>
         <thead>
           <tr>
-            <th>Command</th>
-            <th>Để làm gì</th>
+            <th>Lệnh viết tắt</th>
+            <th>Ý nghĩa và Công dụng</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><a href="commands/propose.html"><code>/morkit:propose [mô tả]</code></a></td>
-            <td>Sinh đầy đủ proposal, design, tasks và checklist trong một lần chạy.</td>
+            <td>Tự động tạo trọn gói tệp đề xuất (proposal), bản thiết kế thiết kế (design), danh sách công việc (tasks) và danh sách kiểm tra (checklist) chỉ trong duy nhất một lần thực thi.</td>
           </tr>
           <tr>
             <td><a href="commands/review.html"><code>/morkit:review [tên]</code></a></td>
-            <td>Tạo hoặc làm mới checklist duyệt thiết kế cho một change.</td>
+            <td>Khởi tạo mới hoặc làm mới danh sách kiểm tra (checklist) phê duyệt thiết kế cho một thay đổi (change).</td>
           </tr>
           <tr>
             <td><a href="commands/archive.html"><code>/morkit:archive [tên]</code></a></td>
-            <td>Đóng một change folder sau khi đã merge và deploy ổn.</td>
+            <td>Đóng lưu trữ thư mục thay đổi (change folder) sau khi đã tích hợp (merge) và triển khai (deploy) ổn định.</td>
           </tr>
         </tbody>
       </table>
 
-      <h3 id="plan">Plan &amp; build</h3>
+      <h3 id="plan">Lập kế hoạch &amp; Phát triển (Plan &amp; build)</h3>
       <table>
         <thead>
           <tr>
-            <th>Skill</th>
-            <th>Để làm gì</th>
+            <th>Tên kỹ năng (Skill)</th>
+            <th>Ý nghĩa và Công dụng</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><a href="skills/brainstorming.html"><code>/morkit:brainstorming</code></a></td>
-            <td>Explore mode — thinking partner free-form, không code; auto-save design log cuối phiên.</td>
+            <td>Chế độ thảo luận tự do (Explore mode) — trao đổi tìm giải pháp cùng tác nhân thông minh mà không viết mã; tự động lưu lại nhật ký thiết kế (design log) vào cuối phiên làm việc.</td>
           </tr>
           <tr>
             <td><a href="skills/writing-plans.html"><code>/morkit:writing-plans</code></a></td>
-            <td>Viết plan nhiều bước từ ý tưởng đã chốt.</td>
+            <td>Phát thảo và viết bản kế hoạch (plan) chi tiết nhiều bước dựa trên ý tưởng đã thống nhất trước đó.</td>
           </tr>
           <tr>
             <td><a href="skills/executing-plans.html"><code>/morkit:executing-plans</code></a></td>
-            <td>Chạy plan từng bước (bị review-gate chặn cho tới khi human duyệt).</td>
+            <td>Thực thi kế hoạch từng bước một (được bảo vệ bởi cổng kiểm duyệt review-gate cho tới khi có phê duyệt từ con người).</td>
           </tr>
           <tr>
             <td><a href="skills/subagent-driven-development.html"><code>/morkit:subagent-driven-development</code></a>
             </td>
-            <td>Chạy plan song song bằng nhiều subagent — nhanh hơn executing tuần tự.</td>
+            <td>Phân rã và thực thi các bước trong kế hoạch song song thông qua nhiều tác nhân phụ (subagent) giúp tăng tốc độ đáng kể so với chạy tuần tự.</td>
           </tr>
           <tr>
             <td><a href="skills/test-driven-development.html"><code>/morkit:test-driven-development</code></a></td>
-            <td>TDD discipline — viết test trước, code sau, refactor cuối.</td>
+            <td>Áp dụng kỷ luật TDD nghiêm ngặt — viết ca kiểm thử (test) trước, viết mã chức năng (code) sau, và thực hiện tối ưu hóa cấu trúc mã (refactor) sau cùng.</td>
           </tr>
           <tr>
             <td><a href="skills/systematic-debugging.html"><code>/morkit:systematic-debugging</code></a></td>
-            <td>Debug 5 bước có hệ thống — không đoán mò.</td>
+            <td>Phương pháp gỡ lỗi (debug) khoa học qua 5 bước nghiêm ngặt — loại bỏ hoàn toàn việc phỏng đoán cảm tính.</td>
           </tr>
           <tr>
             <td><a href="skills/dispatching-parallel-agents.html"><code>/morkit:dispatching-parallel-agents</code></a>
             </td>
-            <td>Tách 2+ task độc lập chạy song song bằng subagent.</td>
+            <td>Tự động phân tách từ 2 công việc (task) độc lập trở lên để thực thi song song qua các tác nhân phụ (subagent).</td>
           </tr>
           <tr>
             <td><a href="skills/using-git-worktrees.html"><code>/morkit:using-git-worktrees</code></a></td>
-            <td>Isolate feature work bằng worktree riêng, tránh xung đột workspace.</td>
+            <td>Cô lập vùng phát triển tính năng (feature work) bằng các worktree riêng biệt, loại bỏ xung đột trên không gian làm việc chính (workspace).</td>
           </tr>
         </tbody>
       </table>
 
-      <h3 id="review">Code review</h3>
+      <h3 id="review">Đánh giá mã nguồn (Code review)</h3>
       <table>
         <thead>
           <tr>
-            <th>Command</th>
-            <th>Để làm gì</th>
+            <th>Lệnh viết tắt</th>
+            <th>Ý nghĩa và Công dụng</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><a href="commands/deep-review.html"><code>/morkit:deep-review [target]</code></a></td>
-            <td>Review chuyên sâu trên PR hoặc git diff (5 agent AI chạy song song).</td>
+            <td>Thực hiện đánh giá mã nguồn đa chiều, chuyên sâu trên PR hoặc git diff (sử dụng 5 tác nhân AI chuyên trách song song).</td>
           </tr>
           <tr>
             <td><a href="commands/deep-review-doctor.html"><code>/morkit:deep-review-doctor</code></a></td>
-            <td>Kiểm tra cài đặt Deep Review đã đủ điều kiện chạy chưa.</td>
+            <td>Hỗ trợ kiểm tra toàn bộ cấu hình, điều kiện tiên quyết xem Deep Review đã sẵn sàng hoạt động chưa.</td>
           </tr>
           <tr>
             <td><a href="commands/deep-review-post.html"><code>/morkit:deep-review-post</code></a></td>
-            <td>Post báo cáo review lên PR làm comment (không request changes).</td>
+            <td>Đăng trực tiếp báo cáo đánh giá chuyên sâu lên PR dưới dạng bình luận (không chặn yêu cầu thay đổi - request changes).</td>
           </tr>
         </tbody>
       </table>
 
-      <h3 id="docs">Doc generation</h3>
+      <h3 id="docs">Tự động sinh tài liệu (Doc generation)</h3>
       <table>
         <thead>
           <tr>
-            <th>Command</th>
-            <th>Để làm gì</th>
+            <th>Lệnh viết tắt</th>
+            <th>Ý nghĩa và Công dụng</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><a href="commands/setup.html"><code>/morkit:setup</code></a></td>
-            <td>Dựng môi trường Python cho docs-hero (khoảng 30-60 giây, chạy 1 lần).</td>
+            <td>Thiết lập và dựng môi trường Python riêng phục vụ cho docs-hero (quá trình chạy 1 lần mất khoảng 30-60 giây).</td>
           </tr>
           <tr>
             <td><a href="commands/init.html"><code>/morkit:init</code></a></td>
-            <td>Sinh bộ tài liệu mới (SRS, API, DB, arch...) từ ProjectModel JSON.</td>
+            <td>Tự động sinh bộ khung tài liệu mới hoàn chỉnh (SRS, API, cơ sở dữ liệu, sơ đồ kiến trúc hệ thống...) dựa trên định nghĩa từ tệp ProjectModel JSON.</td>
           </tr>
           <tr>
             <td><a href="commands/update-doc.html"><code>/morkit:update-doc</code></a></td>
-            <td>Áp dụng change hoặc plan đã chốt vào tài liệu hiện có (diff engine preserve manual edits).</td>
+            <td>Cập nhật trực tiếp các thay đổi (change) hoặc kế hoạch phát triển (plan) đã chốt vào hệ thống tài liệu sẵn có (sử dụng cơ chế phân tích khác biệt thông minh giúp giữ nguyên các phần chỉnh sửa bằng tay).</td>
           </tr>
           <tr>
             <td><a href="commands/sync.html"><code>/morkit:sync</code></a></td>
-            <td>Đọc mã nguồn và đề xuất nội dung nên cập nhật vào tài liệu (read-only).</td>
+            <td>Quét và phân tích trực tiếp mã nguồn hiện tại để đề xuất các nội dung cần cập nhật bổ sung vào tài liệu (chế độ chỉ đọc, không tự sửa file).</td>
           </tr>
           <tr>
             <td><a href="commands/apply-sync.html"><code>/morkit:apply-sync</code></a></td>
-            <td>Áp dụng các nội dung bạn đã tick trong sync-proposal.md.</td>
+            <td>Áp dụng hàng loạt các đề sơ xuất cập nhật tài liệu đã được bạn phê duyệt trong tệp <code>sync-proposal.md</code>.</td>
           </tr>
           <tr>
             <td><a href="commands/doctor.html"><code>/morkit:doctor</code></a></td>
-            <td>Kiểm tra cài đặt docs-hero xem có ổn không.</td>
+            <td>Kiểm tra chẩn đoán toàn bộ trạng thái cài đặt của docs-hero xem có gặp lỗi gì không.</td>
           </tr>
         </tbody>
       </table>
 
       <!-- ─────────────── §4 AGENT ─────────────── -->
-      <h2 id="agents">5. Agent chuyên trách</h2>
-      <p>9 agent được orchestrator gọi theo nhu cầu — không phải command bạn gõ trực tiếp.</p>
+      <h2 id="agents">5. Các tác nhân (agent) chuyên trách</h2>
+      <p>Hệ thống 9 tác nhân (agent) chuyên biệt được bộ điều phối (orchestrator) tự động kích hoạt linh hoạt theo nhu cầu thực tế — không phải các lệnh bạn nhập trực tiếp từ bàn phím.</p>
 
-      <h3>Deep review (7 specialist)</h3>
+      <h3>Quy trình đánh giá chuyên sâu (7 chuyên gia phân tích)</h3>
       <div class="agents-grid">
         <div class="agent">
           <div class="name">risk-impact-analyst</div>
-          <div class="role">Tính blast radius + risk score cho diff dùng code-review-graph.</div>
+          <div class="role">Tính toán chính xác phạm vi ảnh hưởng (blast radius) + điểm rủi ro (risk score) cho bản so sánh mã nguồn (diff) sử dụng sơ đồ quan hệ.</div>
         </div>
         <div class="agent">
           <div class="name">security-auditor</div>
-          <div class="role">OWASP Top 10 · secret leakage · unsafe deserialization · SSRF · injection.</div>
+          <div class="role">Rà quét lỗ hổng theo chuẩn bảo mật OWASP Top 10 · rò rỉ mã bí mật (secret leakage) · giải tuần tự hóa không an toàn (unsafe deserialization) · tấn công SSRF · chèn mã độc (injection).</div>
         </div>
         <div class="agent">
           <div class="name">pattern-architecture-critic</div>
-          <div class="role">Design pattern violations · anti-pattern · architectural-boundary breaches.</div>
+          <div class="role">Phát hiện lỗi vi phạm mẫu thiết kế (design pattern) · phản mẫu (anti-pattern) · hành vi phá vỡ ranh giới kiến trúc hệ thống.</div>
         </div>
         <div class="agent">
           <div class="name">test-coverage-auditor</div>
-          <div class="role">Function mới/sửa chưa có test · missing test case qua tests_for relation.</div>
+          <div class="role">Tìm kiếm các hàm mới/sửa đổi chưa được viết kiểm thử · phát hiện thiếu các trường hợp kiểm thử (test case) qua phân tích liên kết `tests_for`.</div>
         </div>
         <div class="agent">
           <div class="name">convention-checker</div>
-          <div class="role">Naming · structure · style — ưu tiên CLAUDE.md hơn language profile.</div>
+          <div class="role">Kiểm tra quy tắc đặt tên · cấu trúc mã · phong cách lập trình — luôn ưu tiên tệp `CLAUDE.md` của dự án hơn cấu hình ngôn ngữ mặc định.</div>
         </div>
         <div class="agent">
           <div class="name">performance-auditor</div>
-          <div class="role">Perf smell: N+1 · sync I/O hot path · unbounded loop · alloc tight loop.</div>
+          <div class="role">Phát hiện dấu hiệu hiệu năng kém: truy vấn lặp N+1 · thực thi vào/ra đồng bộ (sync I/O) trên luồng xử lý nóng · vòng lặp vô hạn · cấp phát bộ nhớ liên tục trong vòng lặp hẹp.</div>
         </div>
         <div class="agent">
           <div class="name">documentation-auditor</div>
-          <div class="role">Docstring/comment · README update · migration notes cho public API thay đổi.</div>
+          <div class="role">Kiểm tra chú thích mã nguồn (docstring/comment) · yêu cầu cập nhật tệp README · ghi chú chuyển đổi dữ liệu (migration notes) khi có sự thay đổi về API công khai.</div>
         </div>
       </div>
 
-      <h3>Doc generation + core</h3>
+      <h3>Tự động sinh tài liệu + Tác nhân lõi</h3>
       <div class="agents-grid">
         <div class="agent">
           <div class="name">docs-hero</div>
-          <div class="role">QA sau generate-srs/api/db — cross-ref FR↔Screen↔API↔TBL, BrSE quality, Mermaid syntax.
-            Read-only.</div>
+          <div class="role">Kiểm soát và đánh giá chất lượng (QA) sau khi tự động sinh tài liệu SRS/API/DB — liên kết chéo FR↔Màn hình↔API↔Bảng dữ liệu, bảo đảm chất lượng chuẩn BrSE, kiểm tra cú pháp sơ đồ Mermaid. Chế độ chỉ đọc.</div>
         </div>
         <div class="agent">
           <div class="name">code-reviewer</div>
-          <div class="role">Reviewer chính khi cần đánh giá code thuần (ngoài deep-review pipeline).</div>
+          <div class="role">Tác nhân đánh giá chính khi cần thực hiện phân tích mã nguồn thuần túy độc lập (nằm ngoài quy trình deep-review tự động).</div>
         </div>
       </div>
 
       <!-- ─────────────── §5 COMPANION ─────────────── -->
-      <h2 id="companion">6. Companion tools</h2>
-      <p>Hai công cụ giúp agent trả lời chính xác hơn và tiết kiệm token. Plugin không cài lặng lẽ — sẽ hỏi bạn trước.
-      </p>
+      <h2 id="companion">6. Các công cụ hỗ trợ (Companion tools)</h2>
+      <p>Hai công cụ đắc lực giúp tác nhân (agent) phản hồi chính xác hơn và tiết kiệm tài nguyên token cực kỳ hiệu quả. Plugin không tự động cài đặt ngầm — chúng tôi sẽ hỏi ý kiến bạn trước.</p>
       <table>
         <thead>
           <tr>
-            <th>Công cụ</th>
-            <th>Vai trò</th>
-            <th>Cách cài</th>
+            <th>Công cụ hỗ trợ</th>
+            <th>Vai trò và Tác dụng</th>
+            <th>Cách thức cài đặt</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><a href="https://github.com/upstash/context7" target="_blank" rel="noopener">Context7</a></td>
-            <td>Trả về tài liệu/API đúng phiên bản cho thư viện, agent không phải đoán.</td>
-            <td>Cài lười — plugin tự gọi <code>npx -y ctx7</code> khi cần.</td>
+            <td>Tra cứu và phản hồi chính xác tài liệu/API đúng theo phiên bản thư viện sử dụng thực tế, loại bỏ việc đoán mò của AI.</td>
+            <td>Cài đặt tự động theo nhu cầu — plugin sẽ tự kích hoạt <code>npx -y ctx7</code> khi phát hiện cần dùng.</td>
           </tr>
           <tr>
             <td><a href="https://github.com/rtk-ai/rtk" target="_blank" rel="noopener">RTK</a></td>
-            <td>Nén output của lệnh bash, giảm 60-90% token.</td>
-            <td>Hỏi 1 lần ở phiên đầu — bạn chọn Cài / Bỏ qua / Đừng hỏi lại.</td>
+            <td>Nén thông minh kết quả đầu ra của các lệnh dòng lệnh bash, giúp tiết kiệm từ 60-90% dung lượng token truyền tải.</td>
+            <td>Đưa ra lời nhắc duy nhất 1 lần ở phiên làm việc đầu tiên — bạn có toàn quyền chọn Cài đặt / Bỏ qua / Không hỏi lại nữa.</td>
           </tr>
         </tbody>
       </table>
       <div class="note">
-        Context7 đã được bật sẵn trong <strong>6 skill nhóm Plan &amp; build</strong> và
-        <strong>3 skill nhóm Spec workflow</strong> — agent sẽ tự gọi Context7 thay vì đoán API.
+        Context7 đã được tích hợp và kích hoạt sẵn trong **6 kỹ năng nhóm Lập kế hoạch &amp; Phát triển (Plan &amp; build)** và **3 kỹ năng nhóm Quy trình đặc tả (Spec workflow)** — tác nhân thông minh sẽ tự động truy vấn Context7 khi cần thay vì phải tự phỏng đoán API.
       </div>
 
-      <h3>Cài RTK thủ công</h3>
+      <h3>Cài đặt RTK thủ công</h3>
       <pre><code>curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
 rtk init -g</code></pre>
 
-      <h3>Cài Context7 dạng MCP (đầy đủ tính năng)</h3>
+      <h3>Cài đặt Context7 dưới dạng máy chủ MCP (Đầy đủ tính năng)</h3>
       <pre><code>npx -y ctx7 setup</code></pre>
 
       <div class="footer">
-        <a href="docs.html">Use cases →</a>
+        <a href="docs.html">Trường hợp sử dụng (Use cases) →</a>
         <a href="https://github.com/mor-duongmh/claude-plugins" target="_blank" rel="noopener">GitHub</a>
         <a href="https://github.com/mor-duongmh/claude-plugins/blob/main/README.md" target="_blank"
           rel="noopener">README</a>
-        <span style="margin-left:auto; color: var(--fg-subtle); font-size: 12px;">v2 layout · claudekit-style hub</span>
+        <span style="margin-left:auto; color: var(--fg-subtle); font-size: 12px;">Giao diện v2 · claudekit-style trung tâm tài liệu</span>
       </div>
     </main>
   </div>
 
   <script>
-    // Theme toggle — persist in localStorage
+    // Thay đổi giao diện sáng/tối — lưu cấu hình vào localStorage
     (function () {
       var KEY = 'morkit-theme';
       var saved = localStorage.getItem(KEY);
@@ -1119,7 +1109,7 @@ rtk init -g</code></pre>
         var btn = document.getElementById('themeBtn');
         if (btn) btn.addEventListener('click', toggle);
 
-        // Sidebar active-link tracking via IntersectionObserver
+        // Tự động làm nổi bật liên kết trên thanh sidebar khi cuộn trang dùng IntersectionObserver
         var sections = document.querySelectorAll('h2[id], h3[id]');
         var links = document.querySelectorAll('.sidebar a[data-sec]');
         if (!('IntersectionObserver' in window) || !sections.length || !links.length) return;
@@ -1130,7 +1120,7 @@ rtk init -g</code></pre>
             var id = e.target.id;
             links.forEach(function (a) {
               var sec = a.getAttribute('data-sec');
-              // Match section id or any h3 under that section
+              // Đối khớp ID phần hoặc bất kỳ tiêu đề h3 nào thuộc phần đó
               var hit = sec === id ||
                 (sec === 'spec' && id === 'spec') ||
                 (sec === 'plan' && id === 'plan') ||
