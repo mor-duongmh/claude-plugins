@@ -4,7 +4,7 @@
   "description": "Mor's all-in-one toolkit for OpenAI Codex CLI — spec workflow (propose/review/archive) + brainstorming/execute/TDD skills + 5-specialist deep code review + AI-agent doc generation (writing-docs). Single-source with the Claude Code variant: the same plugins/morkit/skills/ is symlinked into Codex; skills keep Claude vocab and are translated at runtime via using-morkit/references/codex-tools.md. Hooks gate uses apply_patch|Edit|Write|Skill matcher.",
   "author": {
     "name": "Mor",
-    "email": "duongmh@mor.com.vn",
+    "email": "duong@mor.company",
     "url": "https://github.com/mor-duongmh"
   },
   "homepage": "https://github.com/mor-duongmh/claude-plugins/tree/main/plugins/morkit",

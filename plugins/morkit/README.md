@@ -142,7 +142,7 @@ cd plugins/morkit/tests
 bash run-all.sh
 ```
 
-20 test files (incl. Codex fork sync + E2E), cross-platform CI matrix (macOS + Ubuntu).
+15 test files (single-source Codex install/marketplace/docs/doctor + spec workflow), cross-platform CI matrix (macOS + Ubuntu).
 
 ## License
 

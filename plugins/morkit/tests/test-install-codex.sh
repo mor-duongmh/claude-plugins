@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
-# test-install-codex.sh — coverage for scripts/install-codex.sh
-# (Task 8 of codex-fork-skills-clone).
+# test-install-codex.sh — coverage for scripts/install-codex.sh (single-source).
 #
 # All cases use mktemp dirs for AGENTS_HOME / CODEX_HOME / HOME — real
 # user home is never touched.
 #
 # Cases covered:
-#   1. Fresh install (--yes, no hooks) → skills symlink + AGENTS.md
-#      symlink + rc env block; reports skill count.
-#   2. skills/ missing in plugin → script errors with helpful message
-#      mentioning sync-codex-fork.sh.
+#   1. Fresh install (--yes, no hooks) → skills symlink (→ plugin/skills exactly)
+#      + AGENTS.md symlink + rc env block; reports skill count.
+#   2. skills/ missing in plugin → script errors with "not found".
 #   3. --uninstall removes symlinks and rc block.
 #   4. --with-hooks --yes creates ~/.codex/hooks.json as a symlink to
 #      hooks.json (cross-repo updates propagate).
@@ -87,11 +85,11 @@ OUT="$(run_install "$SANDBOX" --yes)"
 RC=$?
 assert_equal "$RC" "0" "install exits 0"
 
-# Skill symlink points to skills/ (not skills/)
+# Skill symlink must point exactly at the plugin's skills/ dir (single source).
 SKILL_LINK="$SANDBOX/agents-home/skills/morkit"
 if [[ -L "$SKILL_LINK" ]]; then
     TARGET="$(readlink "$SKILL_LINK")"
-    assert_contains "$TARGET" "skills" "skill symlink target ends in skills"
+    assert_equal "$TARGET" "$SANDBOX/plugin/skills" "skill symlink target is plugin/skills exactly"
 else
     _fail "skill symlink missing: $SKILL_LINK"
 fi
@@ -162,9 +160,13 @@ if [[ -L "$HOOKS_JSON" ]]; then
     TARGET="$(readlink "$HOOKS_JSON")"
     assert_contains "$TARGET" "hooks.json" "hooks.json symlinked to hooks.json"
 fi
-# Whether symlinked or copied, content must include the PreToolUse matcher
+# Whether symlinked or copied, content must include the UNIFIED PreToolUse matcher
+# (both the Claude `Skill` trigger AND the Codex file-mutation tools) plus the
+# widened SessionStart matcher — single hooks.json gates on both harnesses.
 CONTENT="$(cat "$HOOKS_JSON")"
-assert_contains "$CONTENT" "apply_patch|Edit|Write" "hooks.json includes pre-tool matcher"
+assert_contains "$CONTENT" "apply_patch|Edit|Write" "hooks.json includes Codex pre-tool matcher"
+assert_contains "$CONTENT" "Skill" "hooks.json keeps the Claude Skill trigger in the matcher"
+assert_contains "$CONTENT" "startup|resume|clear" "hooks.json SessionStart matcher widened for both harnesses"
 
 # ---------------------------------------------------------------------------
 # Case 5: idempotency — re-run install does not duplicate rc block

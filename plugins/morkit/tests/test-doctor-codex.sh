@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
-# test-doctor-codex.sh — coverage for scripts/doctor-codex.sh
-# (Task 8 of codex-fork-skills-clone).
+# test-doctor-codex.sh — coverage for scripts/doctor-codex.sh (single-source).
 #
 # Cases covered:
-#   1. All artifacts present (symlink → skills/, AGENTS.md, env, hooks)
+#   1. All artifacts present (symlink → plugins/morkit/skills, AGENTS.md, env, hooks)
 #      → 0 FAIL.
-#   2. Symlink points at legacy skills/ (not skills/) → WARN
-#      surfaces "expected skills".
+#   2. Missing skill symlink → FAIL surfaced.
 #   3. hooks.json missing → WARN, not FAIL.
 #   4. commands/ presence check appears in output when dir exists.
-#   5. Drift check section surfaced (informational).
+#   5. Deep-review prerequisites (native multi_agent) surfaced.
 
 set -uo pipefail
 
@@ -96,9 +94,8 @@ fi
 # ---------------------------------------------------------------------------
 # Case 2: missing skill symlink → FAIL surfaced
 # ---------------------------------------------------------------------------
-# (Old Case 2 tested "wrong target skills/ vs skills-codex/" — no longer
-# meaningful after fix/codex-separate-plugin since morkit-codex/skills/ is now
-# the canonical default-convention name. Replaced with a missing-symlink check.)
+# (Single-source: there is only one skills/ dir, so the old "wrong target
+# skills/ vs skills-codex/" check is obsolete. We assert a missing symlink FAILs.)
 echo "[case 2] missing skill symlink → FAIL surfaced"
 SANDBOX="$(make_sandbox)"
 # Set up everything EXCEPT the skill symlink

@@ -4,16 +4,15 @@
 #
 # Background: Codex CLI requires .agents/plugins/marketplace.json with its own schema
 # (source/policy as objects) to discover marketplace plugins. CC uses
-# .claude-plugin/marketplace.json with a different schema. The duplicate-picker issue
-# was caused by Codex walking BOTH skills/ folders inside a shared plugin install, fixed
-# in PR #32 by splitting into separate plugin folders (morkit + morkit-codex). The Codex
-# marketplace.json must list ONLY morkit-codex (not morkit) so Codex never sees the CC
-# variant. CC marketplace.json may list both plugins; CC ignores morkit-codex if discovered.
+# .claude-plugin/marketplace.json with a different schema. Single-source: both
+# marketplaces point at the one `plugins/morkit/` plugin (the morkit-codex fork is
+# retired). The Codex marketplace lists `morkit` (source ./plugins/morkit), and the
+# Codex plugin manifest lives at plugins/morkit/.codex-plugin/plugin.json.
 #
 # Coverage:
 #   1. plugin.json exists + valid JSON + required fields
 #   2. plugin.json paths (skills, hooks) resolve to real files/dirs
-#   3. .agents/plugins/marketplace.json present + valid Codex schema, lists morkit-codex only
+#   3. .agents/plugins/marketplace.json present + valid Codex schema, lists morkit only
 #   4. CC marketplace.json present + parseable
 #   5. README + INSTALL.md mention the `codex plugin marketplace add` command
 
@@ -80,7 +79,7 @@ else
     _fail "hooks path missing: $HOOKS_PATH (resolved: $PLUGIN_ROOT/${HOOKS_PATH#./})"
 fi
 
-# --- Case 3: Codex marketplace.json present + valid + only lists morkit-codex ---
+# --- Case 3: Codex marketplace.json present + valid + lists the single morkit plugin ---
 _case "Codex marketplace.json at .agents/plugins/"
 if [[ -f "$CODEX_MARKETPLACE" ]]; then
     _pass "file exists at $CODEX_MARKETPLACE"
@@ -94,8 +93,8 @@ else
     _fail "invalid JSON"
 fi
 
-# Must list ONLY morkit-codex (not morkit — listing the CC variant would expose CC-only
-# files to Codex and cause confusion). Source must be Codex object schema.
+# Lists the single `morkit` plugin (source ./plugins/morkit). Source must be Codex
+# object schema (path field), not a bare string.
 if python3 -c "
 import json, sys
 d = json.load(open('$CODEX_MARKETPLACE'))
