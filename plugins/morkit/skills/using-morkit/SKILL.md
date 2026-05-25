@@ -48,7 +48,7 @@ morkit ships a set of named workflows as files under `commands/<name>.md`. When 
 **On platforms without native slash discovery (Codex CLI, Copilot CLI, etc.)** — treat the slash as a request and resolve manually:
 
 1. Extract `<name>` from the `/morkit:<name>` text in the user's message
-2. Read `${MORKIT_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/commands/<name>.md` (cascade — first env var that's set wins). Fallback path if neither is set: `~/.codex/morkit-source/plugins/morkit-codex/commands/<name>.md`
+2. Read `${MORKIT_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/commands/<name>.md` (cascade — first env var that's set wins). Fallback path if neither is set: `~/.codex/morkit-source/plugins/morkit/commands/<name>.md`
 3. Follow the instructions in that file (most just wrap a skill of the same name)
 4. If `commands/<name>.md` doesn't exist, fallback: invoke the skill named `<name>` directly via skill discovery
 

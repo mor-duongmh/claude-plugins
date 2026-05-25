@@ -31,7 +31,7 @@ _pass() { PASSED=$((PASSED+1)); TOTAL=$((TOTAL+1)); echo "  ✓ $1"; }
 _fail() { FAILED=$((FAILED+1)); TOTAL=$((TOTAL+1)); echo "  ✗ $1" >&2; }
 _case() { echo; echo "Case: $1"; }
 
-PLUGIN_JSON="$PLUGIN_ROOT/../morkit-codex/.codex-plugin/plugin.json"
+PLUGIN_JSON="$PLUGIN_ROOT/.codex-plugin/plugin.json"
 CC_MARKETPLACE="$REPO_ROOT/.claude-plugin/marketplace.json"
 CODEX_MARKETPLACE="$REPO_ROOT/.agents/plugins/marketplace.json"
 
@@ -101,8 +101,8 @@ import json, sys
 d = json.load(open('$CODEX_MARKETPLACE'))
 plugins = d.get('plugins', [])
 names = sorted(p.get('name','') for p in plugins)
-if names != ['morkit-codex']:
-    print(f'  expected [morkit-codex], got {names}', file=sys.stderr)
+if names != ['morkit']:
+    print(f'  expected [morkit], got {names}', file=sys.stderr)
     sys.exit(1)
 # source must be object, not string (Codex schema requirement)
 src = plugins[0].get('source')
@@ -111,7 +111,7 @@ if not isinstance(src, dict) or 'path' not in src:
     sys.exit(1)
 sys.exit(0)
 " 2>/dev/null; then
-    _pass "lists ONLY morkit-codex with Codex object-schema source"
+    _pass "lists ONLY morkit with Codex object-schema source"
 else
     _fail "wrong plugins list or invalid source schema"
 fi
@@ -151,7 +151,7 @@ else
     _fail "README.md missing 'codex plugin marketplace add'"
 fi
 
-if grep -q "codex plugin marketplace add" "$PLUGIN_ROOT/../morkit-codex/.codex/INSTALL.md"; then
+if grep -q "codex plugin marketplace add" "$PLUGIN_ROOT/.codex/INSTALL.md"; then
     _pass "INSTALL.md mentions the marketplace add command"
 else
     _fail "INSTALL.md missing 'codex plugin marketplace add'"

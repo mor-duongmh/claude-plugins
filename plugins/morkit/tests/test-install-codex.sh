@@ -22,8 +22,9 @@ TEST_NAME="install-codex"
 HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$HELPER_DIR/test-helper.sh"
 
-# Codex install script now lives in the sibling morkit-codex plugin (post-fix/codex-separate-plugin).
-CODEX_PLUGIN_ROOT="$(cd "$TEST_PLUGIN_ROOT/../morkit-codex" && pwd)"
+# Single-source: Codex install script + skills/commands/AGENTS/hooks all live in
+# the one morkit plugin (no separate morkit-codex fork).
+CODEX_PLUGIN_ROOT="$TEST_PLUGIN_ROOT"
 SCRIPT="$CODEX_PLUGIN_ROOT/scripts/install-codex.sh"
 
 # ---------------------------------------------------------------------------
@@ -111,7 +112,7 @@ assert_contains "$OUT" "skills discovered" "summary reports skill count"
 # ---------------------------------------------------------------------------
 # Case 2: skills/ missing → helpful error
 # ---------------------------------------------------------------------------
-echo "[case 2] missing skills/ shows sync-codex-fork.sh hint"
+echo "[case 2] missing skills/ → fails with clear error"
 SANDBOX="$(make_sandbox)"
 rm "$SANDBOX/plugin/skills"  # remove the symlink so dir is missing
 
@@ -119,7 +120,7 @@ OUT="$(run_install "$SANDBOX" --yes 2>&1)"
 RC=$?
 assert_not_equal "$RC" "0" "install fails when skills/ missing"
 assert_contains "$OUT" "skills" "error mentions skills"
-assert_contains "$OUT" "sync-codex-fork.sh" "error hints at sync-codex-fork.sh"
+assert_contains "$OUT" "not found" "error states skills/ not found"
 
 # ---------------------------------------------------------------------------
 # Case 3: --uninstall cleanup

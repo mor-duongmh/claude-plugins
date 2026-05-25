@@ -137,12 +137,11 @@ CODEX_VER="$(codex --version 2>&1 | awk '{print $NF}' | head -1)"
 echo "codex CLI: $CODEX_VER"
 
 # --- prerequisite: source files exist ---
-# Codex install targets the Codex-vocab fork (skills/), not the raw
-# Claude tree (skills/). If skills/ is missing, the user likely hasn't
-# run sync yet — give a precise next step instead of a generic "not found".
+# Single-source: Codex install symlinks the same plugins/morkit/skills/ that
+# Claude Code uses. Skill files keep Claude vocab; the agent translates via
+# using-morkit/references/codex-tools.md at runtime.
 if [ ! -d "$PLUGIN_ROOT/skills" ]; then
     echo "FAIL: $PLUGIN_ROOT/skills/ not found." >&2
-    echo "      Run sync first: bash $PLUGIN_ROOT/scripts/sync-codex-fork.sh" >&2
     exit 1
 fi
 if [ ! -f "$PLUGIN_ROOT/AGENTS.md" ]; then
@@ -264,7 +263,7 @@ else
     HOOKS_JSON="$CODEX_HOME/hooks.json"
     HOOKS_SRC="$PLUGIN_ROOT/hooks/hooks.json"
     if [ ! -f "$HOOKS_SRC" ]; then
-        echo "  WARN: $HOOKS_SRC missing; skipping hooks.json. (Run sync-codex-fork.sh?)"
+        echo "  WARN: $HOOKS_SRC missing; skipping hooks.json."
     elif is_morkit_symlink "$HOOKS_JSON"; then
         echo "  already linked: $HOOKS_JSON -> $(readlink "$HOOKS_JSON")"
     elif [ -f "$HOOKS_JSON" ] && grep -q "morkit" "$HOOKS_JSON" 2>/dev/null; then

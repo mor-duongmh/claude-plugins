@@ -2,6 +2,28 @@
 
 All notable changes to the Mor claude-plugins marketplace are tracked here.
 
+## [morkit@1.5.0] — 2026-05-25
+
+**Codex support is now single-source — the `morkit-codex` fork is retired.** morkit runs on both Claude Code and Codex from one `plugins/morkit/skills/`, following the superpowers model: skills keep Claude vocab and are translated at runtime via `using-morkit/references/codex-tools.md` + native Codex features (skill discovery, `multi_agent`).
+
+### Changed
+
+- **Single source for both harnesses:** Codex installs symlink `plugins/morkit/skills/` (no vocab-swapped copy). `AGENTS.md`, `hooks/hooks.json`, `.codex/INSTALL.md`, `.codex-plugin/plugin.json`, `scripts/install-codex.sh`, `scripts/doctor-codex.sh` now live in `plugins/morkit/`.
+- **Codex marketplace** (`.agents/plugins/marketplace.json`) points at `./plugins/morkit`.
+- **hooks.json** PreToolUse matcher unified to `Skill|apply_patch|Edit|Write` (gates on both harnesses).
+- **Deep-review on Codex** uses native `multi_agent` (`spawn_agent`) instead of the `codex-deep-review.sh` bash wrapper.
+- **R1 pre-flight** (`MORKIT_CURRENT_CHANGE`) moved into `codex-tools.md` — no longer a fork-only block that re-sync wiped.
+
+### Removed
+
+- `plugins/morkit-codex/` (entire fork), `codex/vocab-map.yaml`, `scripts/sync-codex-fork.sh`, `scripts/check-codex-drift.sh`, the CI drift-check job, and 5 fork-mechanism tests.
+
+### Notes
+
+- On Codex, review gate / slash-command / subagent are **advisory** (Codex lacks Skill-tool interception + auto-loaded hooks). Enable the gate with `install-codex.sh --with-hooks`. See `.codex/INSTALL.md` "Chế độ Advisory".
+- Claude Code behavior unchanged.
+- `docs-hero-orchestrator` skill remains (orphaned after the earlier `generate-*` removal) — flagged for a separate cleanup.
+
 ## [morkit@1.4.0] — 2026-05-25
 
 **`writing-docs` now wires the docs graph into the harness.** `init`/`update` generate a thin pointer block in the root `CLAUDE.md` (and `AGENTS.md` when Codex is detected) so a cold-start agent is sent into `docs/`.

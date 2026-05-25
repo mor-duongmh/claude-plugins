@@ -17,8 +17,8 @@ TEST_NAME="doctor-codex"
 HELPER_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$HELPER_DIR/test-helper.sh"
 
-# Codex doctor script now lives in the sibling morkit-codex plugin.
-CODEX_PLUGIN_ROOT="$(cd "$TEST_PLUGIN_ROOT/../morkit-codex" && pwd)"
+# Single-source: doctor-codex.sh lives in the one morkit plugin.
+CODEX_PLUGIN_ROOT="$TEST_PLUGIN_ROOT"
 SCRIPT="$CODEX_PLUGIN_ROOT/scripts/doctor-codex.sh"
 
 # ---------------------------------------------------------------------------
@@ -39,11 +39,9 @@ make_sandbox() {
     # The doctor script reads from $PLUGIN_ROOT. Copy it + symlink the rest
     # of the plugin tree we need.
     cp "$CODEX_PLUGIN_ROOT/scripts/doctor-codex.sh"        "$tmp/plugin/scripts/"
-    cp "$CODEX_PLUGIN_ROOT/scripts/codex-deep-review.sh"   "$tmp/plugin/scripts/" 2>/dev/null || true
-    cp "$CODEX_PLUGIN_ROOT/scripts/codex-deep-review-aggregate.py" "$tmp/plugin/scripts/" 2>/dev/null || true
-    cp "$TEST_PLUGIN_ROOT/scripts/check-codex-drift.sh"    "$tmp/plugin/scripts/" 2>/dev/null || true
     ln -s "$CODEX_PLUGIN_ROOT/skills"           "$tmp/plugin/skills"
     ln -s "$CODEX_PLUGIN_ROOT/commands"         "$tmp/plugin/commands"
+    ln -s "$CODEX_PLUGIN_ROOT/agents"           "$tmp/plugin/agents"
     ln -s "$CODEX_PLUGIN_ROOT/AGENTS.md"        "$tmp/plugin/AGENTS.md"
     ln -s "$CODEX_PLUGIN_ROOT/hooks/hooks.json" "$tmp/plugin/hooks/hooks.json"
 
@@ -148,19 +146,18 @@ OUT="$(run_doctor "$SANDBOX")"
 assert_contains "$OUT" "commands" "doctor reports on commands/"
 
 # ---------------------------------------------------------------------------
-# Case 5: drift check surfaced
+# Case 5: deep-review prerequisites surfaced (native multi_agent, single-source)
 # ---------------------------------------------------------------------------
-echo "[case 5] drift check surfaced"
+echo "[case 5] deep-review prerequisites surfaced"
 SANDBOX="$(make_sandbox)"
 setup_healthy "$SANDBOX"
 OUT="$(run_doctor "$SANDBOX")"
 
-# Doctor should mention drift check somewhere — at minimum echo the script
-# name or the word "drift".
-if printf '%s' "$OUT" | grep -qiE "drift"; then
-    _pass "doctor surfaces drift check"
+# Doctor reports the deep-review section (native multi_agent + specialist prompts).
+if printf '%s' "$OUT" | grep -qiE "deep-review|multi_agent|specialist"; then
+    _pass "doctor surfaces deep-review prerequisites"
 else
-    _fail "expected drift check mention, got: $OUT"
+    _fail "expected deep-review prereq mention, got: $OUT"
 fi
 
 # ---------------------------------------------------------------------------

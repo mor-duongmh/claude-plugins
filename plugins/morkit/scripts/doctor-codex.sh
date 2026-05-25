@@ -177,38 +177,23 @@ if [ -d "$COMMANDS_DIR" ]; then
     elif [ "$CMD_COUNT" -gt 0 ]; then
         warn "only $CMD_COUNT command files in commands/ (expected ≥ 10)"
     else
-        warn "commands/ empty — re-run sync-codex-fork.sh"
+        warn "commands/ empty"
     fi
 else
-    fail "commands/ missing — run: bash $PLUGIN_ROOT/scripts/sync-codex-fork.sh"
+    fail "commands/ missing"
 fi
 
-# --- drift check (informational — never fails the doctor) ---
+# --- deep-review prerequisites (native multi_agent) ---
 echo
-echo "[7] Drift check (skills/ vs skills/ baseline)"
-DRIFT_SCRIPT="$PLUGIN_ROOT/scripts/check-codex-drift.sh"
-if [ -x "$DRIFT_SCRIPT" ] || [ -f "$DRIFT_SCRIPT" ]; then
-    DRIFT_OUT="$(bash "$DRIFT_SCRIPT" 2>&1 || true)"
-    # Show a trimmed snippet so doctor output stays readable.
-    echo "$DRIFT_OUT" | sed 's/^/    /' | head -10
-    # Match WARN/INFO lines that indicate drift (avoid false match on the
-    # success line "no drift detected").
-    if echo "$DRIFT_OUT" | grep -qiE "^(WARN|INFO):.*(drift|out of sync|files? diverged|stale)"; then
-        warn "drift detected — re-run sync-codex-fork.sh to refresh skills/"
-    else
-        ok "no drift detected"
-    fi
+echo "[7] Deep-review prerequisites"
+ok "deep-review uses native Codex multi_agent (spawn_agent) — see using-morkit/references/codex-tools.md"
+if [ -d "$PLUGIN_ROOT/agents" ]; then
+    AGENT_COUNT=$(find "$PLUGIN_ROOT/agents" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+    ok "$AGENT_COUNT specialist prompts in agents/"
 else
-    warn "check-codex-drift.sh missing — drift detection unavailable"
+    warn "agents/ missing — deep-review specialists unavailable"
 fi
-
-# --- deep-review prerequisites ---
-echo
-echo "[8] Deep-review prerequisites"
-[ -x "$PLUGIN_ROOT/scripts/codex-deep-review.sh" ] && ok "codex-deep-review.sh executable" || warn "codex-deep-review.sh not executable (chmod +x)"
-[ -f "$PLUGIN_ROOT/scripts/codex-deep-review-aggregate.py" ] && ok "aggregator present" || fail "aggregator missing"
 if command -v git >/dev/null 2>&1; then ok "git available"; else fail "git missing"; fi
-if command -v python3 >/dev/null 2>&1; then ok "python3 available"; else fail "python3 missing"; fi
 if command -v gh >/dev/null 2>&1; then ok "gh CLI (for PR targets)"; else warn "gh missing — PR targets unavailable, --diff still works"; fi
 
 # --- summary ---
