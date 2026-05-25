@@ -633,6 +633,12 @@
           <a class="uc-link" data-target="uc5" href="#uc5">
             <span class="uc-num">5.</span>Code review
           </a>
+          <a class="uc-link" data-target="uc6" href="#uc6">
+            <span class="uc-num">6.</span>Figma → code (MCP)
+          </a>
+          <a class="uc-link" data-target="uc7" href="#uc7">
+            <span class="uc-num">7.</span>Figma export HTML → mockup
+          </a>
         </div>
         <div class="sb-group">
           <div class="sb-group-title">Tham khảo</div>
@@ -652,7 +658,7 @@
             <b>Ngữ cảnh:</b> Bạn đang làm dự án FE viết note, giống như Notion
             <br>
             <br>
-            5 kịch bản dùng bộ skill <code>/morkit:*</code> trên, thể hiện rõ từng bước phía dưới, kèm output dự kiến của AI. Mỗi Use Case (UC) được chia thành các bước (step) có Tại sao · Bạn làm
+            7 kịch bản: 5 kịch bản dùng bộ skill <code>/morkit:*</code>, cộng 2 kịch bản dựng UI từ Figma (qua Figma MCP hoặc file HTML tự export). Thể hiện rõ từng bước phía dưới, kèm output dự kiến của AI. Mỗi Use Case (UC) được chia thành các bước (step) có Tại sao · Bạn làm
             · Bạn thấy, để người mới follow được.
           </p>
           <p class="lede lede-small">
@@ -2059,6 +2065,326 @@ Tổng: 0 Critical · <span class="tok-warn">4 Major</span> · <span class="tok-
        Sửa lỗi kiểu Trường hợp sử dụng 3 trên cùng PR
                             ▼
               PR #1 đã cập nhật
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ──────────── USE CASE 6 — FIGMA → CODE (MCP) ──────────── -->
+      <section id="uc6" class="panel" role="tabpanel">
+        <div class="panel-head">
+          <h2>Figma → code — 4 bước MCP chuẩn</h2>
+          <p>
+            Có Figma URL (hoặc đang chọn node trên Figma desktop), muốn dựng thành code
+            khớp 1:1 với design. <strong>Figma chỉ để LẤY design</strong>: skill
+            <code>figma-implement-design</code> + Figma MCP chạy 4 lệnh theo thứ tự cố
+            định, thu hẹp dần (ảnh → cấu trúc node → ngữ cảnh chi tiết → token biến) để
+            trích xuất design-as-code + token. <strong>Phần BUILD bàn giao sang
+            morkit</strong> — plan · TDD · verify theo convention dự án.
+          </p>
+          <div class="meta">
+            <span class="chip accent">figma-implement-design</span>
+            <span class="chip">Figma MCP</span>
+            <span class="chip">1:1 fidelity</span>
+            <span class="chip muted">screenshot → metadata → context → variables</span>
+          </div>
+        </div>
+
+        <!-- Phase 0 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 0</span> Lấy node-id
+            <span class="phase-desc">— parse từ URL hoặc lấy selection trên Figma desktop</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">claude-code · figma</span>
+            </div>
+            <div class="term-body">
+<span class="label input">▶ INPUT</span><span class="skill-chip">figma-implement-design</span>
+<span class="tprompt">$</span> <span class="tcom"># User dán Figma URL</span>
+<span class="tstr">https://figma.com/design/kL9xQn2VwM8/DesignSystem?node-id=42-15</span>
+<hr class="sep"/>
+<span class="label output">▼ PARSE</span>
+   fileKey = <span class="tok-ok">kL9xQn2VwM8</span>      <span class="tcom"># segment sau /design/</span>
+   nodeId  = <span class="tok-ok">42-15</span>            <span class="tcom"># query param node-id</span>
+
+<span class="tcom"># Hoặc dùng figma-desktop MCP: chọn node trong app → khỏi cần URL</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 1 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 1</span> get_screenshot
+            <span class="phase-desc">— ảnh chuẩn thị giác, giữ xuyên suốt để validate cuối</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">figma-mcp</span>
+            </div>
+            <div class="term-body">
+<span class="label input">▶ CALL</span><span class="skill-chip">figma-implement-design</span>
+<span class="tprompt">&gt;&gt;</span> <span class="tcmd">get_screenshot</span>(fileKey=<span class="tstr">"kL9xQn2VwM8"</span>, nodeId=<span class="tstr">"42-15"</span>)
+<hr class="sep"/>
+<span class="label output">▼ OUTPUT</span>
+   <span class="tok-ok">✓ PNG</span> render của frame → mỏ neo thị giác (source of truth)
+   <span class="tcom"># Mọi bước sau đối chiếu lại ảnh này, không để code trôi khỏi design</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 2</span> get_metadata
+            <span class="phase-desc">— bản đồ node cấp cao, chọn child cần lấy chi tiết</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">figma-mcp</span>
+            </div>
+            <div class="term-body">
+<span class="label input">▶ CALL</span><span class="skill-chip">figma-implement-design</span>
+<span class="tprompt">&gt;&gt;</span> <span class="tcmd">get_metadata</span>(fileKey=<span class="tstr">"kL9xQn2VwM8"</span>, nodeId=<span class="tstr">"42-15"</span>)
+<hr class="sep"/>
+<span class="label output">▼ OUTPUT (cây node)</span>
+   📦 42-15  Card/Pricing            <span class="tflag">FRAME</span>
+   ├─ 42-16  Header                  TEXT
+   ├─ 42-20  PriceRow                AUTO-LAYOUT
+   └─ 42-31  CTAButton               INSTANCE → Button
+
+<span class="tcom"># Payload quá to / bị truncate? → dùng metadata chọn đúng child,
+# rồi gọi get_design_context riêng cho từng node con (vd 42-31)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 3</span> get_design_context
+            <span class="phase-desc">— layout / typography / component (trả React + Tailwind)</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">figma-mcp</span>
+            </div>
+            <div class="term-body">
+<span class="label input">▶ CALL</span><span class="skill-chip">figma-implement-design</span>
+<span class="tprompt">&gt;&gt;</span> <span class="tcmd">get_design_context</span>(fileKey=<span class="tstr">"kL9xQn2VwM8"</span>, nodeId=<span class="tstr">"42-15"</span>)
+<hr class="sep"/>
+<span class="label output">▼ OUTPUT</span>
+   - Auto Layout: vertical, gap 16, padding 24
+   - Typography: Inter 14/20, weight 600
+   - Fills: token <span class="tok-ok">surface/card</span>, border <span class="tok-ok">border/subtle</span>
+   - Trả mẫu code <span class="tflag">React + Tailwind</span> — coi như mô tả design, KHÔNG phải code cuối
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 4 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 4</span> get_variable_defs
+            <span class="phase-desc">— token màu / spacing / font → map sang design system dự án</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">figma-mcp</span>
+            </div>
+            <div class="term-body">
+<span class="label input">▶ CALL</span><span class="skill-chip">figma-implement-design</span>
+<span class="tprompt">&gt;&gt;</span> <span class="tcmd">get_variable_defs</span>(fileKey=<span class="tstr">"kL9xQn2VwM8"</span>, nodeId=<span class="tstr">"42-15"</span>)
+<hr class="sep"/>
+<span class="label output">▼ OUTPUT (biến Figma → token dự án)</span>
+   surface/card     #FFFFFF   →  <span class="tok-ok">--color-surface-card</span>
+   border/subtle    #E5E7EB   →  <span class="tok-ok">--color-border-subtle</span>
+   space/4          16px      →  <span class="tok-ok">--space-4</span>
+
+<span class="tcom"># Ưu tiên token design system dự án thay vì hardcode giá trị từ Figma</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 5 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 5</span> Bàn giao sang morkit — dựng + validate 1:1
+            <span class="phase-desc">— design-as-code của Figma chỉ là nháp; morkit dựng đúng convention rồi verify</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">claude-code</span>
+            </div>
+            <div class="term-body">
+<span class="label input">▶ HANDOFF → morkit</span><span class="skill-chip">/morkit:writing-plans</span><span class="skill-chip">/morkit:test-driven-development</span><span class="skill-chip">/morkit:verification-before-completion</span>
+   Figma design-as-code = bản nháp / spec → morkit dựng đúng convention dự án
+<hr class="sep"/>
+<span class="label output">▼ CHECKLIST validate (so với ảnh PHASE 1)</span>
+   <span class="tok-ok">[✓]</span> Layout: spacing / căn lề / kích thước khớp
+   <span class="tok-ok">[✓]</span> Typography: font / size / weight / line-height khớp
+   <span class="tok-ok">[✓]</span> Màu: dùng token, không hardcode
+   <span class="tok-ok">[✓]</span> Reuse component design system thay vì tạo mới
+   <span class="tok-ok">[✓]</span> Asset lấy từ payload Figma (localhost src), không thêm icon package
+   <span class="tok-ok">[✓]</span> Trạng thái hover / active / disabled đúng design
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ──────────── USE CASE 7 — FIGMA EXPORT HTML → MOCKUP ──────────── -->
+      <section id="uc7" class="panel" role="tabpanel">
+        <div class="panel-head">
+          <h2>Figma export HTML → Claude đọc file → mockup UI</h2>
+          <p>
+            Không qua Figma MCP. Bạn (hoặc designer) tự dùng plugin export ngay trong
+            Figma — Dev Mode export, <code class="mono">html.to.design</code>, "Figma to
+            HTML"… — để xuất design ra file <code class="mono">.html</code> + thư mục
+            asset. Sau đó đưa file cho Claude đọc và dựng lại UI trong stack đích. Hợp khi
+            máy chưa nối được Figma MCP, hoặc design do bên thứ ba gửi sang dạng file.
+            <strong>Figma chỉ tạo design-as-HTML</strong>; phần dựng lại dùng skill
+            morkit (plan → build → verify).
+          </p>
+          <div class="meta">
+            <span class="chip accent">không cần MCP</span>
+            <span class="chip">file .html</span>
+            <span class="chip">mockup</span>
+            <span class="chip muted">export thủ công → Read → dựng lại</span>
+          </div>
+        </div>
+
+        <!-- Phase 0 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 0</span> Export trên Figma (thủ công)
+            <span class="phase-desc">— thao tác trong Figma, ngoài Claude</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">Figma · plugin export</span>
+            </div>
+            <div class="term-body">
+<span class="label output">▼ THAO TÁC TRONG FIGMA</span>
+   1. Chọn frame / page cần export
+   2. Chạy plugin export HTML (vd <span class="tok-ok">html.to.design</span> / Dev Mode)
+   3. Lưu kết quả ra ổ đĩa:
+      📄 <span class="fname">design-export/index.html</span>
+      📁 <span class="fname">design-export/assets/</span> (ảnh, font, svg)
+
+<span class="tcom"># Không dùng Figma MCP ở use case này — HTML là sản phẩm bạn tự xuất</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 1 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 1</span> Đưa file cho Claude
+            <span class="phase-desc">— Claude đọc thẳng file .html bằng Read</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">claude-code</span>
+            </div>
+            <div class="term-body">
+<span class="label input">▶ INPUT</span>
+<span class="tprompt">$</span> <span class="tcmd">Đọc design-export/index.html rồi dựng lại màn này bằng React + design system của dự án</span>
+<hr class="sep"/>
+<span class="label output">▼ CLAUDE</span>
+<span class="tprompt">&gt;&gt;</span> <span class="tcmd">Read</span>(<span class="tstr">"design-export/index.html"</span>)
+   <span class="tok-ok">✓</span> nạp ~640 dòng HTML + inline style
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 2</span> Phân tích cấu trúc từ HTML
+            <span class="phase-desc">— bóc layout / style / spacing từ markup export</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">claude-code</span>
+            </div>
+            <div class="term-body">
+<span class="label output">▼ BÓC TÁCH</span><span class="skill-chip">/morkit:writing-plans</span>
+   - Cấu trúc: header · hero · grid 3 card · footer
+   - Spacing: padding 24, gap 16 (đọc từ inline style)
+   - Màu: <span class="tok-ok">#0F172A</span> nền, <span class="tok-ok">#6366F1</span> accent
+   - Font: Inter 16/24; tiêu đề 28/36 weight 700
+   - Asset: ảnh trong <span class="fname">assets/</span> → map sang public/ của dự án
+
+<span class="tcom"># HTML export thường absolute-position + inline style → KHÔNG bê nguyên,
+# chỉ dùng làm spec để dựng lại bằng layout chuẩn của dự án</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="phase">
+          <h3 class="phase-title">
+            <span class="phase-num">PHASE 3</span> Mockup lại trong stack đích
+            <span class="phase-desc">— dựng component + token dự án, đối chiếu HTML gốc</span>
+          </h3>
+          <div class="term">
+            <div class="term-bar">
+              <span class="lights"
+                ><span class="light"></span><span class="light"></span
+                ><span class="light"></span
+              ></span>
+              <span class="term-title">claude-code</span>
+            </div>
+            <div class="term-body">
+<span class="label output">▼ DỰNG LẠI</span><span class="skill-chip">/morkit:executing-plans</span><span class="skill-chip">/morkit:verification-before-completion</span>
+<span class="tok-add">+ components/pricing/PricingSection.tsx</span>
+   - Layout bằng flex/grid chuẩn (bỏ absolute-position của export)
+   - Reuse <span class="tok-ok">&lt;Card/&gt;</span>, <span class="tok-ok">&lt;Button/&gt;</span> có sẵn thay vì div thuần
+   - Màu / spacing trỏ token design system, không hardcode
+
+<span class="label output">▼ VALIDATE</span>
+   <span class="tok-ok">[✓]</span> Mở cạnh nhau: HTML export vs component dựng lại → khớp bố cục
+   <span class="tok-ok">[✓]</span> Responsive theo breakpoint dự án (export thường fixed-width)
+   <span class="tok-ok">[✓]</span> (nếu còn nối Figma MCP) <span class="tcmd">get_screenshot</span> frame gốc → đối chiếu pixel
+   <span class="tok-ok">[✓]</span> npm run build · typecheck sạch
             </div>
           </div>
         </div>
