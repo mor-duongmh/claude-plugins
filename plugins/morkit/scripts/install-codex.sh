@@ -237,7 +237,7 @@ elif confirm "  Append MORKIT_PLUGIN_ROOT export to $RC_FILE?"; then
     } >> "$RC_FILE"
     echo "  appended to $RC_FILE — open a new terminal or run: source $RC_FILE"
 else
-    echo "  skipped — 12 skills (propose/review/archive/deep-review/docs-hero/*) will fail under Codex."
+    echo "  skipped — skills (propose/review/archive/deep-review/*) will fail under Codex."
 fi
 
 # --- step 4: hooks (optional, opt-in only) ---

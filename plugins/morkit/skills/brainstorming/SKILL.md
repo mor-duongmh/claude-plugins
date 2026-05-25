@@ -129,14 +129,14 @@ This tells you:
 ### Session output (required at session end)
 
 Every brainstorming session ends with a design log written to:
-`${MORKIT_ROOT:-morkit/output}/specs/YYYY-MM-DD-<topic>-design.md`
+`${MORKIT_ROOT:-morkit/output}/design-logs/YYYY-MM-DD-<topic>-design.md`
 
 This is **required at session end** — the log is the input artifact for
 downstream commands (`/morkit:propose`, function list
 discussions). Before saving, confirm with the user:
 
 > "Đã đủ shape để wrap up. Save design log vào
->  `morkit/output/specs/<date>-<topic>-design.md`?"
+>  `morkit/output/design-logs/<date>-<topic>-design.md`?"
 
 On user OK, write the file using this template:
 
@@ -354,7 +354,7 @@ explored.
 - **Don't fake understanding** - If something is unclear, dig deeper
 - **Don't rush** - Discovery is thinking time, not task time
 - **Don't force structure** - Let patterns emerge naturally
-- **Auto-capture at session end** - Save final design log to `morkit/output/specs/`. During the session, ask before persisting intermediate snippets
+- **Auto-capture at session end** - Save final design log to `morkit/output/design-logs/`. During the session, ask before persisting intermediate snippets
 - **Do visualize** - A good diagram is worth many paragraphs
 - **Do explore the codebase** - Ground discussions in reality
 - **Do question assumptions** - Including the user's and your own

@@ -149,8 +149,9 @@ if [ -L "$HOOKS_JSON" ]; then
     fi
 elif [ -f "$HOOKS_JSON" ]; then
     # Regular file (copy or manual). Check either explicit morkit reference
-    # or the multi-tool PreToolUse matcher that ships in hooks.json.
-    if grep -qE "morkit|MORKIT_PLUGIN_ROOT" "$HOOKS_JSON" 2>/dev/null || grep -qF "apply_patch|Edit|Write" "$HOOKS_JSON" 2>/dev/null; then
+    # or the gate script that ships in hooks.json (stable token regardless of
+    # how the PreToolUse matcher is formatted).
+    if grep -qE "morkit|MORKIT_PLUGIN_ROOT" "$HOOKS_JSON" 2>/dev/null || grep -qF "pre-tool-checklist-gate" "$HOOKS_JSON" 2>/dev/null; then
         ok "$HOOKS_JSON references morkit (hooks.json content detected)"
     else
         warn "$HOOKS_JSON exists but doesn't reference morkit hooks.json"
