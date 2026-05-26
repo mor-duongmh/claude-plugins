@@ -129,11 +129,21 @@ The adaptive store (`adaptive-store.cjs`) and its decision-cache bridge are wire
 
 **Fundamental limit (not a wiring gap):** a "ran without error but the cheaper tier produced lower-quality output" outcome is **not observable** from any hook payload — no harness emits a quality label. Adaptive therefore learns from hard failures (crashes / tool errors) only; silent quality-shortfalls stay invisible. This is an observability ceiling, accepted by design.
 
-**Codex attribution is coarser than Claude:** `Stop` fires once per turn (last-write-wins cache), so multiple spawns in one turn attribute only the last. Per-spawn attribution via `PostToolUse(spawn_agent)` is a candidate (Codex PostToolUse input carries `tool_name`/`tool_input`/`tool_response`), but `spawn_agent` is a **built-in** tool and it is unconfirmed whether Codex invokes plugin `PostToolUse` for it — requires a live `codex exec` spawn to verify before wiring (avoid double-count/dead-code). Deferred pending that check.
+**Codex attribution is coarser than Claude:** `Stop` fires once per turn (last-write-wins cache), so multiple spawns in one turn attribute only the last. Per-spawn attribution via `PostToolUse(spawn_agent)` was investigated with a **live isolated `codex exec` spawn** and is **NOT pursuable as-is** (see live findings below).
+
+## Live Codex verification (2026-05-26, isolated CODEX_HOME)
+
+A guarded live run (temp `CODEX_HOME`, `auth.json` copied read-only, `~/.codex` untouched, then deleted) established:
+
+- **C1 — CONFIRMED:** `spawn_agent` honors a `model` override (`gpt-5.5`) together with `fork_turns:"none"`. The sub-agent ran on `gpt-5.5` and returned the expected token. This validates the correct-by-construction enforcement (baked per-agent models + `fork_turns:"none"`).
+- **Hook-trust gate — DISCOVERED:** Codex gates user hooks behind a **trust mechanism** (`HookTrustStatus`/`trusted_hash`; binary strings include "Failed to trust hook" and "skipping … hook"). A freshly-written `hooks.json` is **untrusted**, and `codex exec` (non-interactive) cannot show the trust prompt, so the hooks are **silently skipped**. Verified empirically: a `PreToolUse`/`PostToolUse` logger with matcher `.*` did NOT fire even for an ordinary shell-tool call in exec mode.
+- **#2 — NOT CONFIRMABLE this way / DEFERRED:** because the instrument itself (user hooks in `exec`) cannot fire due to the trust gate, the spawn-hook question can't be answered headlessly. Circumstantial evidence (the spawn surfaces as a `collab: SpawnAgent` **event**, on a separate stream from the `tool_name`/`tool_input` hook pipeline) leans toward `spawn_agent` being **outside** the `PostToolUse` tool-hook path. Confirming would need the interactive TUI trust-approval flow plus a real spawn — out of scope.
+
+**Operational note (broader):** because user hooks require trust, the Codex routing/record-outcome hooks fire only after the user has trusted them once (interactive flow); they will not fire in untrusted/headless `codex exec`. The intended usage is interactive `codex`, where trust is established.
 
 ## B1 — strict Codex pre-spawn gate (platform-blocked, deferred)
 
-Codex v0.130.0 has no `SubagentStart`/`SubagentStop` hook, so there is no spawn-time block point equivalent to Claude's `PreToolUse(Agent)` deny. Codex enforcement stays **advisory** (UserPromptSubmit `[ROUTING]` inject) + **correct-by-construction** (model baked per `agent_type` in `.codex/agents/*.toml`, verified to match policy base tiers) + `spawn_agent(fork_turns:"none")`. A candidate strict gate via `PreToolUse(spawn_agent)` (Codex *does* dispatch `PreToolUse`) is unverified and deferred behind a future-build feature check.
+Codex v0.130.0 has no `SubagentStart`/`SubagentStop` hook, so there is no spawn-time block point equivalent to Claude's `PreToolUse(Agent)` deny. Codex enforcement stays **advisory** (UserPromptSubmit `[ROUTING]` inject) + **correct-by-construction** (model baked per `agent_type` in `.codex/agents/*.toml`, verified to match policy base tiers; live-confirmed that `spawn_agent` honors the baked/override model with `fork_turns:"none"`). The `PreToolUse(spawn_agent)` candidate is further weakened by the hook-trust gate above and the collab-event finding; deferred behind a future-build feature check.
 
 ---
 
