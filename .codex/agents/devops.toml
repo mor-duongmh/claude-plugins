@@ -1,0 +1,4 @@
+# morkit model-routing: devops agent — tier 2 (gpt-5.4)
+# Generated from policy.agentBase.devops=2 → policy.tierModel.codex["2"]
+name = "devops"
+model = "gpt-5.4"

@@ -1,0 +1,4 @@
+# morkit model-routing: frontend-dev agent — tier 2 (gpt-5.4)
+# Generated from policy.agentBase["frontend-dev"]=2 → policy.tierModel.codex["2"]
+name = "frontend-dev"
+model = "gpt-5.4"

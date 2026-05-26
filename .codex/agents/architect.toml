@@ -1,0 +1,4 @@
+# morkit model-routing: architect agent — tier 3 (gpt-5.5)
+# Generated from policy.agentBase.architect=3 → policy.tierModel.codex["3"]
+name = "architect"
+model = "gpt-5.5"

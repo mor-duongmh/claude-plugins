@@ -1,0 +1,4 @@
+# morkit model-routing: reviewer agent — tier 3 (gpt-5.5)
+# Generated from policy.agentBase.reviewer=3 → policy.tierModel.codex["3"]
+name = "reviewer"
+model = "gpt-5.5"

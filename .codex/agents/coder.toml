@@ -1,0 +1,4 @@
+# morkit model-routing: coder agent — tier 2 (gpt-5.4)
+# Generated from policy.agentBase.coder=2 → policy.tierModel.codex["2"]
+name = "coder"
+model = "gpt-5.4"

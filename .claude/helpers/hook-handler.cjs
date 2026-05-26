@@ -162,7 +162,14 @@ async function main() {
 
   const handlers = {
     route: () => {
-      const line = buildRouteOutput(prompt, { harness: 'claude' });
+      // Accept --harness <value> from argv OR a `harness` field in stdin JSON.
+      // Defaults to 'claude' so existing Claude Code behavior is unchanged.
+      let harness = hookInput.harness || 'claude';
+      const harnessIdx = args.indexOf('--harness');
+      if (harnessIdx !== -1 && args[harnessIdx + 1]) {
+        harness = args[harnessIdx + 1];
+      }
+      const line = buildRouteOutput(prompt, { harness });
       process.stdout.write(line + '\n');
     },
 

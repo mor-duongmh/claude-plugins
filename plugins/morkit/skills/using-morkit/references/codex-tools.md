@@ -114,6 +114,43 @@ auto-detects when unset. The gate only engages when Codex hooks are enabled
 (`install-codex.sh --with-hooks` + `codex features enable codex_hooks`); see the
 Advisory note in `AGENTS.md`.
 
+## Model routing on Codex (advisory)
+
+Codex v0.130.0 dispatches only these hook events: `PreToolUse`, `PermissionRequest`,
+`PostToolUse`, `PreCompact`, `PostCompact`, `SessionStart`, `UserPromptSubmit`, `Stop`.
+There is **no `SubagentStart`/`SubagentStop`** event, so no strict pre-spawn gate is
+possible. Model routing is therefore **advisory**:
+
+1. **`UserPromptSubmit` context injection**: the morkit hook
+   (`hooks/userpromptsubmit-route.sh`) runs the shared router on every user prompt
+   and emits `[ROUTING] agent=… tier=… model=… (conf …)` as `additionalContext`.
+   The model sees the recommendation but is not forced to follow it.
+
+2. **Model-baked custom agents** (`.codex/agents/*.toml`): the robust mechanism.
+   Each file pins `model` to the codex model for that agent's base tier
+   (from `policy.tierModel.codex`). Install into `~/.codex/agents/` or reference via
+   `install-codex.sh`. When Codex loads a named custom agent, the `model` field is
+   used as the default — no runtime override needed.
+
+### `spawn_agent` model override requires `fork_turns:"none"`
+
+`spawn_agent` accepts a `model` field, but **only when the fork mode is `"none"`**
+(no history inheritance). The default full-history fork inherits the parent session's
+model and silently **ignores** the `model` override (Codex issue #20077 — confirmed
+during spike Task 1).
+
+```
+# CORRECT — model override is honoured
+spawn_agent(agent_type="worker", model="gpt-5.4-mini", fork_turns="none", message=...)
+
+# BROKEN — model field is silently ignored (inherits parent model)
+spawn_agent(agent_type="worker", model="gpt-5.4-mini", message=...)
+```
+
+**Recommendation**: use model-baked custom agents as the primary mechanism and
+`fork_turns:"none"` only when you need a one-shot subagent without prior context.
+Never rely on `model=` without `fork_turns="none"`.
+
 ## Environment Detection
 
 Skills that create worktrees or finish branches should detect their
