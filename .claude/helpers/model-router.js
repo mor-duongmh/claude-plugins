@@ -99,9 +99,13 @@ function computeTierWithPolicy({
   // Clamp to valid range
   tier = Math.max(0, Math.min(3, tier));
 
-  // SEAM: Task 5 adaptive adjustment (identity by default)
+  // SEAM: Task 5 adaptive adjustment (identity by default).
+  // Signature: adaptiveAdjust(agent, bucket, tier, policyAdaptive) → tier
+  // `complexityScore` carries the bucket string (or null) when the caller
+  // provides it; the store's adaptiveAdjust uses it as the (agent,bucket) key.
   if (typeof adaptiveAdjust === 'function') {
-    tier = Math.max(0, Math.min(3, adaptiveAdjust(agent, complexityScore, tier)));
+    const policyAdaptive = (policy && policy.adaptive) || null;
+    tier = Math.max(0, Math.min(3, adaptiveAdjust(agent, complexityScore, tier, policyAdaptive)));
   }
 
   // Harness-aware model mapping
