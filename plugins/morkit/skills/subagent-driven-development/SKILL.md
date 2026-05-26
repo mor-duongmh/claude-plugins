@@ -109,6 +109,19 @@ Use the least powerful model that can handle each role to conserve cost and incr
 - Touches multiple files with integration concerns → standard model
 - Requires design judgment or broad codebase understanding → most capable model
 
+> **Concrete model mapping (claude-plugins only):** The abstract tiers above map to specific
+> models defined in `.claude/helpers/model-policy.json` (the source of truth):
+>
+> | Tier | Claude harness | Codex harness |
+> |------|---------------|---------------|
+> | 1 — cheap/fast | haiku | gpt-5.4-mini |
+> | 2 — standard | sonnet | gpt-5.4 |
+> | 3 — most capable | opus | gpt-5.5 |
+>
+> The routing harness selects tiers automatically based on agent type, escalator keywords
+> (e.g. `security`, `migration`, `architecture`), and file-count signals. When working
+> outside the claude-plugins repo, the harness is inactive; apply this guidance manually.
+
 ## Handling Implementer Status
 
 Implementer subagents report one of four statuses. Handle each appropriately:

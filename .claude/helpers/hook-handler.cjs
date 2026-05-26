@@ -21,6 +21,7 @@
 
 const { routeTask, loadPolicy } = require('./router.js');
 const { recordOutcome } = require('./adaptive-store.cjs');
+const { isClaudePluginsRepo } = require('./scope-guard.cjs');
 
 // ── Pure, testable function for the route handler ─────────────────────────────
 
@@ -159,6 +160,17 @@ async function main() {
     || args.join(' ') || '';
 
   const command = process.argv[2] || '';
+
+  // Scope guard: this hook is only active within the claude-plugins repo.
+  // When the guard returns false, silently exit 0 (noop) — never block other projects.
+  // Any error in the guard → noop (fail-open-to-noop is the contract).
+  try {
+    if (!isClaudePluginsRepo()) {
+      process.exit(0);
+    }
+  } catch (_) {
+    process.exit(0);
+  }
 
   const handlers = {
     route: () => {

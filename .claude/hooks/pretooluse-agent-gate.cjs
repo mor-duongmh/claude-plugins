@@ -44,6 +44,7 @@
 
 const path = require('node:path');
 const { routeTask, loadPolicy } = require(path.join(__dirname, '../helpers/router.js'));
+const { isClaudePluginsRepo } = require(path.join(__dirname, '../helpers/scope-guard.cjs'));
 
 /**
  * Build a reverse map of model-string → tier-int from the claude harness map.
@@ -236,6 +237,16 @@ async function main() {
     process.exit(0);
   }, 5000);
   safetyTimer.unref();
+
+  // Scope guard: gate is only active within the claude-plugins repo.
+  // When guard is false → silently allow (exit 0, no output).
+  try {
+    if (!isClaudePluginsRepo()) {
+      process.exit(0);
+    }
+  } catch (_) {
+    process.exit(0);
+  }
 
   let stdinData = '';
   try { stdinData = await readStdin(); } catch (_) { /* ignore */ }

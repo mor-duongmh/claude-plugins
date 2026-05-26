@@ -37,6 +37,27 @@ else
 fi
 
 HOOK_HANDLER="$REPO_ROOT/.claude/helpers/hook-handler.cjs"
+SCOPE_MARKER="$REPO_ROOT/.model-routing.json"
+
+# Scope guard: only proceed when the claude-plugins scope marker is present
+# and has "enabled": true. Fail-open: any error or absent marker → exit 0 silently.
+# We check the marker at the repo root (already resolved above); no upward walk
+# needed because the hook is only invoked when morkit is the plugin root, which
+# already implies we're inside the repo. The hook-handler.cjs performs the same
+# guard internally for double-safety.
+if [[ ! -f "$SCOPE_MARKER" ]]; then
+    exit 0
+fi
+if command -v jq >/dev/null 2>&1; then
+    enabled=$(jq -r '.enabled // false' "$SCOPE_MARKER" 2>/dev/null || echo "false")
+    [[ "$enabled" == "true" ]] || exit 0
+elif command -v node >/dev/null 2>&1; then
+    enabled=$(node -e "try{var m=JSON.parse(require('fs').readFileSync('$SCOPE_MARKER','utf8'));console.log(m.enabled===true?'true':'false')}catch(_){console.log('false')}" 2>/dev/null || echo "false")
+    [[ "$enabled" == "true" ]] || exit 0
+else
+    # Neither jq nor node available → fail-open (exit 0, noop)
+    exit 0
+fi
 
 # Fail-open: if node or the handler is not available, exit silently.
 if ! command -v node >/dev/null 2>&1; then

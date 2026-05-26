@@ -154,15 +154,16 @@ function computeTier({ agent, confidence, prompt, harness = 'claude' }) {
   return computeTierWithPolicy({ agent, confidence, prompt, policy, harness });
 }
 
-// CLI
-const task = process.argv.slice(2).join(' ');
-
-if (task) {
-  const result = routeTask(task);
-  console.log(JSON.stringify(result, null, 2));
-} else {
-  console.log('Usage: router.js <task description>');
-  console.log('\nAvailable agents:', Object.keys(AGENT_CAPABILITIES).join(', '));
+// CLI — only runs when executed directly (not when require()'d by hook-handler etc.)
+if (require.main === module) {
+  const task = process.argv.slice(2).join(' ');
+  if (task) {
+    const result = routeTask(task);
+    console.log(JSON.stringify(result, null, 2));
+  } else {
+    console.log('Usage: router.js <task description>');
+    console.log('\nAvailable agents:', Object.keys(AGENT_CAPABILITIES).join(', '));
+  }
 }
 
 module.exports = { routeTask, computeTier, loadPolicy, AGENT_CAPABILITIES, TASK_PATTERNS };
