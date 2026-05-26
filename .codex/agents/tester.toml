@@ -1,0 +1,4 @@
+# morkit model-routing: tester agent — tier 1 (gpt-5.4-mini)
+# Generated from policy.agentBase.tester=1 → policy.tierModel.codex["1"]
+name = "tester"
+model = "gpt-5.4-mini"

@@ -1,0 +1,4 @@
+{
+  "enabled": true,
+  "description": "Enables model-routing-harness for this repo (claude-plugins). Remove or set enabled:false to disable globally."
+}

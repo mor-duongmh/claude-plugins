@@ -7,7 +7,12 @@ node_modules/
 .code-review-graph/
 __pycache__/
 *.pyc
-.claude
+.claude/*
+!.claude/helpers
+!.claude/hooks
+!.claude/settings.json
+.claude/helpers/.adaptive-state.json
+.claude/helpers/.last-routing.json
 plans/templates
 CLAUDE.md
 release-manifest.json

@@ -23,6 +23,28 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${MORKIT_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}/hooks/userpromptsubmit-route.sh\"",
+            "async": false
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${MORKIT_REPO_ROOT:-.}/.claude/helpers/hook-handler.cjs\" record-outcome",
+            "async": true
+          }
+        ]
+      }
     ]
   }
 }

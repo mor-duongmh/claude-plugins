@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "agentBase": {
+    "tester": 1,
+    "researcher": 1,
+    "coder": 2,
+    "backend-dev": 2,
+    "frontend-dev": 2,
+    "architect": 3,
+    "reviewer": 3,
+    "devops": 2
+  },
+  "escalators": {
+    "up":   ["security", "migration", "concurrency", "auth", "refactor large", "architecture"],
+    "down": ["rename", "typo", "format", "single-line", "comment"]
+  },
+  "multiFileUpThreshold": 3,
+  "complexity": {
+    "enabled": true,
+    "refSet": "embeddings/complexity-refset.json",
+    "confidenceMin": 0.65,
+    "strictBelowMinFallback": "warn",
+    "liveInHook": true
+  },
+  "tierModel": {
+    "claude": { "0": "__direct__", "1": "haiku", "2": "sonnet", "3": "opus" },
+    "codex":  { "1": "gpt-5.4-mini", "2": "gpt-5.4", "3": "gpt-5.5" }
+  },
+  "adaptive": { "enabled": true, "minSamples": 8, "hysteresis": 2 }
+}
