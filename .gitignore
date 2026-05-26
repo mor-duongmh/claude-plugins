@@ -13,7 +13,7 @@ __pycache__/
 !.claude/settings.json
 .claude/helpers/.adaptive-state.json
 .claude/helpers/.last-routing.json
-plans/templates
+plans/
 CLAUDE.md
 release-manifest.json
 .repomixignore
