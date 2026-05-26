@@ -168,6 +168,47 @@ function buildRouteOutput(prompt, opts) {
   return `[ROUTING] agent=${result.agent} (conf ${conf})`;
 }
 
+// ── outcome derivation ────────────────────────────────────────────────────────
+
+/**
+ * Derive a routing outcome from a hook payload, defensively across Claude and
+ * Codex shapes. Returns 'success' | 'retry' | 'escalate' on a definitive signal,
+ * or null when the payload carries no usable outcome — in which case the caller
+ * SKIPS recording rather than fabricating a fake 'success' (fake successes would
+ * pollute the adaptive store and mask real failures).
+ *
+ * Known limitation: a "ran fine but the cheap tier produced lower-quality output"
+ * outcome is NOT observable from any hook payload — only hard errors (isError,
+ * non-zero exit_code, status "error") are. Quality-shortfall stays invisible, so
+ * adaptive learning catches hard failures only.
+ *
+ * @param {object} data - Parsed hook payload.
+ * @returns {"success"|"retry"|"escalate"|null}
+ */
+function deriveOutcome(data) {
+  // 1. Explicit outcome wins (callers that already know; tests).
+  if (typeof data.outcome === 'string') return data.outcome;
+
+  // tool_output (Claude) / tool_response (Codex) may be an object or a string.
+  const out = data.tool_output || data.toolOutput || data.tool_response || data.toolResponse;
+  const obj = (out && typeof out === 'object') ? out : {};
+
+  // 2. Hard-error signal → 'escalate' (the tier may have been insufficient).
+  const hardError =
+    obj.isError === true || obj.is_error === true || obj.status === 'error' ||
+    (typeof data.exit_code === 'number' && data.exit_code !== 0);
+  if (hardError) return 'escalate';
+
+  // 3. Explicit success signal → 'success' (real denominator for the store).
+  const ok =
+    obj.isError === false || obj.status === 'success' ||
+    (typeof data.exit_code === 'number' && data.exit_code === 0);
+  if (ok) return 'success';
+
+  // 4. No usable signal — do not fabricate.
+  return null;
+}
+
 // ── record-outcome handler ────────────────────────────────────────────────────
 
 /**
@@ -208,11 +249,14 @@ function handleRecordOutcome(inputJson) {
       }
     }
 
-    const outcome = typeof data.outcome === 'string' ? data.outcome : 'success';
+    // Honest signal: derive a real outcome; never fabricate 'success'.
+    const outcome = deriveOutcome(data);
     const statePath = typeof data.statePath === 'string' ? data.statePath : undefined;
 
     // Ignore events with no agent (malformed input, cache also absent)
     if (!agent) return;
+    // No usable outcome signal → skip recording (don't pollute the store).
+    if (outcome === null) return;
 
     // Use tier=2 as a safe default if still unknown after cache fallback
     recordOutcome(agent, bucket, tier !== null ? tier : 2, outcome, statePath);

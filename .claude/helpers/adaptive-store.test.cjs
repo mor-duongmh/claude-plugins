@@ -302,3 +302,50 @@ test('routeTask with adaptiveAdjust wired returns bumped tier when store is retr
     try { fs.unlinkSync(statePath); } catch (_) {}
   }
 });
+
+// ── Test 14 (#1 honest signal): no outcome signal → SKIP, do not fabricate ─────
+// A bare Stop/PostToolUse payload with agent but no outcome and no error signal
+// must NOT record a fake 'success'. The store stays empty.
+test('record-outcome SKIPS when payload has no usable outcome signal (no fabricated success)', () => {
+  const handler = require('./hook-handler.cjs');
+  const statePath = tmpPath();
+  try {
+    const input = JSON.stringify({ event: 'Stop', agent: 'coder', bucket: 'medium', tier: 2, statePath });
+    handler['record-outcome'](input);
+    assert.equal(fs.existsSync(statePath), false, 'no state file should be written when there is no outcome signal');
+  } finally {
+    try { fs.unlinkSync(statePath); } catch (_) {}
+  }
+});
+
+// ── Test 15 (#1): hard-error signals map to 'escalate' ────────────────────────
+test('record-outcome maps tool_output.isError and non-zero exit_code to escalate', () => {
+  const handler = require('./hook-handler.cjs');
+  for (const payload of [
+    { agent: 'coder', bucket: 'complex', tier: 3, tool_output: { isError: true } },
+    { agent: 'coder', bucket: 'complex', tier: 3, exit_code: 1 },
+    { agent: 'coder', bucket: 'complex', tier: 3, tool_response: { status: 'error' } },
+  ]) {
+    const statePath = tmpPath();
+    try {
+      handler['record-outcome'](JSON.stringify({ ...payload, statePath }));
+      const raw = JSON.parse(fs.readFileSync(statePath, 'utf8'));
+      assert.equal(raw['coder:complex'].escalate, 1, `hard error must record escalate for ${JSON.stringify(payload)}`);
+    } finally {
+      try { fs.unlinkSync(statePath); } catch (_) {}
+    }
+  }
+});
+
+// ── Test 16 (#1): explicit success signal maps to 'success' ───────────────────
+test('record-outcome maps explicit success signal (isError:false / exit_code:0) to success', () => {
+  const handler = require('./hook-handler.cjs');
+  const statePath = tmpPath();
+  try {
+    handler['record-outcome'](JSON.stringify({ agent: 'tester', bucket: 'simple', tier: 1, exit_code: 0, statePath }));
+    const raw = JSON.parse(fs.readFileSync(statePath, 'utf8'));
+    assert.equal(raw['tester:simple'].success, 1, 'exit_code 0 must record success');
+  } finally {
+    try { fs.unlinkSync(statePath); } catch (_) {}
+  }
+});

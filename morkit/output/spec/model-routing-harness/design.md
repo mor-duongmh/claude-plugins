@@ -119,15 +119,17 @@ Complexity scoring is now **live by default** (`policy.complexity.liveInHook: tr
 
 The bucket (`"simple"` → −1, `"complex"` → +1, `"medium"`/null → 0) nudges the tier before the confidence gate and adaptive adjustment, on **both** harnesses (Claude enforces; Codex advisory).
 
-**Fresh-machine note:** ONNX weights are not bundled; the scorer uses the locally-cached `@claude-flow/cli`. Without it, scoring fails open to keyword-only routing. Bundling weights is a future hardening item.
+**Fresh-machine note:** ONNX weights are not bundled; the scorer uses the locally-cached `@claude-flow/cli` (offline). The committed `complexity-refset-vectors.json` removes the 30× ref-embedding cost, so only a single one-time model fetch remains on a machine that has never run embeddings. For a fully-offline setup, pre-populate the cache once with `npx @claude-flow/cli embeddings warmup` (verified subcommand). If the model is unavailable, scoring fails open to keyword-only routing. Bundling weights (~23 MB) is a deliberate non-goal (repo bloat).
 
-## Known limitation — adaptive loop is signal-starved <!-- V2-deferred -->
+## Adaptive loop — honest outcome signal (improved; not perfect)
 
-The adaptive store (`adaptive-store.cjs`) and its decision-cache bridge are fully wired on **both** harnesses (Claude `PostToolUse(Agent)` → `record-outcome`; Codex `Stop` → `record-outcome`, both falling back to the `.last-routing.json` decision cache for agent/bucket/tier — proven by adaptive-store tests 10 + 12).
+The adaptive store (`adaptive-store.cjs`) and its decision-cache bridge are wired on **both** harnesses (Claude `PostToolUse(Agent)` → `record-outcome`; Codex `Stop` → `record-outcome`, both falling back to the `.last-routing.json` decision cache for agent/bucket/tier — adaptive-store tests 10 + 12).
 
-**However, neither harness's hook payload carries a real success/failure/retry label**, so `record-outcome` defaults `outcome` to `"success"`. Because `adaptiveAdjust` bumps tier UP only after accumulating `retry`/`escalate` outcomes, the loop currently **records but never escalates** — it is structurally complete but signal-starved. This is a cross-harness limitation, not Codex-specific. Resolving it needs a genuine outcome signal (e.g. treating repeated spawns of the same agent+bucket as a retry proxy), which risks false positives and is deferred to V2. The store stays harmless (counters only) meanwhile.
+`record-outcome` no longer fabricates `"success"`. `deriveOutcome()` reads a **real** signal defensively across harness shapes — `tool_output.isError` / `status:"error"` / non-zero `exit_code` → `escalate`; explicit `isError:false` / `exit_code:0` → `success`; **no signal → skip** (the store is not polluted with fake successes). So `adaptiveAdjust` now actually bumps tier after real repeated **hard failures**.
 
-**Codex attribution is also coarser than Claude:** `Stop` fires once per turn (last-write-wins cache), so when multiple subagents spawn in one turn only the last is attributed. Claude's `PostToolUse(Agent)` attributes per-spawn.
+**Fundamental limit (not a wiring gap):** a "ran without error but the cheaper tier produced lower-quality output" outcome is **not observable** from any hook payload — no harness emits a quality label. Adaptive therefore learns from hard failures (crashes / tool errors) only; silent quality-shortfalls stay invisible. This is an observability ceiling, accepted by design.
+
+**Codex attribution is coarser than Claude:** `Stop` fires once per turn (last-write-wins cache), so multiple spawns in one turn attribute only the last. Per-spawn attribution via `PostToolUse(spawn_agent)` is a candidate (Codex PostToolUse input carries `tool_name`/`tool_input`/`tool_response`), but `spawn_agent` is a **built-in** tool and it is unconfirmed whether Codex invokes plugin `PostToolUse` for it — requires a live `codex exec` spawn to verify before wiring (avoid double-count/dead-code). Deferred pending that check.
 
 ## B1 — strict Codex pre-spawn gate (platform-blocked, deferred)
 
