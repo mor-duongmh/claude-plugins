@@ -181,7 +181,7 @@ td code { font-size: 12px; }
   </div>
   <div style="margin-bottom: 10px;"><span class="tag">Doc generation</span><span class="tag">Command</span></div>
   <h1>morkit:init</h1>
-  <p class="lede">Khởi tạo lần đầu bộ tài liệu dự án tối ưu cho AI agent (taxonomy + mỏ neo) — chạy một lần cho mỗi dự án, brownfield hay greenfield.</p>
+  <p class="lede">Khởi tạo lần đầu bộ tài liệu dự án tối ưu cho AI agent — tự nhận biết brownfield (đã có code → quét rồi suy ra docs) hay greenfield (repo rỗng → chỉ gieo khung docs đúng định dạng, không bịa nội dung). Chạy một lần cho mỗi dự án.</p>
 
   <h2>1. Cách gọi</h2>
   <pre><code>/morkit:init [tham số]</code></pre>
@@ -189,8 +189,9 @@ td code { font-size: 12px; }
 
   <h2>2. Khi nào dùng</h2>
   <ul>
-  <li>Khi lần đầu dựng docs/ cho một dự án (chưa có taxonomy 00-overview)</li>
-  <li>Khi muốn AI agent điều hướng codebase với context tối thiểu</li>
+  <li>Brownfield — dự án đã có code: muốn quét (read-only) rồi dựng taxonomy 00-overview … 90-operations đầy đủ.</li>
+  <li>Greenfield — repo rỗng (chưa có manifest như package.json/pyproject.toml/go.mod, ~0 dòng code): muốn gieo sẵn khung docs để vừa viết code vừa bồi tài liệu.</li>
+  <li>Lần đầu dựng docs/ (chưa có taxonomy 00-overview); về sau bảo trì bằng /morkit:docs update | summarize.</li>
   </ul>
 
   <h2>3. Ví dụ</h2>
@@ -199,9 +200,9 @@ td code { font-size: 12px; }
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
       <span class="window-title">claude-code · morkit</span>
     </div>
-    <pre><code>$ /morkit:init # quét codebase rồi dựng docs/ + con trỏ CLAUDE.md/AGENTS.md</code></pre>
+    <pre><code>$ /morkit:init # tự nhận brownfield/greenfield rồi dựng docs/ + con trỏ CLAUDE.md/AGENTS.md</code></pre>
   </div>
-  <p class="lede" style="font-size:14px;">Quét codebase (read-only) → dựng taxonomy 00-overview … 90-operations + mỏ neo + con trỏ ở root. Ví dụ cụ thể: `/morkit:init` (hỏi scale project/module) · `/morkit:init ../new-service --yes` (bỏ gate sau scout) · `/morkit:init --scope module --agents` (monorepo, ghi thêm AGENTS.md). Bảo trì sau đó dùng /morkit:docs update | summarize. LLM-driven, không Python.</p>
+  <p class="lede" style="font-size:14px;">Tự nhận diện ở Stage 0. BROWNFIELD → quét code (read-only) → taxonomy 00-overview … 90-operations + mỏ neo + con trỏ root. GREENFIELD (repo rỗng) → bỏ qua scout, chỉ gieo khung tối thiểu: SCOPE · DOCUMENT-MAP · FEATURE-LIST rỗng · con trỏ CLAUDE.md (hỏi thêm có gieo STACK/ARCHITECTURE dự kiến không), TUYỆT ĐỐI không bịa feature/kiến trúc/nguồn — `/morkit:docs update` bồi phần còn lại khi code lớn dần. Ví dụ: `/morkit:init` (hỏi scale project/module) · `/morkit:init ../new-service --yes` (bỏ gate; greenfield bỏ luôn prompt STACK/ARCHITECTURE) · `/morkit:init --scope module --agents` (monorepo, ghi thêm AGENTS.md). LLM-driven, không Python.</p>
 
   <h2>4. Xem thêm</h2>
   <div class="related-grid">
